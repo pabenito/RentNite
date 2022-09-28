@@ -10,4 +10,6 @@ An AirBnB like web.
 - Gallego Roca, Asier
 - Parra Balches, Carlos
 
+## Docs 
 
+- [Requirements](docs/requirements.md)

@@ -8,8 +8,8 @@
 - **DB**: Data Base.
 
 ### Users 
-- **Houseowners**: Peple who have houses.
-- **Gest**: Peple who use AirBnB to rent a house. 
+- **Houseowners**: People who have houses.
+- **Guest**: People who use AirBnB to rent a house. 
 
 ### Attributes
 

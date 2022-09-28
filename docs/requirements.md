@@ -40,6 +40,7 @@
 - **Emails**: Send automatic emails (e.g. confirmation of a booking or payment), and advertise the accommodation on social networks, such as Twitter.
 - **Open data service**: The _app_ will make use of open data such as [Gobierno de España](https://datos.gob.es) or other platforms to provide information on public transport, weather forecasts in
 platforms to provide information on public transport, weather forecasts at destinations, pollution levels, etc.
+**Messaging**: The _app_ will allow users to interact with each other, through messages between them.
 
 ### Users 
 

@@ -43,32 +43,34 @@ platforms to provide information on public transport, weather forecasts at desti
 
 ### Users 
 
-- **_Supposed_. Roles**: An user can be a _houseowner_ and a _gests_.
+- **_Supposed_. Roles**: An user can be a _houseowner_ and a _guests_.
 
 ### _Houseowners_
 
 - **Publish houses**: _Houseowners_ can publish their houses, one advertisement per house. 
 - **Edit houses**: _Houseowners_ can edit their houses. Except the state of the dates already past.
 - **Delete houses**: _Houseowners_ can delete their houses. 
-- **Accept booking requests**: Accept booking requests from _gests_.  
-- **Decline booking requests**: Decline booking requests from _gests_.
-- **Rate _gest_**: The _houseowner_ of a house can rate a _gest_ that had been there once the final date ends. 
+- **Accept booking requests**: Accept booking requests from _guests_.  
+- **Decline booking requests**: Decline booking requests from _guests_.
+- **Rate _guest_**: The _houseowner_ of a house can rate a _guest_ that had been there once the final date ends. 
+- **Answer a comment**: The _houseowner_ can answer the comments made on his advertised houses.
 
-### _Gests_ 
+### _Guests_ 
 
 - **Booking request**: Send a request for booking a house a period of time.
 - **_Supposed_. Cancel booking**: Cancel a booking he had already booked.
-- **Search houses with filters**: When a _gest_ is searching for a house, he can set filters:
+- **Search houses with filters**: When a _guest_ is searching for a house, he can set filters:
     - Geographic (Proximity to a certain place)
     - The _houseowner_
     - Date disponibility (if it is avalible)
     - _Price_ range.
     - _Supposed_. _Capatity_.
-- **Rate house**: The _gest_ who did the booking can rate the house once the final date ends. 
+- **Rate house**: The _guest_ who did the booking can rate the house once the final date ends. 
+- **Let a comment**: The _guest_ can share complains, questions or suggest through comments on the advertised house or as an answer on another comment.
 
 ### Bookings
 
-- **Relate _gest_ with booking**: When a _gest_ does a booking, this booking relates this _gest_ with the house booked.
+- **Relate _guest_ with booking**: When a _guest_ does a booking, this booking relates this _geust_ with the house booked.
 - **Initial and final date**: Doing a booking implies have an inital and final end date. All this period must be _avalible_ before the booking is done, then when the _houseowner_ accept the request all mut be set as _occupied_.  
 - **Meeting point / key pick-up padlock**: A booking must have a meeting point or a key pick-up padlock for the initial day of the booking.  
 

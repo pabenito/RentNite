@@ -128,4 +128,5 @@
 
 - **Persistence**: The _app_ must persist data on a _DB_.
 - **OAuth**: The _app_ must manage the identified access of users through OAuth 2.0 and an external account system, e.g. Google or Facebook.
-- **Payment**: The application will be integrated with a payment service, such as PayPal, for the payment of bookings.
+- **Payment**: The _app_ will be integrated with a payment service, such as PayPal, for the payment of bookings.
+- **Technology**: The _app_ will be programmed in python 3.0, using the Django framework. A database with MongoDB will be implemented. The application platform in the cloud, Heroku, will be used.

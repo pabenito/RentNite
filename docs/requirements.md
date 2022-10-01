@@ -122,7 +122,7 @@
       - [ ] Smoke alarm
       - [ ] Carbon monoxide alarm
       - [ ] Private entrance
-- **Date state**: Each date can be _avalible_, _bloked_, or _occupied_. 
+- **Date state**: Each date can be _avalible_, _blocked_, or _occupied_. 
 
 ## Non-functional 
 

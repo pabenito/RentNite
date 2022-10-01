@@ -70,7 +70,7 @@
 
 ### Bookings
 
-- **Relate _guest_ with booking**: When a _guest_ does a booking, this booking relates this _geust_ with the house booked.
+- **Relate _guest_ with booking**: When a _guest_ does a booking, this booking relates this _guest_ with the house booked.
 - **Initial and final date**: Doing a booking implies have an inital and final end date. All this period must be _avalible_ before the booking is done, then when the _houseowner_ accept the request all mut be set as _occupied_.  
 - **Meeting point / key pick-up padlock**: A booking must have a meeting point or a key pick-up padlock for the initial day of the booking.  
 

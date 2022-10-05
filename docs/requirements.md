@@ -23,7 +23,6 @@
 ### States 
 
 - **Avalible**: Can be booked.
-- **Blocked**: Cannot be booked.
 - **Occupied**: Already booked.
 
 ### Requirements 
@@ -36,11 +35,12 @@
 
 ### System
 
-- **Load images**: The system must be able to upload images.
-- **Map usage**: The system must be able to use map services as OpenStreetMap or Google Maps.
-- **Emails**: Send automatic emails (e.g. confirmation of a booking or payment), and advertise the accommodation on social networks, such as Twitter.
+- **Load images**: The _app_ must be able to upload images.
+- **Map usage**: The _app_ must be able to use map services as OpenStreetMap or Google Maps.
+- **Emails**: The _app_ will send automatic emails (e.g. confirmation of a booking or payment), and advertise the accommodation on social networks, such as Twitter.
 - **Open data service**: The _app_ will make use of open data such as [Gobierno de España](https://datos.gob.es) or other platforms to provide information on public transport, weather forecasts at destinations, pollution levels, etc.
 - **Messaging**: The _app_ will allow users to interact with each other, through messages between them.
+- **Payment**: The _app_ will be integrated with a payment service, such as PayPal, for the payment of bookings.
 
 ### Users 
 
@@ -55,6 +55,7 @@
 - **Decline booking requests**: Decline booking requests from _guests_.
 - **Rate _guest_**: The _houseowner_ of a house can rate a _guest_ that had been there once the final date ends. 
 - **Answer a comment**: The _houseowner_ can answer the comments made on his advertised houses.
+- **Advertise houses**: The _houseowner_ advertise the house on social networks, such as Twitter.
 
 ### _Guests_ 
 
@@ -81,15 +82,11 @@
 - **Unique house**: A house can't be published more than once in the _app_.
 - **House owner**: Each house must have an _houseowner_.
 - **House description**: A published house must have a description where shows all their attributes (e.g. Kitchen forniture, has wifi, has pool or parking...).
-- **Date state**: Each date can be _avalible_, _blocked_, or _occupied_. 
+- **Date state**: Each date can be _avalible_ or _occupied_. 
+- **Location**: Houses have location, that allows to locate them in the map. 
 
 ## Non-functional 
 
 - **Persistence**: The _app_ must persist data on a _DB_.
 - **OAuth**: The _app_ must manage the identified access of users through OAuth 2.0 and an external account system, e.g. Google or Facebook.
-- **Payment**: The _app_ will be integrated with a payment service, such as PayPal, for the payment of bookings.
-- **Technology**: 
-    - Programming language: The _app_ will be programmed in python 3.0
-    - REST framework: The _app_ will use [Flask](https://flask.palletsprojects.com/en/2.2.x/) as _REST_ framework. 
-    - _DB_: The _app_ will use [MongoDB]() as _DB_. 
-    - Hosting: The _app_ will be hosted in [Heroku](https://www.heroku.com).
+- **Supposed. Architecture style**: The _app_ architecture style will be _REST_ 

@@ -2,29 +2,92 @@ model airbnb
 
 enum State {avalible, blocked, occupied}
 
-class House
+-- classes
+
+abstract class Rated
+end 
+
+abstract class Chatted
+end 
+
+abstract class Dated 
 attributes
-  -- Base
+  date : Int
+end 
+
+class House < Rated
+attributes
+  -- base
   address : String
   capacity : Integer
   price : Integer
-  -- Supposed
+  -- supposed
   rooms : Integer
   bathrooms : Integer
 end 
 
-class User
-end 
-
-class Calendar
-end 
-
-class Day 
-end 
+class User < Rated, Chatted
+end
 
 class Image 
+attributes
+  url : String 
 end 
 
 class Location
 end 
 
+class Message < Dated
+attributes
+  message : String 
+end
+
+class Rate < Dated
+attributes
+  rate : Int 
+end 
+
+class Booking
+attributes
+  accepted : Boolean
+    init = false 
+  declined : Boolean 
+    init = false 
+  from : Int 
+  to : Int 
+  cost : Int
+    derived = (self.to - self.from) * self.house.price 
+end 
+
+-- associations
+
+composition Rates 
+between
+  Rated [1]
+  Rate [*] role rates 
+end 
+
+aggregation Rater
+between
+  User [1]
+  Rate [*] role rated
+
+association Houseowners 
+between
+  User [1] role owner
+  House [*] role houses
+end 
+
+association GuestBooking
+between 
+  Guest [1] 
+  Booking [*] role bookings
+end 
+
+association HouseBooking
+between
+  House [1]
+  Booking [*] role bookings
+end 
+
+association 

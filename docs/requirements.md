@@ -4,22 +4,22 @@
 
 ### Acronyms
 
-- **App**: Application. (AirBnB) 
+- **App**: Application (RentNite). 
 - **DB**: Data Base.
-- **REST**: REpresentational State Transfer. (Architecture style).
+- **REST**: Representational State Transfer (Architecture style).
 
 ### Users 
 - **Houseowners**: People who have houses.
-- **Guest**: People who use AirBnB to rent a house. 
+- **Guests**: People who use RentNite to rent a house. 
 
 ### Attributes
 
-- **Capatity**: Maximum number of people that can sleep in the house.
-- **Price**: Price per night. 
+- **Capacity**: Maximum number of people that can sleep in the house.
+- **Price**: Price per night.
 
 ### States 
 
-- **Avalible**: Can be booked.
+- **Available**: Can be booked.
 - **Occupied**: Already booked.
 
 ### Requirements 
@@ -41,7 +41,7 @@
 
 ### Users 
 
-- **_Supposed_. Roles**: An user can be a _houseowner_ and a _guests_.
+- **_Supposed_. Roles**: An user can be a _houseowner_ and a _guest_.
 
 ### _Houseowners_
 
@@ -63,14 +63,14 @@
     - The _houseowner_
     - Date disponibility (if it is avalible)
     - _Price_ range.
-    - _Supposed_. _Capatity_.
+    - _Supposed_. _Capacity_.
 - **Rate house**: The _guest_ who did the booking can rate the house once the final date ends. 
-- **Let a comment**: The _guest_ can share complains, questions or suggest through comments on the advertised house or as an answer on another comment.
+- **Write a comment**: The _guest_ can share complains, questions or suggestions through comments on the advertised house or as an answer on another comment.
 
 ### Bookings
 
 - **Relate _guest_ with booking**: When a _guest_ does a booking, this booking relates this _guest_ with the house booked.
-- **Initial and final date**: Doing a booking implies have an inital and final end date. All this period must be _avalible_ before the booking is done, then when the _houseowner_ accept the request all mut be set as _occupied_.  
+- **Initial and final date**: Doing a booking implies having an initial and final end date. All this period must be _available_ before the booking is done, then when the _houseowner_ accepts the request all must be set as _occupied_.  
 - **Meeting point / key pick-up padlock**: A booking must have a meeting point or a key pick-up padlock for the initial day of the booking.  
 
 ### Houses
@@ -78,12 +78,12 @@
 - **Identify house**: Houses must be identified by their address.
 - **Unique house**: A house can't be published more than once in the _app_.
 - **House owner**: Each house must have an _houseowner_.
-- **House description**: A published house must have a description where shows all their attributes (e.g. Kitchen forniture, has wifi, has pool or parking...).
-- **Date state**: Each date can be _avalible_ or _occupied_. 
-- **Location**: Houses have location, that allows to locate them in the map. 
+- **House description**: A published house must have a description where all its attributes are shown (e.g. Kitchen furniture, has wifi, has pool or parking...).
+- **Date state**: Each date can be _available_ or _occupied_.
+- **Location**: Houses have a location, that allows to locate them in the map. 
 
 ## Non-functional 
 
 - **Persistence**: The _app_ must persist data on a _DB_.
 - **OAuth**: The _app_ must manage the identified access of users through OAuth 2.0 and an external account system, e.g. Google or Facebook.
-- **Supposed. Architecture style**: The _app_ architecture style will be _REST_ 
+- **Supposed. Architecture style**: The _app_ architecture style will be _REST_.

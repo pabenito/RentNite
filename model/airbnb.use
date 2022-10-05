@@ -1,0 +1,30 @@
+model airbnb
+
+enum State {avalible, blocked, occupied}
+
+class House
+attributes
+  -- Base
+  address : String
+  capacity : Integer
+  price : Integer
+  -- Supposed
+  rooms : Integer
+  bathrooms : Integer
+end 
+
+class User
+end 
+
+class Calendar
+end 
+
+class Day 
+end 
+
+class Image 
+end 
+
+class Location
+end 
+

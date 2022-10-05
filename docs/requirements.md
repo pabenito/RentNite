@@ -5,8 +5,8 @@
 ### Acronyms
 
 - **App**: Application (RentNite). 
-- **DB**: Data Base.
-- **REST**: Representational State Transfer (Architecture style).
+- **DB**: Database.
+- **REST**: Representational State Transfer (architecture style).
 
 ### Users 
 - **Houseowners**: People who have houses.
@@ -41,7 +41,7 @@
 
 ### Users 
 
-- **_Supposed_. Roles**: An user can be a _houseowner_ and a _guest_.
+- **_Supposed_. Roles**: A user can be a _houseowner_ and a _guest_.
 
 ### _Houseowners_
 
@@ -57,13 +57,13 @@
 ### _Guests_ 
 
 - **Booking request**: Send a request for booking a house a period of time.
-- **_Supposed_. Cancel booking**: Cancel a booking he had already booked.
+- **_Supposed_. Cancel booking**: Cancel a booking the _guest_ had already booked.
 - **Search houses with filters**: When a _guest_ is searching for a house, he can set filters:
-    - Geographic (Proximity to a certain place)
+    - Geographic (proximity to a certain place)
     - The _houseowner_
-    - Date disponibility (if it is avalible)
-    - _Price_ range.
-    - _Supposed_. _Capacity_.
+    - Date disponibility (if it is available)
+    - _Price_ range
+    - _Supposed_. _Capacity_
 - **Rate house**: The _guest_ who did the booking can rate the house once the final date ends. 
 - **Write a comment**: The _guest_ can share complains, questions or suggestions through comments on the advertised house or as an answer on another comment.
 
@@ -77,8 +77,8 @@
 
 - **Identify house**: Houses must be identified by their address.
 - **Unique house**: A house can't be published more than once in the _app_.
-- **House owner**: Each house must have an _houseowner_.
-- **House description**: A published house must have a description where all its attributes are shown (e.g. Kitchen furniture, has wifi, has pool or parking...).
+- **House owner**: Each house must have a _houseowner_.
+- **House description**: A published house must have a description where all its attributes are shown (e.g. kitchen furniture, has wifi, has pool or parking...).
 - **Date state**: Each date can be _available_ or _occupied_.
 - **Location**: Houses have a location, that allows to locate them in the map. 
 

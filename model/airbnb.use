@@ -1,21 +1,8 @@
 model airbnb
 
-enum State {avalible, blocked, occupied}
-
 -- classes
 
-abstract class Rated
-end 
-
-abstract class Chatted
-end 
-
-abstract class Dated 
-attributes
-  date : Int
-end 
-
-class House < Rated
+class House
 attributes
   -- base
   address : String
@@ -26,7 +13,7 @@ attributes
   bathrooms : Integer
 end 
 
-class User < Rated, Chatted
+class User
 end
 
 class Image 
@@ -37,15 +24,14 @@ end
 class Location
 end 
 
-class Message < Dated
+class Chat 
+end 
+
+class Message
 attributes
+  date : Integer
   message : String 
 end
-
-class Rate < Dated
-attributes
-  rate : Int 
-end 
 
 class Booking
 attributes
@@ -53,24 +39,22 @@ attributes
     init = false 
   declined : Boolean 
     init = false 
-  from : Int 
-  to : Int 
-  cost : Int
-    derived = (self.to - self.from) * self.house.price 
+  from_ : Integer
+  to : Integer 
+  cost : Integer
+    derived = (self.to - self.from_) * self.house.price 
+end
+
+class Meeting
+end 
+
+class Rate
+attributes
+  date : Integer
+  rate : Integer
 end 
 
 -- associations
-
-composition Rates 
-between
-  Rated [1]
-  Rate [*] role rates 
-end 
-
-aggregation Rater
-between
-  User [1]
-  Rate [*] role rated
 
 association Houseowners 
 between
@@ -80,7 +64,7 @@ end
 
 association GuestBooking
 between 
-  Guest [1] 
+  User [1] 
   Booking [*] role bookings
 end 
 
@@ -90,4 +74,87 @@ between
   Booking [*] role bookings
 end 
 
-association 
+association Sender
+between
+  User [0..1] role sender 
+  Message [*] role messages
+end 
+
+composition ChatMessages
+between
+  Chat [0..1]
+  Message [*] role messages
+end 
+
+association ChatUsers
+between
+  Chat [1]
+  User [2] role users 
+end 
+
+association HouseChat
+between
+  Chat [1] 
+  House [0..1] 
+end 
+
+association Response
+between
+  Message [0..1] 
+  Message [0..1] role response
+end 
+
+association Comments
+between 
+  House [0..1] 
+  Message [*] role comments
+end
+
+association HouseImages
+between
+  House [0..1] 
+  Image [*] role images 
+end 
+
+association HouseLocation
+between 
+  House [0..1]
+  Location [0..1]
+end 
+
+association BookingMeeting
+between
+  Booking [1]
+  Meeting [0..1]
+end 
+
+association MeetingLocation
+between 
+  Meeting [0..1] 
+  Location [1]
+end 
+
+association MeetingImage
+between 
+  Meeting [0..1]
+  Image [0..1]
+end 
+
+association Rater
+between
+  User [1] role rater 
+  Rate [*] role rated
+end 
+
+association HouseRates
+between
+  House [0..1]
+  Rate [*] role rates 
+end 
+
+association UserRates
+between
+  User [0..1]
+  Rate [*] role rates 
+end 
+

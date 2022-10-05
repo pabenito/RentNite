@@ -16,9 +16,6 @@
 
 - **Capatity**: Maximum number of people that can sleep in the house.
 - **Price**: Price per night. 
-- **Size**: Surface area in square metres.
-- **Essentials**: Towels, bed sheets, soap, and toilet paper.
-- **Beach essentials**: Beach towels, umbrella, beach blanket, snorkeling gear.
 
 ### States 
 

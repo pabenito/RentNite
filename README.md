@@ -1,4 +1,4 @@
-# AirBnB
+# RentNite
 
 An AirBnB like web.
 

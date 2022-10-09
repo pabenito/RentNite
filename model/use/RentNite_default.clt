@@ -12,72 +12,80 @@
     <node id="User" sizeCalculated="true" type="Class">
         <name>User</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>182.6806640625</x>
-            <y>222.0</y>
+            <x>88.6806640625</x>
+            <y>192.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Message" sizeCalculated="true" type="Class">
         <name>Message</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>155.744140625</x>
-            <y>308.0</y>
+            <x>61.744140625</x>
+            <y>278.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Meeting" sizeCalculated="true" type="Class">
         <name>Meeting</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>644.0</x>
-            <y>96.0</y>
+            <x>550.0</x>
+            <y>66.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Rate" sizeCalculated="true" type="Class">
         <name>Rate</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>163.14453125</x>
-            <y>100.0</y>
+            <x>69.14453125</x>
+            <y>70.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Chat" sizeCalculated="true" type="Class">
         <name>Chat</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>372.0</x>
-            <y>322.0</y>
+            <x>278.0</x>
+            <y>292.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Booking" sizeCalculated="true" type="Class">
         <name>Booking</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>620.09033203125</x>
-            <y>185.0</y>
+            <x>523.09033203125</x>
+            <y>163.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="House" sizeCalculated="true" type="Class">
         <name>House</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>338.4537760416667</x>
-            <y>77.0</y>
+            <x>244.45377604166669</x>
+            <y>47.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Image" sizeCalculated="true" type="Class">
         <name>Image</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>539.45166015625</x>
-            <y>129.0</y>
+            <x>445.45166015625</x>
+            <y>99.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
     <node id="Location" sizeCalculated="true" type="Class">
         <name>Location</name>
         <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
-            <x>539.45166015625</x>
-            <y>36.0</y>
+            <x>445.45166015625</x>
+            <y>6.0</y>
+        </strategy>
+        <hidden>false</hidden>
+    </node>
+    <node id="BookingState" sizeCalculated="true" type="Enumeration">
+        <name>BookingState</name>
+        <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
+            <x>583.0</x>
+            <y>248.0</y>
         </strategy>
         <hidden>false</hidden>
     </node>
@@ -124,18 +132,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="HouseBooking::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>bookings</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>6.0</userOffsetX>
-                    <userOffsetY>3.0</userOffsetY>
-                    <attached>HouseBooking::WayPoint::1</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="HouseBooking::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>*</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -145,6 +141,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="HouseBooking::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>bookings</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>6.0</userOffsetX>
+                    <userOffsetY>3.0</userOffsetY>
+                    <attached>HouseBooking::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -308,18 +316,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="ChatUsers::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>2</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>22.0</userOffsetX>
-                    <userOffsetY>14.0</userOffsetY>
-                    <attached>ChatUsers::WayPoint::1</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="ChatUsers::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>users</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -329,6 +325,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="ChatUsers::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>2</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>22.0</userOffsetX>
+                    <userOffsetY>14.0</userOffsetY>
+                    <attached>ChatUsers::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -376,18 +384,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="Comments::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>0..1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>7.0</userOffsetX>
-                    <userOffsetY>29.0</userOffsetY>
-                    <attached>Comments::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="Comments::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>house</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -400,15 +396,15 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="Comments::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>comments</name>
+            <edgeproperty id="Comments::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>58.0</userOffsetX>
-                    <userOffsetY>7.0</userOffsetY>
-                    <attached>Comments::WayPoint::1</attached>
+                    <userOffsetX>7.0</userOffsetX>
+                    <userOffsetY>29.0</userOffsetY>
+                    <attached>Comments::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
-                    <placement>TOP</placement>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -421,6 +417,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="Comments::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>comments</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>58.0</userOffsetX>
+                    <userOffsetY>7.0</userOffsetY>
+                    <attached>Comments::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -560,18 +568,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="UserRates::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>user</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>7.0</userOffsetX>
-                    <userOffsetY>7.0</userOffsetY>
-                    <attached>UserRates::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="UserRates::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -581,6 +577,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="UserRates::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>user</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>7.0</userOffsetX>
+                    <userOffsetY>7.0</userOffsetY>
+                    <attached>UserRates::WayPoint::0</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -652,18 +660,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="ChatMessages::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>0..1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>-32.0</userOffsetX>
-                    <userOffsetY>11.0</userOffsetY>
-                    <attached>ChatMessages::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="ChatMessages::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>chat</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -676,15 +672,15 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="ChatMessages::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>messages</name>
+            <edgeproperty id="ChatMessages::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>4.0</userOffsetX>
-                    <userOffsetY>6.0</userOffsetY>
-                    <attached>ChatMessages::WayPoint::1</attached>
+                    <userOffsetX>-32.0</userOffsetX>
+                    <userOffsetY>11.0</userOffsetY>
+                    <attached>ChatMessages::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
-                    <placement>TOP</placement>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -697,6 +693,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="ChatMessages::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>messages</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>4.0</userOffsetX>
+                    <userOffsetY>6.0</userOffsetY>
+                    <attached>ChatMessages::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -744,18 +752,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="MeetingImage::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>0..1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>8.0</userOffsetX>
-                    <userOffsetY>-2.0</userOffsetY>
-                    <attached>MeetingImage::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="MeetingImage::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>meeting</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -768,12 +764,12 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="MeetingImage::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+            <edgeproperty id="MeetingImage::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>1.0</userOffsetX>
-                    <userOffsetY>1.0</userOffsetY>
-                    <attached>MeetingImage::WayPoint::1</attached>
+                    <userOffsetX>8.0</userOffsetX>
+                    <userOffsetY>-2.0</userOffsetY>
+                    <attached>MeetingImage::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
@@ -789,6 +785,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="MeetingImage::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>0..1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>1.0</userOffsetX>
+                    <userOffsetY>1.0</userOffsetY>
+                    <attached>MeetingImage::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -836,18 +844,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="MeetingLocation::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>0..1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>14.0</userOffsetX>
-                    <userOffsetY>-9.0</userOffsetY>
-                    <attached>MeetingLocation::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="MeetingLocation::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>meeting</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -857,6 +853,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="MeetingLocation::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>0..1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>14.0</userOffsetX>
+                    <userOffsetY>-9.0</userOffsetY>
+                    <attached>MeetingLocation::WayPoint::0</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -955,8 +963,8 @@
             <edgeproperty id="Response::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>-29.0</userOffsetX>
-                    <userOffsetY>17.0</userOffsetY>
+                    <userOffsetX>-27.0</userOffsetX>
+                    <userOffsetY>6.0</userOffsetY>
                     <attached>Response::WayPoint::4</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
@@ -967,8 +975,8 @@
             <edgeproperty id="Response::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>response</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>-29.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
+                    <userOffsetX>10.0</userOffsetX>
+                    <userOffsetY>-11.0</userOffsetY>
                     <attached>Response::WayPoint::4</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
@@ -1090,18 +1098,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="Sender::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>sender</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>6.0</userOffsetX>
-                    <userOffsetY>2.0</userOffsetY>
-                    <attached>Sender::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="Sender::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1114,15 +1110,15 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="Sender::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>*</name>
+            <edgeproperty id="Sender::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>sender</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>3.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
-                    <attached>Sender::WayPoint::1</attached>
+                    <userOffsetX>6.0</userOffsetX>
+                    <userOffsetY>2.0</userOffsetY>
+                    <attached>Sender::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1135,6 +1131,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="Sender::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>*</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>3.0</userOffsetX>
+                    <userOffsetY>0.0</userOffsetY>
+                    <attached>Sender::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1182,18 +1190,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="HouseImages::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>house</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>2.0</userOffsetX>
-                    <userOffsetY>-16.0</userOffsetY>
-                    <attached>HouseImages::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="HouseImages::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1206,15 +1202,15 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="HouseImages::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>*</name>
+            <edgeproperty id="HouseImages::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>house</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>-32.0</userOffsetX>
-                    <userOffsetY>-7.0</userOffsetY>
-                    <attached>HouseImages::WayPoint::1</attached>
+                    <userOffsetX>2.0</userOffsetX>
+                    <userOffsetY>-16.0</userOffsetY>
+                    <attached>HouseImages::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1227,6 +1223,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="HouseImages::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>*</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>-32.0</userOffsetX>
+                    <userOffsetY>-7.0</userOffsetY>
+                    <attached>HouseImages::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1249,6 +1257,108 @@
                     <userOffsetY>0.0</userOffsetY>
                 </strategy>
                 <id>1</id>
+                <specialid>2</specialid>
+                <hidden>false</hidden>
+            </edgeproperty>
+        </waypoints>
+        <hidden>false</hidden>
+    </edge>
+    <edge type="BinaryEdge">
+        <source>Chat</source>
+        <target>Booking</target>
+        <name>BookingChat</name>
+        <properties>
+            <edgeproperty id="BookingChat::AssociationName" sizeCalculated="true" type="associationName" userDefined="false" visible="true">
+                <name>BookingChat</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyInBetween">
+                    <userOffsetX>0.0</userOffsetX>
+                    <userOffsetY>0.0</userOffsetY>
+                    <offsetX>0.0</offsetX>
+                    <offsetY>-10.0</offsetY>
+                    <related length="2">
+                        <related0>BookingChat::WayPoint::0</related0>
+                        <related1>BookingChat::WayPoint::2</related1>
+                    </related>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>27.0</userOffsetX>
+                    <userOffsetY>8.0</userOffsetY>
+                    <attached>BookingChat::WayPoint::0</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>chat</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>3.0</userOffsetX>
+                    <userOffsetY>4.0</userOffsetY>
+                    <attached>BookingChat::WayPoint::0</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>8.0</userOffsetX>
+                    <userOffsetY>15.0</userOffsetY>
+                    <attached>BookingChat::WayPoint::2</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>booking</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>6.0</userOffsetX>
+                    <userOffsetY>1.0</userOffsetY>
+                    <attached>BookingChat::WayPoint::2</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+        </properties>
+        <waypoints>
+            <edgeproperty id="BookingChat::WayPoint::0" sizeCalculated="true" type="WayPoint" userDefined="false" visible="true">
+                <name>0</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyAttachedIntersection">
+                    <userOffsetX>0.0</userOffsetX>
+                    <userOffsetY>0.0</userOffsetY>
+                </strategy>
+                <id>0</id>
+                <specialid>1</specialid>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::WayPoint::1" sizeCalculated="true" type="WayPoint" userDefined="true" visible="true">
+                <name>1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyFixed">
+                    <x>570.0</x>
+                    <y>298.0</y>
+                </strategy>
+                <id>1</id>
+                <specialid>0</specialid>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingChat::WayPoint::2" sizeCalculated="true" type="WayPoint" userDefined="false" visible="true">
+                <name>2</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyAttachedIntersection">
+                    <userOffsetX>0.0</userOffsetX>
+                    <userOffsetY>0.0</userOffsetY>
+                </strategy>
+                <id>2</id>
                 <specialid>2</specialid>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1298,18 +1408,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="Houseowners::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>houses</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>1.0</userOffsetX>
-                    <userOffsetY>-6.0</userOffsetY>
-                    <attached>Houseowners::WayPoint::1</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="Houseowners::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>*</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1319,6 +1417,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="Houseowners::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>houses</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>1.0</userOffsetX>
+                    <userOffsetY>-6.0</userOffsetY>
+                    <attached>Houseowners::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1366,18 +1476,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="BookingMeeting::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>booking</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>54.0</userOffsetX>
-                    <userOffsetY>5.0</userOffsetY>
-                    <attached>BookingMeeting::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="BookingMeeting::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1390,12 +1488,12 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="BookingMeeting::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>meeting</name>
+            <edgeproperty id="BookingMeeting::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>booking</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>52.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
-                    <attached>BookingMeeting::WayPoint::1</attached>
+                    <userOffsetX>54.0</userOffsetX>
+                    <userOffsetY>5.0</userOffsetY>
+                    <attached>BookingMeeting::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
@@ -1411,6 +1509,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="BookingMeeting::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>meeting</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>52.0</userOffsetX>
+                    <userOffsetY>0.0</userOffsetY>
+                    <attached>BookingMeeting::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1458,18 +1568,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="HouseLocation::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>house</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>2.0</userOffsetX>
-                    <userOffsetY>-3.0</userOffsetY>
-                    <attached>HouseLocation::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="HouseLocation::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
                 <name>0..1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1482,12 +1580,12 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="HouseLocation::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>location</name>
+            <edgeproperty id="HouseLocation::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>house</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>5.0</userOffsetX>
-                    <userOffsetY>-6.0</userOffsetY>
-                    <attached>HouseLocation::WayPoint::1</attached>
+                    <userOffsetX>2.0</userOffsetX>
+                    <userOffsetY>-3.0</userOffsetY>
+                    <attached>HouseLocation::WayPoint::0</attached>
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
@@ -1503,6 +1601,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>BOTTOM</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="HouseLocation::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
+                <name>location</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>5.0</userOffsetX>
+                    <userOffsetY>-6.0</userOffsetY>
+                    <attached>HouseLocation::WayPoint::1</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>TOP</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1550,18 +1660,6 @@
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
-            <edgeproperty id="GuestBooking::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>29.0</userOffsetX>
-                    <userOffsetY>8.0</userOffsetY>
-                    <attached>GuestBooking::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
             <edgeproperty id="GuestBooking::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
                 <name>user</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
@@ -1571,6 +1669,18 @@
                     <offset_x>8</offset_x>
                     <offset_y>8</offset_y>
                     <placement>TOP</placement>
+                </strategy>
+                <hidden>false</hidden>
+            </edgeproperty>
+            <edgeproperty id="GuestBooking::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
+                <name>1</name>
+                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
+                    <userOffsetX>29.0</userOffsetX>
+                    <userOffsetY>8.0</userOffsetY>
+                    <attached>GuestBooking::WayPoint::0</attached>
+                    <offset_x>8</offset_x>
+                    <offset_y>8</offset_y>
+                    <placement>BOTTOM</placement>
                 </strategy>
                 <hidden>false</hidden>
             </edgeproperty>
@@ -1611,98 +1721,6 @@
                 <hidden>false</hidden>
             </edgeproperty>
             <edgeproperty id="GuestBooking::WayPoint::1" sizeCalculated="true" type="WayPoint" userDefined="false" visible="true">
-                <name>1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyAttachedIntersection">
-                    <userOffsetX>0.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
-                </strategy>
-                <id>1</id>
-                <specialid>2</specialid>
-                <hidden>false</hidden>
-            </edgeproperty>
-        </waypoints>
-        <hidden>false</hidden>
-    </edge>
-    <edge type="BinaryEdge">
-        <source>Chat</source>
-        <target>House</target>
-        <name>HouseChat</name>
-        <properties>
-            <edgeproperty id="HouseChat::AssociationName" sizeCalculated="true" type="associationName" userDefined="false" visible="true">
-                <name>HouseChat</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyInBetween">
-                    <userOffsetX>0.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
-                    <offsetX>0.0</offsetX>
-                    <offsetY>-10.0</offsetY>
-                    <related length="2">
-                        <related0>HouseChat::WayPoint::0</related0>
-                        <related1>HouseChat::WayPoint::1</related1>
-                    </related>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
-            <edgeproperty id="HouseChat::source::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>chat</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>35.0</userOffsetX>
-                    <userOffsetY>9.0</userOffsetY>
-                    <attached>HouseChat::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
-            <edgeproperty id="HouseChat::source::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>23.0</userOffsetX>
-                    <userOffsetY>-2.0</userOffsetY>
-                    <attached>HouseChat::WayPoint::0</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
-            <edgeproperty id="HouseChat::target::multiplicity" sizeCalculated="true" type="multiplicity" userDefined="true" visible="true">
-                <name>0..1</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>5.0</userOffsetX>
-                    <userOffsetY>15.0</userOffsetY>
-                    <attached>HouseChat::WayPoint::1</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>BOTTOM</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
-            <edgeproperty id="HouseChat::target::rolename" sizeCalculated="true" type="rolename" userDefined="true" visible="true">
-                <name>house</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyRelativeToAttached">
-                    <userOffsetX>3.0</userOffsetX>
-                    <userOffsetY>2.0</userOffsetY>
-                    <attached>HouseChat::WayPoint::1</attached>
-                    <offset_x>8</offset_x>
-                    <offset_y>8</offset_y>
-                    <placement>TOP</placement>
-                </strategy>
-                <hidden>false</hidden>
-            </edgeproperty>
-        </properties>
-        <waypoints>
-            <edgeproperty id="HouseChat::WayPoint::0" sizeCalculated="true" type="WayPoint" userDefined="false" visible="true">
-                <name>0</name>
-                <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyAttachedIntersection">
-                    <userOffsetX>0.0</userOffsetX>
-                    <userOffsetY>0.0</userOffsetY>
-                </strategy>
-                <id>0</id>
-                <specialid>1</specialid>
-                <hidden>false</hidden>
-            </edgeproperty>
-            <edgeproperty id="HouseChat::WayPoint::1" sizeCalculated="true" type="WayPoint" userDefined="false" visible="true">
                 <name>1</name>
                 <strategy type="org.tzi.use.gui.views.diagrams.elements.positioning.StrategyAttachedIntersection">
                     <userOffsetX>0.0</userOffsetX>

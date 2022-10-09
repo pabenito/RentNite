@@ -92,10 +92,10 @@ between
   User [2] role users 
 end 
 
-association HouseChat
+association BookingChat
 between
   Chat [1] 
-  House [0..1] 
+  Booking [0..1] 
 end 
 
 association Response

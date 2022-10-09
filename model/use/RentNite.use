@@ -1,5 +1,7 @@
 model airbnb
 
+enum BookingState {Accepted, Declined, Requested, Cancelled}
+
 -- classes
 
 class House
@@ -35,10 +37,8 @@ end
 
 class Booking
 attributes
-  accepted : Boolean
-    init = false 
-  declined : Boolean 
-    init = false 
+  state : BookingState
+    init = #Requested
   from_ : Integer
   to : Integer 
   cost : Integer

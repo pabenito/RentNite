@@ -17,4 +17,4 @@ An AirBnB like web.
 
 ## Diagram
 
-![Model](model/diagram.jpg)
+![Model](img/use.jpg)

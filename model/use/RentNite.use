@@ -88,7 +88,7 @@ end
 
 association ChatUsers
 between
-  Chat [1]
+  Chat [0..1]
   User [2] role users 
 end 
 

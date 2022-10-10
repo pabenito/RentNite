@@ -16,6 +16,9 @@ attributes
 end 
 
 class User
+attributes 
+  username : String
+  email : String 
 end
 
 class Image 

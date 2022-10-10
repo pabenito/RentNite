@@ -48,10 +48,10 @@ end
 class Meeting
 end 
 
-class Rate
+class Rating
 attributes
   date : Integer
-  rate : Integer
+  rating : Integer
 end 
 
 -- associations
@@ -143,18 +143,23 @@ end
 association Rater
 between
   User [1] role rater 
-  Rate [*] role rated
+  Rating [*] role rated
 end 
 
-association HouseRates
+association HouseRatings
 between
   House [0..1]
-  Rate [*] role rates 
+  Rating [*] role ratings 
 end 
 
-association UserRates
+association UserRatings
 between
   User [0..1]
-  Rate [*] role rates 
+  Rating [*] role ratings 
 end 
 
+association UserImage
+between 
+  User [0..1] 
+  Image [0..1] 
+end 

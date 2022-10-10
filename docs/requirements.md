@@ -42,6 +42,7 @@
 ### Users 
 
 - **_Supposed_. Roles**: A user can be a _houseowner_ and a _guest_.
+- **Image profile**: Users can set a image profile.
 
 ### _Houseowners_
 

@@ -1,0 +1,6 @@
+[
+  {"id":"0","cost":"150","from":"1/10/22","guest":"1","house":"0","state":"cacelled","to":"4/10/22"},
+  {"id":"1","cost":"400","from":"5/10/22","guest":"1","house":"0","state":"accepted","to":"13/10/22"},
+  {"id":"2","cost":"500","from":"22/10/22","guest":"2","house":"1","state":"requested","to":"27/10/22"},
+  {"id":"3","cost":"99","from":"12/10/22","guest":"3","house":"2","state":"declined","to":"15/10/22"},
+  {"id":"4","cost":"198","from":"13/10/22","guest":"0","house":"2","state":"accepted","to":"19/10/22"}]

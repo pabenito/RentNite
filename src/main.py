@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 # Import modules
-from opendata import osm
+from opendata import osm, aemet
 
 # Create app
 app = FastAPI()
@@ -12,6 +12,11 @@ app.include_router(
     osm.router,
     prefix="/osm",
     tags=["opendata", "osm"]
+)
+app.include_router(
+    aemet.router,
+    prefix="/aemet",
+    tags=["opendata", "aemet"]
 )
 
 @app.get("/")

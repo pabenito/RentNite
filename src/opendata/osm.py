@@ -6,24 +6,23 @@ from fastapi import Depends, APIRouter
 router = APIRouter()
 
 # Dependencies
-def get_map(lon: float, lat: float, range: float=1, osm: OsmApi = Depends(OsmApi)):
-    return map_list_to_dict(osm.Map(*coordinates_to_map_range(lon, lat, range)))
+def get_map(latitude: float, longitude: float, range: float=1, osm: OsmApi = Depends(OsmApi)):
+    return map_list_to_dict(osm.Map(*coordinates_to_map_range(latitude, longitude, range)))
 
 def get_poi(map: dict = Depends(get_map)):
-    return get_nodes_from_map(map)
+    return get_nodes_from_map(map, only_with_tags=True)
 
 # API
 
-@router.get("/node/{id}")
+@router.get("/nodes/{id}")
 async def get_node(id:int, osm=Depends(OsmApi)):
     return osm.NodeGet(id)
 
-@router.get("/map/poi")
+@router.get("/maps/poi")
 async def get_map_poi(map: dict = Depends(get_poi)):
-    print(type(map))
     return map
 
-@router.get("/map/all")
+@router.get("/maps/all")
 async def get_map_all(map: dict = Depends(get_map)):
     return map
 
@@ -39,18 +38,14 @@ def map_list_to_dict(map: list):
         map_dict[id]=item.get("data")
     return map_dict
 
-def get_nodes_from_map(map: dict, tags: set | None = None):
-    print("Map kays",list(map.keys()))
+def get_nodes_from_map(map: dict, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
-            print(f"Eliminamos {id} proque no es un nodo")
             map.pop(id)
-        elif tags == {"*"} and not map.get(id).get("tag"): # Any tag
-            print(f"Eliminamos {id} proque no tiene tag: {map.get(id)}")
-            map.pop(id)
-        elif tags and not have_common_members(tags, set(map.get(id).get("tag").keys())): # specific tags
+        elif only_with_tags and not map.get(id).get("tag") : # Any tag
             map.pop(id)
     return map
+
 
 def have_common_members(a: set, b: set):
     return len(a.intersection(b)) > 0
@@ -58,7 +53,7 @@ def have_common_members(a: set, b: set):
 def kilometers_to_degrees(kilometers: float):
     return kilometers/111 # One longitude or latitude degree diference is 111 km distance
 
-def coordinates_to_map_range(longitude: float, latitude: float, kilometers: float):
+def coordinates_to_map_range(latitude: float, longitude: float, kilometers: float):
     min_longitude = longitude - kilometers_to_degrees(kilometers)
     min_latitude = latitude - kilometers_to_degrees(kilometers)
     max_longitude = longitude + kilometers_to_degrees(kilometers)

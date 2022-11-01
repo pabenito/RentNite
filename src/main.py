@@ -1,8 +1,9 @@
-# Immport libraries
+# Import libraries
 from fastapi import FastAPI
 
 # Import modules
 from opendata import osm, aemet
+from entities import bookings, houses
 
 # Create app
 app = FastAPI()
@@ -17,6 +18,16 @@ app.include_router(
     aemet.router,
     prefix="/aemet",
     tags=["opendata", "aemet"]
+)
+app.include_router(
+    bookings.router,
+    prefix="/bookings",
+    tags=["entities", "bookings"]
+)
+app.include_router(
+    houses.router,
+    prefix="/houses",
+    tags=["entities", "houses"]
 )
 
 @app.get("/")

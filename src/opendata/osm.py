@@ -7,11 +7,9 @@ router = APIRouter()
 
 # Dependencies
 def get_map(lon: float, lat: float, range: float=1, osm: OsmApi = Depends(OsmApi)):
-    min_longitude, min_latitude, max_longitude, max_latitude = coordinates_to_map_range(lon, lat, range)
-    return map_list_to_dict(osm.Map(min_longitude, min_latitude, max_longitude, max_latitude))
+    return map_list_to_dict(osm.Map(*coordinates_to_map_range(lon, lat, range)))
 
 def get_poi(map: dict = Depends(get_map)):
-    #print("There is the map:", map)
     return get_nodes_from_map(map)
 
 # API

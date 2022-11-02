@@ -1,4 +1,4 @@
-# Immport libraries
+# Import libraries
 from fastapi import Depends, APIRouter
 from aemet_opendata.interface import AEMET
 

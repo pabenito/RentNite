@@ -1,4 +1,4 @@
-# Immport libraries
+# Import libraries
 from osmapi import OsmApi
 from fastapi import Depends, APIRouter
 

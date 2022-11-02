@@ -1,9 +1,7 @@
 # Import libraries
 from fastapi import APIRouter, Response
-from fastapi.encoders import jsonable_encoder
 from database import db as db
 from bson.objectid import ObjectId
-from pydantic import BaseModel
 import re
 
 # Create router

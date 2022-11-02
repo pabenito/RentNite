@@ -28,7 +28,7 @@ async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
 
 @router.get("/forecast/temperature/daily")
 async def get_forecast_daily(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return get_temp_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+    return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
 @router.get("/forecast/temperature/hourly")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
@@ -36,17 +36,17 @@ async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates
 
 @router.get("/forecast/precipitation/hourly")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return get_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+    return aemet.get_specific_forecast_town_daily(town.get("id"))
 
 @router.get("/forecast/precipitation/daily")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return get_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+    return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
     
 # Auxiliary functions
 
 
-def get_temp_from_map(map: dict):
+def get_temp_daily_from_map(map: dict):
     days : dict 
     days = map["data"][0]["prediccion"]["dia"]
     Aux : dict = {}

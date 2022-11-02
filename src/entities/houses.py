@@ -72,8 +72,8 @@ async def delete(response: Response, id: str):
     if house is None:
         response.status_code = 404
 
-@router.get("/owner/{ownerName}")
-async def get_guests_names(ownerName: str):
+@router.get("/owner/{ownerName}/guests")
+async def get_guests_from_owners_houses(ownerName: str):
     ownerName = re.compile(".*" + ownerName + ".*", re.IGNORECASE)
     housesIds = [str(h.get("_id")) for h in houses.find({"ownerName": {"$regex": ownerName}})]
     guestsNames = []

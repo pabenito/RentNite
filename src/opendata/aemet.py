@@ -34,13 +34,13 @@ async def get_forecast_daily(town: dict = Depends(aemet.get_town_by_coordinates)
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_temp_hourly_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
-@router.get("/forecast/precipitation/hourly")
-async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return aemet.get_specific_forecast_town_daily(town.get("id"))
-
 @router.get("/forecast/precipitation/daily")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+
+@router.get("/forecast/precipitation/hourly")
+async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+    return aemet.get_specific_forecast_town_daily(town.get("id"))
 
     
 # Auxiliary functions

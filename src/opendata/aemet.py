@@ -45,3 +45,14 @@ def get_temp_from_map(map: dict):
     for x in range(0,6):
         Aux[x]=days[x]["temperatura"]
     return Aux
+
+def get_precipitation_from_map(complete: dict):
+    complete.pop("response")
+    dias = complete["data"][0]["prediccion"]
+    Dict = {}
+    
+    for x in range (0,7):
+        Dict[x]=dias["dia"][x]["probPrecipitacion"]
+    
+    
+    return Dict

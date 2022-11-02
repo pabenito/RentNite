@@ -40,7 +40,7 @@ async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates
 
 @router.get("/forecast/precipitation/hourly")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return aemet.get_specific_forecast_town_daily(town.get("id"))
+    return get_hourly_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
     
 # Auxiliary functions
@@ -70,5 +70,15 @@ def get_Daily_precipitation_from_map(complete: dict):
     
     for x in range (0,7):
         Dict[x]=dias["dia"][x]["probPrecipitacion"][0]
+    
+    return Dict
+
+def get_hourly_precipitation_from_map(complete: dict):
+    complete.pop("response")
+    dias = complete["data"][0]["prediccion"]
+    Dict = {}
+    
+    for x in range (0,7):
+        Dict[x]=dias["dia"][x]["probPrecipitacion"]
     
     return Dict

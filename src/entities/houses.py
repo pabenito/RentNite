@@ -14,7 +14,8 @@ houses = db["houses"]
 @router.post("/")
 async def create(response: Response, address: str, capacity: int, price: float, rooms: int, bathrooms: int, ownerName: str):
     if capacity > 0 and price >= 0 and rooms > 0 and bathrooms > 0 and re.fullmatch(r"[a-zA-Z ]+", ownerName):
-        houses.insert_one({"address": address, "capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms, "ownerName": ownerName})
+        houses.insert_one({"address": address, "capacity": capacity, "price": price, 
+                           "rooms": rooms, "bathrooms": bathrooms, "ownerName": ownerName})
         response.status_code = 201
     else:
         response.status_code = 400
@@ -44,7 +45,8 @@ async def get_by_address():
     return [h for h in houses.find({"address": {"$regex": address}}, {"_id": 0})]
 
 @router.put("/{id}")
-async def update(response: Response, id: str, address: str | None = None, capacity: int | None = None, price: int | None = None, rooms: int | None = None, bathrooms: int | None = None):
+async def update(response: Response, id: str, address: str | None = None, capacity: int | None = None, 
+                 price: int | None = None, rooms: int | None = None, bathrooms: int | None = None):
     data = {"address": address, "capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms}
     data = {k: v for k, v in data.items() if v is not None}
 

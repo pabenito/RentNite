@@ -46,8 +46,8 @@ async def update(response: Response, id: str, state: str | None = None, from_: f
         except:
             booking = None
 
-    if booking is None:
-        response.status_code = 404
+        if booking is None:
+            response.status_code = 404
 
 
 @router.get("/{id}")
@@ -65,12 +65,15 @@ async def get_by_id(response: Response, id: str):
 
 @router.get("/userName/{userName}")
 async def get_by_user_name(userName: str):
-    userName = re.compile(".*" + userName + ".*", re.IGNORECASE)
+    userName = re.compile(".*" + userName + ".*",
+                          re.IGNORECASE)  # type: ignore
     return [b for b in bookings.find({"userName": {"$regex": userName}}, {"_id": 0})]
+
 
 @router.get("/house/{houseId}")
 async def get_by_house_id(houseId: str):
     return [b for b in bookings.find({"houseId": houseId}, {"_id": 0})]
+
 
 @router.get("/state/{state}")
 async def get_by_state(response: Response, state: str):
@@ -78,6 +81,7 @@ async def get_by_state(response: Response, state: str):
         response.status_code = 400
 
     return [b for b in bookings.find({"state": state}, {"_id": 0})]
+
 
 @router.get("/range/")
 async def get_range(response: Response, size: int, offset: int = 0):

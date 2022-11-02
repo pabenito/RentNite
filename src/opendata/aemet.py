@@ -28,11 +28,20 @@ async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
 
 @router.get("/forecast/daily")
 async def get_forecast_daily(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return aemet.get_specific_forecast_town_daily(town.get("id"))
+    return get_temp_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
 @router.get("/forecast/hourly")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
     return aemet.get_specific_forecast_town_hourly(town.get("id"))
 
     
+# Auxiliary functions
 
+
+def get_temp_from_map(map: dict):
+    days : dict 
+    days = map["data"][0]["prediccion"]["dia"]
+    Aux : dict = {}
+    for x in range(0,6):
+        Aux[x]=days[x]["temperatura"]
+    return Aux

@@ -40,7 +40,7 @@ async def get_range(response: Response, size: int, offset: int = 0):
         response.status_code = 400
 
 @router.get("/address/{address}")
-async def get_by_address():
+async def get_by_address(address: str):
     address = re.compile(".*" + address + ".*", re.IGNORECASE)
     return [h for h in houses.find({"address": {"$regex": address}}, {"_id": 0})]
 
@@ -50,19 +50,22 @@ async def update(response: Response, id: str, address: str | None = None, capaci
     data = {"address": address, "capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms}
     data = {k: v for k, v in data.items() if v is not None}
 
+    if len(data) == 0:
+        response.status_code = 400
+        return
+
     for k, v in data.items():
         if type(v) is int and (v < 0 or k != "price" and v == 0):
             response.status_code = 400
             return
 
-    if len(data) > 0:
-        try:
-            house = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
-        except:
-            house = None
+    try:
+        house = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
+    except:
+        house = None
 
-        if house is None:
-            response.status_code = 404
+    if house is None:
+        response.status_code = 404
 
 @router.delete("/{id}")
 async def delete(response: Response, id: str):

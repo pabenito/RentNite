@@ -1,9 +1,8 @@
 # Import libraries
 from fastapi import APIRouter, Response
-from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
 from database import db as db
 from bson.objectid import ObjectId
+from datetime import datetime, date, time
 import re
 
 # Create router
@@ -20,9 +19,12 @@ states = ["Accepted", "Declined", "Requested", "Cancelled"]
 
 
 @router.post("/")
-async def create(response: Response, state: str, from_: float, to: float, cost: float, userName: str, houseId: str):
-    if state in states and from_ > 0 and to > 0 and cost > 0:
-        bookings.insert_one({"state": state, "from_": from_,
+async def create(response: Response, from_: date, to: date, cost: float, userName: str, houseId: str):
+    from_ = datetime.combine(from_, time.min)
+    to = datetime.combine(to, time.min)
+
+    if cost > 0 and from_ < to:
+        bookings.insert_one({"state": "Requested", "from_":  from_,
                             "to": to, "cost": cost, "userName": userName, "houseId": houseId})
         response.status_code = 201
     else:
@@ -30,24 +32,26 @@ async def create(response: Response, state: str, from_: float, to: float, cost: 
 
 
 @router.put("/{id}")
-async def update(response: Response, id: str, state: str | None = None, from_: float | None = None, to: float | None = None, cost: float | None = None):
+async def update(response: Response, id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None):
     data = {"state": state, "from_": from_, "to": to, "cost": cost}
     data = {k: v for k, v in data.items() if v is not None}
 
-    for v in data.values():
-        if state not in states or type(v) is float and (v <= 0):
-            response.status_code = 400
-            return
+    if len(data) == 0:
+        response.status_code = 400
+        return
 
-    if len(data) > 0:
-        try:
-            booking = bookings.find_one_and_update(
-                {"_id": ObjectId(id)}, {"$set": data})
-        except:
-            booking = None
+    if (state is not None and state not in states) and (cost is not None and cost <= 0):
+        response.status_code = 400
+        return
 
-        if booking is None:
-            response.status_code = 404
+    try:
+        booking = bookings.find_one_and_update(
+            {"_id": ObjectId(id)}, {"$set": data})
+    except:
+        booking = None
+
+    if booking is None:
+        response.status_code = 404
 
 
 @router.get("/{id}")

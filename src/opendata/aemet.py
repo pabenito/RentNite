@@ -18,10 +18,6 @@ aemet.api_debugging(True)
 async def root():
     return {"message": "Welcome to AEMET open data API"}
 
-@router.get("/stations")
-async def get_station(station: dict = Depends(aemet.get_climatological_values_station_by_coordinates)):
-    return station
-
 @router.get("/town")
 async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
     return town

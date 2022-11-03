@@ -1,4 +1,4 @@
-# Import libraries
+# Immport libraries
 from osmapi import OsmApi
 from fastapi import Depends, APIRouter
 
@@ -25,6 +25,7 @@ async def get_map_poi(map: dict = Depends(get_poi)):
 @router.get("/maps/all")
 async def get_map_all(map: dict = Depends(get_map)):
     return map
+
 
 # Auxiliary functions
 

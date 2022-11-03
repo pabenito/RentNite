@@ -80,5 +80,5 @@ def get_hourly_precipitation_from_map(complete: dict):
     
     for x in range (0,7):
         Dict[x]=dias["dia"][x]["probPrecipitacion"]
-    
+        del Dict[x][0]
     return Dict

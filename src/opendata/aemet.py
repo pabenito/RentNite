@@ -26,13 +26,59 @@ async def get_station(station: dict = Depends(aemet.get_climatological_values_st
 async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
     return town
 
-@router.get("/forecast/daily")
+@router.get("/forecast/temperature/daily")
 async def get_forecast_daily(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return aemet.get_specific_forecast_town_daily(town.get("id"))
+    return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
-@router.get("/forecast/hourly")
+@router.get("/forecast/temperature/hourly")
 async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return aemet.get_specific_forecast_town_hourly(town.get("id"))
+    return get_temp_hourly_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+
+@router.get("/forecast/precipitation/daily")
+async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+    return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+
+@router.get("/forecast/precipitation/hourly")
+async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+    return get_hourly_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
     
+# Auxiliary functions
 
+
+def get_temp_daily_from_map(map: dict):
+    days : dict 
+    days = map["data"][0]["prediccion"]["dia"]
+    Aux : dict = {}
+    for x in range(0,7):
+        Aux[x]=days[x]["temperatura"]
+        del Aux[x]["dato"]
+    return Aux
+
+def get_temp_hourly_from_map(map: dict):
+    days : dict 
+    days = map["data"][0]["prediccion"]["dia"]
+    Aux : dict = {}
+    for x in range(0,7):
+        Aux[x]=days[x]["temperatura"]["dato"]
+    return Aux
+
+def get_Daily_precipitation_from_map(complete: dict):
+    complete.pop("response")
+    dias = complete["data"][0]["prediccion"]
+    Dict = {}
+    
+    for x in range (0,7):
+        Dict[x]=dias["dia"][x]["probPrecipitacion"][0]
+    
+    return Dict
+
+def get_hourly_precipitation_from_map(complete: dict):
+    complete.pop("response")
+    dias = complete["data"][0]["prediccion"]
+    Dict = {}
+    
+    for x in range (0,7):
+        Dict[x]=dias["dia"][x]["probPrecipitacion"]
+        del Dict[x][0]
+    return Dict

@@ -9,8 +9,8 @@ router = APIRouter()
 def get_map(latitude: float, longitude: float, range: float=1, osm: OsmApi = Depends(OsmApi)):
     return map_list_to_dict(osm.Map(*coordinates_to_map_range(latitude, longitude, range)))
 
-def get_poi(map: dict = Depends(get_map)):
-    return get_nodes_from_map(map, only_with_tags=True)
+def get_poi(search:str,map: dict = Depends(get_map)):
+    return get_nodes_from_map(search,map, only_with_tags=True)
 
 # API
 
@@ -26,6 +26,7 @@ async def get_map_poi(map: dict = Depends(get_poi)):
 async def get_map_all(map: dict = Depends(get_map)):
     return map
 
+
 # Auxiliary functions
 
 
@@ -38,12 +39,15 @@ def map_list_to_dict(map: list):
         map_dict[id]=item.get("data")
     return map_dict
 
-def get_nodes_from_map(map: dict, only_with_tags: bool = False):
+def get_nodes_from_map(search:str,map: dict, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
             map.pop(id)
-        elif only_with_tags and not map.get(id).get("tag") : # Any tag
+        elif search == "" and only_with_tags and  len(map.get(id).get("tag")) < 2 : # Any tag
             map.pop(id)
+        elif search != "" and only_with_tags and not search in map.get(id).get("tag").values(): # Bus_Stop/Restaurant/Subway Tag
+            map.pop(id)
+        
     return map
 
 

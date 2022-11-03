@@ -1,0 +1,5 @@
+osmapi
+AEMET-OpenData
+fastapi
+uvicorn[standard]
+pymongo

@@ -16,7 +16,9 @@ states = ["Accepted", "Declined", "Requested", "Cancelled"]
 
 
 # API
-
+@router.get("/")
+async def root():
+    return {"message": "Welcome to bookings microservice"}
 
 @router.post("/")
 async def create(response: Response, from_: date, to: date, cost: float, userName: str, houseId: str):

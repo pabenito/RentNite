@@ -11,6 +11,10 @@ router = APIRouter()
 houses = db["houses"]
 
 # API
+@router.get("/")
+async def root():
+    return {"message": "Welcome to houses microservice"}
+
 @router.post("/")
 async def create(response: Response, address: str, capacity: int, price: float, rooms: int, bathrooms: int, ownerName: str):
     if capacity > 0 and price >= 0 and rooms > 0 and bathrooms > 0 and re.fullmatch(r"[a-zA-Z ]+", ownerName):

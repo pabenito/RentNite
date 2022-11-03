@@ -16,7 +16,7 @@ aemet.api_debugging(True)
 # API
 @router.get("/")
 async def root():
-    return {"message": "Welcome to AEMET open data API"}
+    return {"message": "Welcome to AEMET microservice"}
 
 @router.get("/town")
 async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):

@@ -43,10 +43,11 @@ def get_nodes_from_map(search:str,map: dict, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
             map.pop(id)
-        elif search == "" and only_with_tags and not map.get(id).get("tag") : # Any tag
+        elif search == "" and only_with_tags and  len(map.get(id).get("tag")) < 2 : # Any tag
             map.pop(id)
-        elif search != "" and only_with_tags and not search in map.get(id).get("tag").values(): # Bus-Stop Tag
+        elif search != "" and only_with_tags and not search in map.get(id).get("tag").values(): # Bus_Stop/Restaurant/Subway Tag
             map.pop(id)
+        
     return map
 
 

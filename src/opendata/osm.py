@@ -10,10 +10,7 @@ def get_map(latitude: float, longitude: float, range: float=1, osm: OsmApi = Dep
     return map_list_to_dict(osm.Map(*coordinates_to_map_range(latitude, longitude, range)))
 
 def get_poi(search:str,map: dict = Depends(get_map)):
-    if search == "bus":
-        return get_bus_nodes_from_map(map, only_with_tags=True)
-    else:
-        return get_nodes_from_map(map, only_with_tags=True)
+    return get_nodes_from_map(search,map, only_with_tags=True)
 
 # API
 
@@ -42,21 +39,16 @@ def map_list_to_dict(map: list):
         map_dict[id]=item.get("data")
     return map_dict
 
-def get_nodes_from_map(map: dict, only_with_tags: bool = False):
+def get_nodes_from_map(search:str,map: dict, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
             map.pop(id)
-        elif only_with_tags and not map.get(id).get("tag") : # Any tag
+        elif search == "" and only_with_tags and not map.get(id).get("tag") : # Any tag
+            map.pop(id)
+        elif search != "" and only_with_tags and not search in map.get(id).get("tag").values(): # Bus-Stop Tag
             map.pop(id)
     return map
 
-def get_bus_nodes_from_map(map: dict, only_with_tags: bool = False):
-    for id in list(map.keys()):
-        if map.get(id).get("type")!="node":
-            map.pop(id)
-        elif only_with_tags and not "bus_stop" in map.get(id).get("tag").values()  : # Any tag
-            map.pop(id)
-    return map
 
 def have_common_members(a: set, b: set):
     return len(a.intersection(b)) > 0

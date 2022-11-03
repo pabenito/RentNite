@@ -50,7 +50,7 @@ def get_temp_daily_from_map(map: dict):
     days : dict 
     days = map["data"][0]["prediccion"]["dia"]
     Aux : dict = {}
-    for x in range(0,6):
+    for x in range(0,7):
         Aux[x]=days[x]["temperatura"]
         del Aux[x]["dato"]
     return Aux
@@ -59,7 +59,7 @@ def get_temp_hourly_from_map(map: dict):
     days : dict 
     days = map["data"][0]["prediccion"]["dia"]
     Aux : dict = {}
-    for x in range(0,6):
+    for x in range(0,7):
         Aux[x]=days[x]["temperatura"]["dato"]
     return Aux
 

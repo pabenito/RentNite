@@ -22,7 +22,7 @@ async def get_node(id:int, osm=Depends(OsmApi)):
     return osm.NodeGet(id)
 
 @router.get("/maps/poi")
-async def get_map_poi(bus : str= Depends(get_poi),map: dict = Depends(get_poi)):
+async def get_map_poi(map: dict = Depends(get_poi)):
     return map
 
 @router.get("/maps/all")
@@ -57,7 +57,7 @@ def get_bus_nodes_from_map(map: dict, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
             map.pop(id)
-        elif only_with_tags and len(map.get(id).get("tag")) < 2 : # Any tag
+        elif only_with_tags and not "bus_stop" in map.get(id).get("tag").values()  : # Any tag
             map.pop(id)
     return map
 

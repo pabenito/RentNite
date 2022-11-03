@@ -33,6 +33,11 @@ async def create(response: Response, from_: date, to: date, cost: float, userNam
 
 @router.put("/{id}")
 async def update(response: Response, id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None):
+    if from_ is not None:
+        from_ = datetime.combine(from_, time.min)
+    if to is not None:
+        to = datetime.combine(to, time.min)
+
     data = {"state": state, "from_": from_, "to": to, "cost": cost}
     data = {k: v for k, v in data.items() if v is not None}
 
@@ -45,6 +50,15 @@ async def update(response: Response, id: str, state: str | None = None, from_: d
         return
 
     try:
+        booking = bookings.find_one({"_id": ObjectId(id)})
+        
+        dfrom_ = from_ or booking["from_"]
+        dto = to or booking["to"]
+        
+        if not dfrom_ < dto:
+            response.status_code = 400
+            return
+
         booking = bookings.find_one_and_update(
             {"_id": ObjectId(id)}, {"$set": data})
     except:

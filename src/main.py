@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 # Import modules
 from opendata import osm, aemet
-from entities import bookings, houses
+from entities import bookings, houses, users
 
 # Create app
 app = FastAPI()
@@ -29,7 +29,11 @@ app.include_router(
     prefix="/houses",
     tags=["entities", "houses"]
 )
-
+app.include_router(
+    users.router,
+    prefix="/users",
+    tags=["entities", "users"]
+)
 @app.get("/")
 async def root():
     return {"message": "Welcome to Rentnite"}

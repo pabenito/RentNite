@@ -34,6 +34,13 @@ app.include_router(
     prefix="/users",
     tags=["entities", "users"]
 )
+
+app.include_router(
+    users.router,
+    prefix="/ratings",
+    tags=["entities", "ratings"]
+)
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Rentnite"}

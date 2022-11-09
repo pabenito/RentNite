@@ -25,3 +25,41 @@ async def create(response: Response, date_: date, rating: int, user_Id: str, hou
         response.status_code = 201
     else:
         response.status_code = 400
+        
+@router.put("/{id}")
+async def update(response: Response, id: str, date_: date | None = None, rating: int | None = None):
+    if date_ is not None:
+        date_ = datetime.combine(date_, time.min)
+    
+
+    data = {"date": date_, "rating": rating}
+    data = {k: v for k, v in data.items() if v is not None}
+
+    if len(data) == 0:
+        response.status_code = 400
+        return
+
+    if (rating is not None and (rating < 0) or (rating > 5) ):
+        response.status_code = 400
+        return
+
+    try:
+        rating = ratings.find_one_and_update(
+            {"_id": ObjectId(id)}, {"$set": data})
+    except Exception:
+        rating = None
+
+    if rating is None:
+        response.status_code = 404
+        
+@router.get("/{id}")
+async def get_by_id(response: Response, id: str):
+    try:
+        rating = ratings.find_one({"_id": ObjectId(id)}, {"_id": 0})
+    except Exception:
+        rating = None
+
+    if rating is None:
+        response.status_code = 404
+    else:
+        return rating

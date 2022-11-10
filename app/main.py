@@ -2,8 +2,8 @@
 from fastapi import FastAPI
 
 # Import modules
-from opendata import osm, aemet
-from entities import bookings, houses, users
+from .opendata import osm, aemet
+from .entities import bookings, houses, users
 
 # Create app
 app = FastAPI()

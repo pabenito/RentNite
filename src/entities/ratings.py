@@ -39,7 +39,7 @@ async def update(response: Response, id: str, date_: date | None = None, rating:
         response.status_code = 400
         return
 
-    if (rating is not None and (rating < 0) or (rating > 5) ):
+    if (rating is not None or (rating < 0) or (rating > 5) ):
         response.status_code = 400
         return
 
@@ -63,3 +63,20 @@ async def get_by_id(response: Response, id: str):
         response.status_code = 404
     else:
         return rating
+    
+@router.get("/user/{user_id}")
+async def get_by_user_id(user_id: str):
+    user_id = re.compile(".*" + user_id + ".*",
+                          re.IGNORECASE)  # type: ignore
+    return [r for r in ratings.find({"user_id": {"$regex": user_id}}, {"_id": 0})]
+
+
+@router.delete("/{id}")
+async def delete(response: Response, id: str):
+    try:
+        rating = ratings.find_one_and_delete({"_id": ObjectId(id)})
+    except Exception:
+        rating = None
+
+    if rating is None:
+        response.status_code = 404

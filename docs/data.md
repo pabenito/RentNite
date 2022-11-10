@@ -37,6 +37,8 @@ Messagges can be sent:
 
 Chats{
     house_address,
+    booking_from,
+    booking_to,
     booking_id, 
     owner_id,
     owner_username,

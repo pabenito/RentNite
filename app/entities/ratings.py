@@ -1,6 +1,6 @@
 # Import libraries
 from fastapi import APIRouter, Response
-from app.database import db as db
+from database import db as db #app.database
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
 import re

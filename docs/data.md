@@ -25,19 +25,20 @@ Messages{
     date = now(), 
     message,
     respose_to*,
-    house_id | booking_id | chat_id
+    house_id | chat_id
   }
 
 Messagges can be sent:
 
   - As a comment to a house (house_id)
-  - As a message into a booking chat (booking_id)
-  - As a message into a users chat (chat_id)
+  - As a message into chat (chat_id)
 
 ### Chats
 
 Chats{
-    [users]
+    booking_id, 
+    owner_id,
+    owner_username,
+    guest_id,
+    guest_username
   }
-
-

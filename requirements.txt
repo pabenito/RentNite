@@ -3,3 +3,5 @@ AEMET-OpenData
 fastapi
 uvicorn[standard]
 pymongo
+pytest
+requests

@@ -21,6 +21,7 @@ entity{
 
 ### Messages
 
+```
 Messages{
     sender_id = user.id,
     sender_username = user.username,
@@ -29,6 +30,8 @@ Messages{
     respose_to*,
     house_id | chat_id
   }
+
+```
 
 Messagges can be sent:
 

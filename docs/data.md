@@ -4,14 +4,16 @@ This document intend to represent the data model for each entity in the non-SQL 
 
 ## Syntaxis
 
+```
 entity{
   required attribute, (means attribute is required)
   optional attribute*, (means attribute is optional)
   attribute with default value = default value, (means has a default value)
   auto-initialized attribute = function, (means it is initialized to function value)
   attribute1 | attribute2 (means only one of them),
-  [list attribute] (measn the value is a list of values)
+  [list attribute] (means the value is a list of values)
 }
+```
 
 **Note**: Every entity has _id attribute, so is not represeted in the model. 
 
@@ -35,6 +37,7 @@ Messagges can be sent:
 
 ### Chats
 
+```
 Chats{
     house_address,
     booking_from,
@@ -45,3 +48,4 @@ Chats{
     guest_id,
     guest_username
   }
+```

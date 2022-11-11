@@ -52,3 +52,13 @@ Chats{
     guest_username
   }
 ```
+
+### Ratings
+
+```
+Ratings{
+    rater_id,
+    rate,
+    rated_user_id | rated_house_id
+  }
+```

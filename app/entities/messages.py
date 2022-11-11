@@ -3,7 +3,7 @@ from fastapi import APIRouter, Query, status, HTTPException
 from fastapi.encoders import jsonable_encoder
 from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
-from datetime import datetime, date
+from datetime import datetime, date, time
 from pytz import timezone
 from app.database import db as db
 from .models import *
@@ -31,42 +31,47 @@ async def get(
     result : list = []
 
     for message_dict in messages_list:
-        result.append(Chat.parse_obj(message_dict))
+        result.append(Message.parse_obj(message_dict))
 
     messages_list = result
 
     if sender_id:
+        result = []
         for message in messages_list:
-            message : Message = message 
-            if message.house_address is sender_id:
+            message : Message = message
+            if message.sender_id == sender_id:
                 result.append(message)
         messages_list = result
 
     if house_id:
+        result = []
         for message in messages_list:
             message : Message = message 
-            if message.house_address is house_id:
+            if message.house_id == house_id:
                 result.append(message)
         messages_list = result
 
     if chat_id:
+        result = []
         for message in messages_list:
             message : Message = message 
-            if message.house_address is chat_id:
+            if message.chat_id == chat_id:
                 result.append(message)
         messages_list = result
 
     if from_:
+        result = []
         for message in messages_list:
             message : Message = message 
-            if message.date > from_:
+            if message.date.timestamp() >= datetime.combine(from_, time.min).timestamp():
                 result.append(message)
         messages_list = result
 
     if to:
+        result = []
         for message in messages_list:
             message : Message = message 
-            if message.date < to:
+            if message.date.timestamp() <= datetime.combine(to, time.max).timestamp():
                 result.append(message)
         messages_list = result
 
@@ -134,5 +139,14 @@ async def post(
     created_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(inserted_message.inserted_id)}))
 
     return created_message
+
+@router.get("/{id}")
+async def get_by_id(id: str):
+    try:
+        return Message.parse_obj(messages.find_one({"_id" : ObjectId(id)})) 
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no message with that id: {id}.")
 
 

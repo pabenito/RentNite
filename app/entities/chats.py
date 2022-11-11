@@ -110,7 +110,7 @@ async def get(
     return chats_list
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ChatResponse)
 async def post(
     booking_id: str = Query(alias="booking-id"), 
 ):    
@@ -155,12 +155,12 @@ async def post(
     inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat))
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))
 
-    return created_chat
+    return created_chat.to_response()
 
-@router.get("/{id}")
+@router.get("/{id}", response_model=ChatResponse)
 async def get_by_id(id: str):
     try:
-        return Chat.parse_obj(chats.find_one({"_id" : ObjectId(id)})) 
+        return Chat.parse_obj(chats.find_one({"_id" : ObjectId(id)})).to_response()
     except:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 

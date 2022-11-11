@@ -15,7 +15,7 @@ entity{
 }
 ```
 
-**Note**: Every entity has _id attribute, so is not represeted in the model. 
+**Note**: Every entity has _id attribute, so is not represented in the model. 
 
 ## Entities 
 
@@ -27,7 +27,7 @@ Messages{
     sender_username = user.username,
     date = now(), 
     message,
-    respose_to*,
+    response_to*,
     house_id | chat_id
   }
 
@@ -61,4 +61,21 @@ Ratings{
     rate,
     rated_user_id | rated_house_id
   }
+```
+
+### Bookings
+
+```
+Bookings{
+    state,
+    from_,
+    to,
+    cost,
+    guestId,
+    userName,
+    houseId,
+    houseAddress,
+    meetingLocation
+}
+
 ```

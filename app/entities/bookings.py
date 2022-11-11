@@ -1,9 +1,10 @@
 # Import libraries
-from fastapi import APIRouter, HTTPException, status
-from app.database import db as db
-from bson.objectid import ObjectId
-from datetime import datetime, date, time
 import re
+from datetime import date, datetime, time
+from fastapi import APIRouter, HTTPException, status
+
+from bson.objectid import ObjectId
+from app.database import db
 
 # Create router
 router = APIRouter()
@@ -11,18 +12,21 @@ router = APIRouter()
 # Initialize DB
 bookings = db["bookings"]
 houses = db["houses"]
+users = db["users"]
 
 # Save possible states for later
 states = ["Accepted", "Declined", "Requested", "Cancelled"]
 
 # API
+
+
 @router.get("/")
 async def get():
-    return list(bookings.find())
+    return list(bookings.find(projection={"_id": 0}))
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create(from_: date, to: date, cost: float, userName: str, houseId: str):
+async def create(from_: date, to: date, cost: float, guestId: str, houseId: str, meetingLocation: str | None = None):
     try:
         house = houses.find_one({"_id": ObjectId(houseId)})
     except:
@@ -30,7 +34,16 @@ async def create(from_: date, to: date, cost: float, userName: str, houseId: str
 
     if house is None:
         raise HTTPException(
-            status_code=400, detail="No se ha encontrado ninguna casa con la ID proporcionada.")
+            status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
+
+    try:
+        guest = users.find_one({"_id": ObjectId(guestId)})
+    except:
+        guest = None
+
+    if guest is None:
+        raise HTTPException(
+            status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
 
     # Comprobar si la id introducida corresponde a una casa
 
@@ -39,14 +52,16 @@ async def create(from_: date, to: date, cost: float, userName: str, houseId: str
 
     if cost > 0 and from_ < to:
         bookings.insert_one({"state": "Requested", "from_":  from_,
-                            "to": to, "cost": cost, "userName": userName, "houseId": houseId, "houseAddress": house["address"]})
+                            "to": to, "cost": cost, "guestId": guestId,
+                            "guestName": guest["username"], "houseId": houseId,
+                            "houseAddress": house["address"], "meetingLocation": meetingLocation})
     else:
         raise HTTPException(
             status_code=400, detail="Coste o fecha incorrectos.")
 
 
 @router.put("/{id}")
-async def update(id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None):
+async def update(id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
 
     # Formatear las fechas correctamente si se han proporcionado
     if from_ is not None:
@@ -55,7 +70,7 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
         to = datetime.combine(to, time.min)
 
     # Inicializar diccionario con todos los datos a introducir, borrando los que son None
-    data = {"state": state, "from_": from_, "to": to, "cost": cost}
+    data = {"state": state, "from_": from_, "to": to, "cost": cost, "meetingLocation": meetingLocation}
     data = {k: v for k, v in data.items() if v is not None}
 
     # Comprobar si se han introducido 0 datos y lanzar una excepcion si se da el caso
@@ -75,7 +90,8 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
     if booking is None:
         raise HTTPException(status_code=404, detail="Reserva no encontrada.")
 
-    # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to" independientemente de si se ha introducido en el PUT o no
+    # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
+    # independientemente de si se ha introducido en el PUT o no
     dfrom_ = from_ or booking["from_"]
     dto = to or booking["to"]
 
@@ -90,28 +106,31 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
 @router.get("/{id}")
 async def get_by_id(id: str):
     try:
-        booking = bookings.find_one({"_id": ObjectId(id)})
+        booking = bookings.find_one(filter={"_id": ObjectId(id)}, projection={"_id": 0})
     except:
         booking = None
 
     if booking is None:
         raise HTTPException(status_code=404, detail="Reserva no encontrada.")
-    else:
-        return booking
+
+    return booking
+
 
 # Get global
+
+
 @router.get("/search/")
-async def search(userName: str | None = None, houseId: str | None = None, state: str | None = None):
-    if userName is None and houseId is None and state is None:
+async def search(guestName: str | None = None, houseId: str | None = None, state: str | None = None):
+    if guestName is None and houseId is None and state is None:
         raise HTTPException(
             status_code=400, detail="No se han proporcionado parametros de busqueda.")
 
     params = dict()
 
-    if userName is not None:
-        userName = re.compile(".*" + userName + ".*",
-                              re.IGNORECASE)  # type: ignore
-        params['userName'] = {"$regex": userName}
+    if guestName is not None:
+        guestName = re.compile(".*" + guestName + ".*",
+                               re.IGNORECASE)  # type: ignore
+        params['guestName'] = {"$regex": guestName}
 
     if houseId is not None:
         params['houseId'] = houseId
@@ -122,16 +141,16 @@ async def search(userName: str | None = None, houseId: str | None = None, state:
                 status_code=400, detail="El estado proporcionado no es valido.")
         params['state'] = state
 
-    return [b for b in bookings.find(filter=params, projection={"_id": 0})]
+    return list(bookings.find(filter=params, projection={"_id": 0}))
 
 
 @ router.get("/range/")
-async def get_range(size: int, offset: int=0):
-    if offset >= 0 and size > 0:
-        return [b for b in bookings.find(projection={"_id": 0}, skip=offset, limit=size)]
-    else:
+async def get_range(size: int, offset: int = 0):
+    if offset < 0 or size <= 0:
         raise HTTPException(
             status_code=400, detail="El tamaño o el offset no tienen un formato correcto.")
+
+    return list(bookings.find(projection={"_id": 0}, skip=offset, limit=size))
 
 
 @ router.delete("/{id}")

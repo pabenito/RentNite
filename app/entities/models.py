@@ -18,6 +18,9 @@ class State(Enum):
 class Plain(BaseModel):
     id: str
 
+    def to_response(self) -> dict: 
+        return self.dict(exclude_unset=True)
+
 class Entity(BaseModel):
     id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
 

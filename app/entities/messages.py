@@ -122,6 +122,10 @@ async def post(
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail=f"There is no chat with that id: {chat_id}.")
+        if new_message.sender_id != chat.guest_id and new_message.sender_id != chat.owner_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail=f"The sender must be the guest '{chat.guest_id}' or the owner '{chat.owner_id}' of the booking, but is: {sender_id}.")
 
     if response_to:
         try:

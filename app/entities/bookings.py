@@ -31,7 +31,7 @@ async def create(from_: date, to: date, cost: float, userName: str, houseId: str
         house = houses.find_one({"_id": ObjectId(houseId)})
     except:
         house = None
-    
+
     if house is None:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ninguna casa con la ID proporcionada.")
@@ -51,23 +51,23 @@ async def create(from_: date, to: date, cost: float, userName: str, houseId: str
 
 @router.put("/{id}")
 async def update(id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None):
-    
-    #Formatear las fechas correctamente si se han proporcionado
+
+    # Formatear las fechas correctamente si se han proporcionado
     if from_ is not None:
         from_ = datetime.combine(from_, time.min)
     if to is not None:
         to = datetime.combine(to, time.min)
 
-    #Inicializar diccionario con todos los datos a introducir, borrando los que son None
+    # Inicializar diccionario con todos los datos a introducir, borrando los que son None
     data = {"state": state, "from_": from_, "to": to, "cost": cost}
     data = {k: v for k, v in data.items() if v is not None}
 
-    #Comprobar si se han introducido 0 datos y lanzar una excepcion si se da el caso
+    # Comprobar si se han introducido 0 datos y lanzar una excepcion si se da el caso
     if len(data) == 0:
         raise HTTPException(
             status_code=400, detail="No hay nada que actualizar.")
 
-    #Comprobar si el estado y el coste tienen un formato correcto y lanzar una excepcion en caso contrario
+    # Comprobar si el estado y el coste tienen un formato correcto y lanzar una excepcion en caso contrario
     if (state is not None and state not in states) or (cost is not None and cost <= 0):
         raise HTTPException(status_code=400, detail="Valores incorrectos.")
 
@@ -79,7 +79,7 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
     if booking is None:
         raise HTTPException(status_code=404, detail="Reserva no encontrada.")
 
-    #Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to" independientemente de si se ha introducido en el PUT o no
+    # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to" independientemente de si se ha introducido en el PUT o no
     dfrom_ = from_ or booking["from_"]
     dto = to or booking["to"]
 
@@ -103,25 +103,30 @@ async def get_by_id(id: str):
         return booking
 
 
-@router.get("/userName/{userName}")
-async def get_by_user_name(userName: str):
-    userName = re.compile(".*" + userName + ".*",
-                          re.IGNORECASE)  # type: ignore
-    return [b for b in bookings.find({"userName": {"$regex": userName}}, {"_id": 0})]
+# @router.get("/userName/{userName}")
+# async def get_by_user_name(userName: str):
+#     userName = re.compile(".*" + userName + ".*",
+#                           re.IGNORECASE)  # type: ignore
+#     return [b for b in bookings.find({"userName": {"$regex": userName}}, {"_id": 0})]
 
 
-@router.get("/house/{houseId}")
-async def get_by_house_id(houseId: str):
-    return [b for b in bookings.find({"houseId": houseId}, {"_id": 0})]
+# @router.get("/house/{houseId}")
+# async def get_by_house_id(houseId: str):
+#     return [b for b in bookings.find({"houseId": houseId}, {"_id": 0})]
 
 
-@router.get("/state/{state}")
-async def get_by_state(state: str):
-    if state not in states:
-        raise HTTPException(
-            status_code=400, detail="El estado introducido no existe.")
+# @router.get("/state/{state}")
+# async def get_by_state(state: str):
+#     if state not in states:
+#         raise HTTPException(
+#             status_code=400, detail="El estado introducido no existe.")
 
-    return [b for b in bookings.find({"state": state}, {"_id": 0})]
+#     return [b for b in bookings.find({"state": state}, {"_id": 0})]
+
+# Get global
+@router.get("/search/")
+async def search(userName: str | None, houseId: str | None, state: str | None):
+    #TODO
 
 
 @router.get("/range/")

@@ -153,4 +153,18 @@ async def get_by_id(id: str):
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no message with that id: {id}.")
 
+@router.delete("/{id}")
+async def delete(id: str):
+    try:
+        message : Message = Message.parse_obj(messages.find_one_and_delete({"_id": ObjectId(id)}))
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no message with that id: {id}.")
 
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no message with that id: {id}.")
+
+    return message

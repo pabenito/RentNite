@@ -96,6 +96,8 @@ class BookingResponse(BookingBase):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
+# Base models
+
 class ChatConstructor(BaseModel):
     house_address: str | None
     booking_from: datetime | None
@@ -114,3 +116,24 @@ class MessageConstructor(BaseModel):
     response_to: str | None = None
     house_id: str | None = None
     chat_id: str | None = None
+
+class UserBase(BaseModel):
+    username: str | None
+    email: EmailStr | None  
+
+class HouseBase(BaseModel):
+    address: str | None 
+    capacity: int | None 
+    price: int | None 
+    rooms: int | None 
+    bathrooms: int | None 
+    owner_name: str | None = Field(default=None, alias="ownerName")
+
+class BookingBase(BaseModel):
+    state: State | None
+    from_: datetime | None
+    to: datetime | None 
+    cost: int | None 
+    user_name: str | None = Field(default=None, alias="userName")
+    house_id: str | None = Field(default=None, alias="houseId")
+    house_address: str | None = Field(default=None, alias="houseAddress")

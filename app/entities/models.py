@@ -126,7 +126,7 @@ class RatingResponse(RatingBase, Plain):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
-class ChatConstructor(BaseModel, Simplifier):
+class ChatConstructor(Simplifier):
     house_address: str | None
     booking_from: datetime | None
     booking_to: datetime | None
@@ -136,7 +136,7 @@ class ChatConstructor(BaseModel, Simplifier):
     guest_id : str | None 
     guest_username : str | None
 
-class MessageConstructor(BaseModel, Simplifier):
+class MessageConstructor(Simplifier):
     sender_id: str | None
     sender_username: str | None
     date: datetime | None
@@ -145,11 +145,11 @@ class MessageConstructor(BaseModel, Simplifier):
     house_id: str | None = None
     chat_id: str | None = None
 
-class UserConstructor(BaseModel, Simplifier):
+class UserConstructor(Simplifier):
     username: str | None
     email: EmailStr | None  
 
-class HouseConstructor(BaseModel, Simplifier):
+class HouseConstructor(Simplifier):
     address: str | None 
     capacity: int | None 
     price: int | None 
@@ -157,7 +157,7 @@ class HouseConstructor(BaseModel, Simplifier):
     bathrooms: int | None 
     owner_name: str | None = Field(default=None, alias="ownerName")
 
-class BookingConstructor(BaseModel, Simplifier):
+class BookingConstructor(Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
@@ -166,7 +166,7 @@ class BookingConstructor(BaseModel, Simplifier):
     house_id: str | None = Field(default=None, alias="houseId")
     house_address: str | None = Field(default=None, alias="houseAddress")
 
-class RatingConstructor(BaseModel, Simplifier):
+class RatingConstructor(Simplifier):
     sender_id: str | None = None
     rated_user_id: str | None = None
     reted_house_id: str | None = None

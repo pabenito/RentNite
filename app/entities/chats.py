@@ -38,58 +38,66 @@ async def get(
     chats_list = result
 
     if house_address:
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.house_address is house_address:
+            if chat.house_address == house_address:
                 result.append(chat)
         chats_list = result
     
     if booking_id: 
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.booking_id is booking_id:
+            if chat.booking_id == booking_id:
                 result.append(chat)
         chats_list = result
 
     if owner_id: 
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.owner_id is owner_id:
+            if chat.owner_id == owner_id:
                 result.append(chat)
         chats_list = result
 
     if guest_id: 
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.guest_id is guest_id:
+            if chat.guest_id == guest_id:
                 result.append(chat)
         chats_list = result
 
-    if owner_username: 
+    if owner_username:
+        result = [] 
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.owner_username is owner_username:
+            if chat.owner_username == owner_username:
                 result.append(chat)
         chats_list = result
 
     if guest_username: 
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.guest_username is guest_username:
+            if chat.guest_username == guest_username:
                 result.append(chat)
         chats_list = result
 
-    if from_: 
+    if from_:
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.booking_from > from_:
+            if chat.booking_from.timestamp() >= datetime.combine(from_, time.min).timestamp():
                 result.append(chat)
         chats_list = result
 
-    if to: 
+    if to:
+        result = []
         for chat in chats_list:
             chat : Chat = chat 
-            if chat.booking_to < to:
+            if chat.booking_to.timestamp() >= datetime.combine(to, time.max).timestamp():
                 result.append(chat)
         chats_list = result
 

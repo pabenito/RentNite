@@ -79,7 +79,7 @@ class BookingBase(BaseModel):
     house_address: str = Field(alias="houseAddress")
 
 class RatingBase(BaseModel):
-    sender_id: str
+    rater_id: str
     rated_user_id: str | None = None
     reted_house_id: str | None = None
     rate: int 
@@ -167,7 +167,7 @@ class BookingConstructor(Simplifier):
     house_address: str | None = Field(default=None, alias="houseAddress")
 
 class RatingConstructor(Simplifier):
-    sender_id: str | None = None
+    rater_id: str
     rated_user_id: str | None = None
     reted_house_id: str | None = None
-    rate: int | None = None 
+    rate: int 

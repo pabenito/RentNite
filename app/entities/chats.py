@@ -18,7 +18,7 @@ houses: Collection = db["houses"]
 bookings: Collection = db["bookings"]
 
 # API
-@router.get("/")
+@router.get("/", response_model=list[ChatResponse])
 async def get(
     house_address: str | None = Query(default=None, alias="house-address"),
     booking_id: str | None = Query(default=None, alias="booking-id"), 
@@ -100,6 +100,12 @@ async def get(
             if chat.booking_to.timestamp() >= datetime.combine(to, time.max).timestamp():
                 result.append(chat)
         chats_list = result
+
+    result = []
+    for chat in chats_list:
+        chat: Chat = chat
+        result.append(chat.to_response())
+    chats_list = result
 
     return chats_list
 

@@ -15,13 +15,14 @@ class State(Enum):
 
 # Define our Entities and Plain models, differs in id type
 
-class Plain(BaseModel):
-    id: str
-
-    def to_response(self) -> dict: 
+class Simplifier(BaseModel):
+    def exclude_unset(self) -> dict: 
         return self.dict(exclude_unset=True)
 
-class Entity(BaseModel):
+class Plain(Simplifier):
+    id: str
+
+class Entity(Simplifier):
     id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
 
     class Config:
@@ -125,7 +126,7 @@ class RatingResponse(RatingBase, Plain):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
-class ChatConstructor(BaseModel):
+class ChatConstructor(BaseModel, Simplifier):
     house_address: str | None
     booking_from: datetime | None
     booking_to: datetime | None
@@ -135,7 +136,7 @@ class ChatConstructor(BaseModel):
     guest_id : str | None 
     guest_username : str | None
 
-class MessageConstructor(BaseModel):
+class MessageConstructor(BaseModel, Simplifier):
     sender_id: str | None
     sender_username: str | None
     date: datetime | None
@@ -144,11 +145,11 @@ class MessageConstructor(BaseModel):
     house_id: str | None = None
     chat_id: str | None = None
 
-class UserConstructor(BaseModel):
+class UserConstructor(BaseModel, Simplifier):
     username: str | None
     email: EmailStr | None  
 
-class HouseConstructor(BaseModel):
+class HouseConstructor(BaseModel, Simplifier):
     address: str | None 
     capacity: int | None 
     price: int | None 
@@ -156,7 +157,7 @@ class HouseConstructor(BaseModel):
     bathrooms: int | None 
     owner_name: str | None = Field(default=None, alias="ownerName")
 
-class BookingConstructor(BaseModel):
+class BookingConstructor(BaseModel, Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
@@ -165,7 +166,7 @@ class BookingConstructor(BaseModel):
     house_id: str | None = Field(default=None, alias="houseId")
     house_address: str | None = Field(default=None, alias="houseAddress")
 
-class RatingConstructor(BaseModel):
+class RatingConstructor(BaseModel, Simplifier):
     sender_id: str | None = None
     rated_user_id: str | None = None
     reted_house_id: str | None = None

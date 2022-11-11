@@ -13,7 +13,7 @@ An AirBnB like web.
 ## Docs 
 
 - [Requirements](docs/requirements.md)
-- [Tecnologies](docs/tecnology.md)
+- [Tecnologies](docs/technology.md)
 
 ## Diagram
 

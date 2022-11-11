@@ -155,16 +155,16 @@ class HouseConstructor(Simplifier):
     price: int | None 
     rooms: int | None 
     bathrooms: int | None 
-    owner_name: str | None = Field(default=None, alias="ownerName")
+    owner_name: str | None = Field(alias="ownerName")
 
 class BookingConstructor(Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
     cost: int | None 
-    user_name: str | None = Field(default=None, alias="userName")
-    house_id: str | None = Field(default=None, alias="houseId")
-    house_address: str | None = Field(default=None, alias="houseAddress")
+    user_name: str | None = Field(alias="userName")
+    house_id: str | None = Field(alias="houseId")
+    house_address: str | None = Field(alias="houseAddress")
 
 class RatingConstructor(Simplifier):
     rater_id: str

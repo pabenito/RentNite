@@ -60,6 +60,12 @@ class BookingBase(BaseModel):
     house_id: str = Field(alias="houseId")
     house_address: str = Field(alias="houseAddress")
 
+class RatingBase(BaseModel):
+    sender_id: str
+    rated_user_id: str | None = None
+    reted_house_id: str | None = None
+    rate: int 
+
 # Entities models
 
 class Message(MessageBase, ConfigModel):
@@ -75,6 +81,9 @@ class House(HouseBase, ConfigModel):
     id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
 
 class Booking(BookingBase, ConfigModel):
+    id: ObjectId = Field(default_factory=uuid.uuid4, alias="_id")
+
+class Rating(RatingBase, ConfigModel):
     id: ObjectId = Field(default_factory=uuid.uuid4, alias="_id")
 
 # Response models
@@ -93,6 +102,9 @@ class HouseResponse(HouseBase):
 
 class BookingResponse(BookingBase):
     id: str
+
+class RatingResponse(RatingBase):
+    id: str 
 
 # Constructors models (allows None in all field in order to add them one by one)
 
@@ -117,11 +129,11 @@ class MessageConstructor(BaseModel):
     house_id: str | None = None
     chat_id: str | None = None
 
-class UserBase(BaseModel):
+class UserConstructor(BaseModel):
     username: str | None
     email: EmailStr | None  
 
-class HouseBase(BaseModel):
+class HouseConstructor(BaseModel):
     address: str | None 
     capacity: int | None 
     price: int | None 
@@ -129,7 +141,7 @@ class HouseBase(BaseModel):
     bathrooms: int | None 
     owner_name: str | None = Field(default=None, alias="ownerName")
 
-class BookingBase(BaseModel):
+class BookingConstructor(BaseModel):
     state: State | None
     from_: datetime | None
     to: datetime | None 
@@ -137,3 +149,9 @@ class BookingBase(BaseModel):
     user_name: str | None = Field(default=None, alias="userName")
     house_id: str | None = Field(default=None, alias="houseId")
     house_address: str | None = Field(default=None, alias="houseAddress")
+
+class RatingConstructor(BaseModel):
+    sender_id: str | None = None
+    rated_user_id: str | None = None
+    reted_house_id: str | None = None
+    rate: int | None = None 

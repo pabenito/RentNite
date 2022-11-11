@@ -76,7 +76,7 @@ async def get(
 async def post(
     message: str, 
     sender_id: str = Query(alias="sender-id"), 
-    response_to: str | None = Query(default=None, alias="sender-id"),
+    response_to: str | None = Query(default=None, alias="response-to"),
     house_id: str | None = Query(default=None, alias="house-id"), 
     chat_id: str | None = Query(default=None, alias="chat-id")
 ):
@@ -88,12 +88,12 @@ async def post(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
             detail="Messages needs a house_id or a chat_id, but not both.")
-    
-    new_message: Message
+
+    new_message: MessageConstructor = MessageConstructor()
 
     try:
-        user: User = users.find_one({"_id": ObjectId(sender_id)})
-        new_message.sender_id = user.id
+        user: User = User.parse_obj(users.find_one({"_id": ObjectId(sender_id)}))
+        new_message.sender_id = str(user.id)
         new_message.sender_username = user.username
     except: 
         raise HTTPException(
@@ -102,8 +102,8 @@ async def post(
 
     if house_id:
         try:
-            house: House = houses.find_one({"_id": ObjectId(house_id)})
-            new_message.house_id = house.id
+            house: House = House.parse_obj(houses.find_one({"_id": ObjectId(house_id)}))
+            new_message.house_id = str(house.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
@@ -111,8 +111,8 @@ async def post(
     
     if chat_id:
         try:
-            chat: Chat = chats.find_one({"_id": ObjectId(chat_id)})
-            new_message.chat_id = chat.id
+            chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(chat_id)}))
+            new_message.chat_id = str(chat.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
@@ -120,19 +120,18 @@ async def post(
 
     if response_to:
         try:
-            response_to_message: Message = messages.find_one({"_id": ObjectId(response_to)})
-            new_message.response_to = response_to_message.id
+            response_to_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(response_to)}))
+            new_message.response_to = str(response_to_message.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail=f"There is no message with that id: {response_to}.")
 
-    new_message: Message
     new_message.date = datetime.now(timezone("Europe/Madrid"))
     new_message.message = message
 
-    inserted_message: InsertOneResult = messages.insert_one(new_message)
-    created_message: Message =  messages.messages.find_one({"_id": inserted_message.inserted_id})
+    inserted_message: InsertOneResult = messages.insert_one(jsonable_encoder(new_message))
+    created_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(inserted_message.inserted_id)}))
 
     return created_message
 

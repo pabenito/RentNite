@@ -75,6 +75,12 @@ async def get(
                 result.append(message)
         messages_list = result
 
+    result = []
+    for message in messages_list:
+        message: Message = message
+        result.append(message.to_response())
+    messages_list = result
+
     return messages_list
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -139,15 +145,15 @@ async def post(
     new_message.date = datetime.now(timezone("Europe/Madrid"))
     new_message.message = message
 
-    inserted_message: InsertOneResult = messages.insert_one(jsonable_encoder(new_message))
+    inserted_message: InsertOneResult = messages.insert_one(jsonable_encoder(new_message.exclude_unset()))
     created_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(inserted_message.inserted_id)}))
 
-    return created_message
+    return created_message.to_response()
 
 @router.get("/{id}")
 async def get_by_id(id: str):
     try:
-        return Message.parse_obj(messages.find_one({"_id" : ObjectId(id)})) 
+        return Message.parse_obj(messages.find_one({"_id" : ObjectId(id)})).to_response()
     except:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
@@ -167,4 +173,4 @@ async def delete(id: str):
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no message with that id: {id}.")
 
-    return message
+    return message.to_response()

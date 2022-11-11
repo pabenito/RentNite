@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 # Import modules
 from .opendata import osm, aemet
-from .entities import bookings, houses, users
+from .entities import bookings, houses, users, ratings, messages, chats
 
 # Create app
 app = FastAPI()
@@ -39,6 +39,18 @@ app.include_router(
     users.router,
     prefix="/ratings",
     tags=["entities", "ratings"]
+)
+
+app.include_router(
+    messages.router,
+    prefix="/messages",
+    tags=["entities", "messages"]
+)
+
+app.include_router(
+    chats.router,
+    prefix="/chats",
+    tags=["entities", "chats"]
 )
 
 @app.get("/")

@@ -5,3 +5,4 @@ uvicorn[standard]
 pymongo
 pytest
 requests
+email-validator

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Response
 from app.database import db as db
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
-import re
+import re, pydantic
 
 # Create router
 router = APIRouter()
@@ -14,11 +14,13 @@ bookings = db["bookings"]
 # Save possible states for later
 states = ["Accepted", "Declined", "Requested", "Cancelled"]
 
+# declare Objectid as str
+pydantic.json.ENCODERS_BY_TYPE[ObjectId]=str
 
 # API
 @router.get("/")
-async def root():
-    return {"message": "Welcome to bookings microservice"}
+async def get():
+    return list(bookings.find())
 
 @router.post("/")
 async def create(response: Response, from_: date, to: date, cost: float, userName: str, houseId: str):
@@ -73,7 +75,7 @@ async def update(response: Response, id: str, state: str | None = None, from_: d
 @router.get("/{id}")
 async def get_by_id(response: Response, id: str):
     try:
-        booking = bookings.find_one({"_id": ObjectId(id)}, {"_id": 0})
+        booking = bookings.find_one({"_id": ObjectId(id)})
     except:
         booking = None
 

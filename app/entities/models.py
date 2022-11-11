@@ -65,7 +65,7 @@ class Booking(BaseModel):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
-class ChatConstructor(BaseModel):
+class ChatConstructor(PydanticBaseModel):
     house_address: str | None
     booking_from: datetime | None
     booking_to: datetime | None
@@ -74,3 +74,12 @@ class ChatConstructor(BaseModel):
     owner_username : str | None 
     guest_id : str | None 
     guest_username : str | None
+
+class MessageConstructor(PydanticBaseModel):
+    sender_id: str | None
+    sender_username: str | None
+    date: datetime | None
+    message: str | None
+    response_to: str | None = None
+    house_id: str | None = None
+    chat_id: str | None = None

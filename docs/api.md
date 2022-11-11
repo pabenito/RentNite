@@ -3,25 +3,25 @@
 Hemos distributido la API en los siguientes microservicios:
 
 - Entidad casa (/houses): "http://127.0.0.1:8000/houses"
-- Entidad reserva (/booking): "http://127.0.0.1:8000/bookings"
+- Entidad reserva (/bookings): "http://127.0.0.1:8000/bookings"
 - Entidad mensajes (/messages): "http://127.0.0.1:8000/messages"
 - OpenStreetMap (/osm): "http://127.0.0.1:8000/osm"
 - AEMET OpenData (/aemet): "http://127.0.0.1:8000/aemet"
 
 De cada llamada a la API se especificará su funcionalidad y argumentos, si los tiene.
 
-Los arguentos seguiran la siguiente notación:
+Los argumentos seguirán la siguiente notación:
 
 - {argumento del path}
-- ?argumento query 
-- argumento opcional~valor por defecto (arguento~ = arguento~None)
+- ?argumento query
+- argumento opcional~valor por defecto (argumento~ = argumento~None)
 
 ## Houses
 
 **Punto**: /houses
 **URL**: "http://127.0.0.1:8000/houses"
 
-Se describen a continuación la funcionalidad ofrecida por la API houses:
+Se describe a continuación la funcionalidad ofrecida por la API houses:
 
 - **GET /houses/**: Da la bienvenida.
 - **POST /houses/**: Añade una nueva casa.
@@ -58,30 +58,32 @@ Se describen a continuación la funcionalidad ofrecida por la API houses:
 
 Se describe a continuación la funcionalidad ofrecida por la API bookings:
 
-- **GET /bookings/**: Da la bienvenida.
+- **GET /bookings/**: Lista todas las reservas.
 - **POST /bookings/**: Añade una solicitud de reserva.
     - ?_from__: Fecha de llegada
     - ?_to_: Fecha de salida
     - ?_cost_: Precio total de la estancia
-    - ?_userName_: Nombre del usuario del que solicita la reserva
-    - ?_houseId_: Identificador de la casa
-- **GET /bookings/{id}**: Devuelve la reserva con el id especificado.
+    - ?_guestId_: Identificador del usuario que solicita la reserva
+    - ?_houseId_: Identificador de la casa donde se realiza la reserva
+    - ?_meetingLocation_~: Dirección donde se realizará la reunión en la que se informará al cliente sobre cualquier detalle que deba conocer sobre la vivienda y en la que le serán entregadas las llaves de esta (solo si se especifica)
+- **GET /bookings/{id}**: Devuelve la reserva con el _id_ especificado.
     - {_id_}: Identificador de la reserva
-- **PUT /bookings/{id}**: Actualiza los datos de la reserva con el id especificado.
+- **PUT /bookings/{id}**: Actualiza los datos de la reserva con el _id_ especificado.
     - {_id_}: Identificador de la reserva
-    - ?_address_: Dirección
-    - ?_from__: Fecha de llegada
-    - ?_to_: Fecha de salida
-    - ?_cost_: Precio total de la estancia
+    - ?_state_~: Estado de la reserva
+    - ?_from__~: Fecha de llegada
+    - ?_to_~: Fecha de salida
+    - ?_cost_~: Precio total de la estancia
+    - ?_meetingLocation_~: Dirección donde se realizará la reunión en la que se informará al cliente sobre cualquier detalle que deba conocer sobre la vivienda y en la que le serán entregadas las llaves de esta (solo si se especifica)
 - **DELETE /bookings/{id}**: Elimina la reserva con el id especificado.
     - {_id_}: Identificador de la reserva
-- **GET /bookings/userName/{userName}**: Devuelve las reservas con del usuario especificado (como invitado).
-    - {_userName_}: Nombre de usuario
-- **GET /bookings/state/{state}**: Devuelve las reservas con el estado especificado.
-    - {_state_}: Estado de la reserva
-- **GET /bookings/range/**: Lista tantas reservas como ?_size_ indique saltándose las ?_skip_ primeras. Se suponen ordenadas por inserción en la base de datos. 
-    - ?_size_: Número de reservas a devolver
-    - ?_skip_: Número de reservas a saltarse
+- **GET /bookings/search/**: Muestra una lista de reservas dada una serie de filtros de búsqueda que se pueden usar simultáneamente.
+    - ?_guestName_~: Nombre del usuario que ha realizado la reserva (invitado)
+    - ?_houseId_~: Identificador de la casa donde se realiza la reserva
+    - ?_state_~: Estado de la reserva
+- **GET /bookings/range/**: Lista tantas reservas como _size_ indique, saltándose las _offset_ primeras. Se suponen ordenadas por inserción en la base de datos. 
+    - ?_size_: Número de reservas a mostrar
+    - ?_offset_~0: Número de reservas que saltar
 
 ## Messages
 

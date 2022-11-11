@@ -15,11 +15,8 @@ An AirBnB like web.
 - [Requirements](docs/requirements.md)
 - [Tecnologies](docs/technology.md)
 
-## Diagram
+## Diagrams
 
-![USE](img/use.png)
 ![USE diagram](img/use.png)
-![IFML](img/ifml.png)
 ![IFML diagram](img/ifml.png)
-![Deployment](img/DeploymentDiagram.jpg)
 ![Deployment diagram](img/DeploymentDiagram.jpg)

@@ -152,7 +152,7 @@ async def post(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no user with that username: {booking.user_name}.")
 
-    inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat))
+    inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat.exclude_unset()))
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))
 
     return created_chat.to_response()

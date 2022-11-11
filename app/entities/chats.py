@@ -142,3 +142,12 @@ async def post(
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))
 
     return created_chat
+
+@router.get("/{id}")
+async def get_by_id(id: str):
+    try:
+        return Chat.parse_obj(chats.find_one({"_id" : ObjectId(id)})) 
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no chat with that id: {id}.")

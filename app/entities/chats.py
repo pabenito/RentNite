@@ -29,7 +29,72 @@ async def get(
     from_: date | None = Query(default=None, alias="from"),
     to: date | None = None
 ):
-    return list(chats.find())
+    chats_list: list = list(chats.find())
+    result : list = []
+
+    for chat_dict in chats_list:
+        result.append(Chat.parse_obj(chat_dict))
+
+    chats_list = result
+
+    if house_address:
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.house_address is house_address:
+                result.append(chat)
+        chats_list = result
+    
+    if booking_id: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.booking_id is booking_id:
+                result.append(chat)
+        chats_list = result
+
+    if owner_id: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.owner_id is owner_id:
+                result.append(chat)
+        chats_list = result
+
+    if guest_id: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.guest_id is guest_id:
+                result.append(chat)
+        chats_list = result
+
+    if owner_username: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.owner_username is owner_username:
+                result.append(chat)
+        chats_list = result
+
+    if guest_username: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.guest_username is guest_username:
+                result.append(chat)
+        chats_list = result
+
+    if from_: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.booking_from > from_:
+                result.append(chat)
+        chats_list = result
+
+    if to: 
+        for chat in chats_list:
+            chat : Chat = chat 
+            if chat.booking_to < to:
+                result.append(chat)
+        chats_list = result
+
+    return chats_list
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def post(

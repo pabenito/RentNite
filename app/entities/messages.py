@@ -1,15 +1,12 @@
 # Import libraries
 from fastapi import APIRouter, Query, status, HTTPException
-from pydantic import Field, EmailStr, BaseModel
-from typing import Literal
-from app.database import *
+from fastapi.encoders import jsonable_encoder
 from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
-from bson.objectid import ObjectId
 from datetime import datetime, date
 from pytz import timezone
-from enum import Enum
-import uuid, pydantic
+from app.database import db as db
+from .models import *
 
 # Create router
 router = APIRouter()
@@ -21,64 +18,8 @@ users: Collection = db["users"]
 houses: Collection = db["houses"]
 bookings: Collection = db["bookings"]
 
-# declare Objectid as str
-pydantic.json.ENCODERS_BY_TYPE[ObjectId]=str
-
-# Entities model
-
-class Message(BaseModel):
-    _id: str = Field(alias="_id", default_factory=uuid.uuid4)
-    sender_id: str
-    sender_username: str
-    date: datetime
-    message: str
-    response_to: str | None = None
-    house_id: str | None = None
-    chat_id: str | None = None
-
-class Chat(BaseModel):
-    _id: str = Field(alias="_id", default_factory=uuid.uuid4)
-    house_address: str 
-    booking_from: date
-    booking_to: date
-    booking_id : str 
-    owner_id : str 
-    owner_username : str 
-    guest_id : str 
-    guest_username : str
-
-class User(BaseModel):
-    _id: str = Field(alias="_id", default_factory=uuid.uuid4)
-    username: str
-    email: EmailStr  
-
-class House(BaseModel):
-    _id: str = Field(alias="_id", default_factory=uuid.uuid4)
-    address: str 
-    capacity: int 
-    price: int 
-    rooms: int 
-    bathrooms: int 
-    owner_name: str = Field(alias="ownerName")
-
-class State(Enum):
-    ACCEPTED = "Accepted"
-    DECLINED = "Declined"
-    REQUESTED = "Requested"
-    CANCELLED = "Cancelled"
-
-class Booking(BaseModel):
-    _id: str = Field(default_factory=uuid.uuid4, alias="_id")
-    state: State
-    from_: date
-    to: date 
-    cost: int 
-    user_name: str = Field(alias="userName")
-    house_id: str
-    house_address: str = Field(alias="houseAddress")
-
 # API
-@router.get("/", response_model=list[Message])
+@router.get("/")
 async def get(
     sender_id: str | None = Query(default=None, alias="sender-id"), 
     house_id: str | None = Query(default=None, alias="house-id"), 
@@ -86,7 +27,7 @@ async def get(
     from_: date | None = Query(default=None, alias="from"),
     to: date | None = None
 ):
-    return list(bookings.find())
+    return list(messages.find())
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def post(

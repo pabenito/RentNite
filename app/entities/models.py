@@ -2,6 +2,7 @@ from pydantic import Field, EmailStr, BaseModel
 from bson.objectid import ObjectId
 from datetime import datetime
 from enum import Enum
+from copy import deepcopy
 import uuid
 
 # Enums
@@ -12,11 +13,24 @@ class State(Enum):
     REQUESTED = "Requested"
     CANCELLED = "Cancelled"
 
-# Define our ConfigModel for setting config
+# Define our Entities and Plain models, differs in id type
 
-class ConfigModel(BaseModel):
+class Plain(BaseModel):
+    id: str
+
+class Entity(BaseModel):
+    id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
+
     class Config:
         arbitrary_types_allowed = True # In order to allow ObjectId
+
+    def to_plain(self) -> Plain: 
+        copy = deepcopy(self)
+        copy.id = str(copy.id)
+        return copy
+
+    def to_response(self) -> dict: 
+        return self.to_plain().dict(exclude_unset=True)
 
 # Base models
 
@@ -68,47 +82,45 @@ class RatingBase(BaseModel):
 
 # Entities models
 
-class Message(MessageBase, ConfigModel):
-    id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
+class Message(MessageBase, Entity):
+    pass
 
-class Chat(ChatBase, ConfigModel):
-    id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
+class Chat(ChatBase, Entity):
+    pass
 
-class User(UserBase, ConfigModel):
-    id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
+class User(UserBase, Entity):
+    pass
 
-class House(HouseBase, ConfigModel):
-    id: ObjectId = Field(alias="_id", default_factory=uuid.uuid4)
+class House(HouseBase, Entity):
+    pass
 
-class Booking(BookingBase, ConfigModel):
-    id: ObjectId = Field(default_factory=uuid.uuid4, alias="_id")
+class Booking(BookingBase, Entity):
+    pass
 
-class Rating(RatingBase, ConfigModel):
-    id: ObjectId = Field(default_factory=uuid.uuid4, alias="_id")
+class Rating(RatingBase, Entity):
+    pass
 
 # Response models
 
-class MessageResponse(MessageBase):
-    id: str
+class MessageResponse(MessageBase, Plain):
+    pass
 
-class ChatResponse(ChatBase):
-    id: str
+class ChatResponse(ChatBase, Plain):
+    pass
 
-class UserResponse(UserBase):
-    id: str
+class UserResponse(UserBase, Plain):
+    pass
 
-class HouseResponse(HouseBase):
-    id: str
+class HouseResponse(HouseBase, Plain):
+    pass
 
-class BookingResponse(BookingBase):
-    id: str
+class BookingResponse(BookingBase, Plain):
+    pass
 
-class RatingResponse(RatingBase):
-    id: str 
+class RatingResponse(RatingBase, Plain):
+    pass
 
 # Constructors models (allows None in all field in order to add them one by one)
-
-# Base models
 
 class ChatConstructor(BaseModel):
     house_address: str | None

@@ -14,21 +14,25 @@ app.include_router(
     prefix="/osm",
     tags=["opendata", "osm"]
 )
+
 app.include_router(
     aemet.router,
     prefix="/aemet",
     tags=["opendata", "aemet"]
 )
+
 app.include_router(
     bookings.router,
     prefix="/bookings",
     tags=["entities", "bookings"]
 )
+
 app.include_router(
     houses.router,
     prefix="/houses",
     tags=["entities", "houses"]
 )
+
 app.include_router(
     users.router,
     prefix="/users",
@@ -53,14 +57,7 @@ app.include_router(
     tags=["entities", "chats"]
 )
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Rentnite"}
-
-
-
-
-
-
-
-

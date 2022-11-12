@@ -80,9 +80,10 @@ class BookingBase(BaseModel):
 
 class RatingBase(BaseModel):
     rater_id: str
+    date: datetime  
     rated_user_id: str | None = None
     reted_house_id: str | None = None
-    rate: int 
+    rate: int
 
 # Entities models
 
@@ -167,7 +168,8 @@ class BookingConstructor(Simplifier):
     house_address: str | None = Field(alias="houseAddress")
 
 class RatingConstructor(Simplifier):
-    rater_id: str
+    rater_id: str | None 
+    date: datetime | None 
     rated_user_id: str | None = None
     reted_house_id: str | None = None
-    rate: int 
+    rate: int | None 

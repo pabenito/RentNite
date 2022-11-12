@@ -19,8 +19,9 @@ houses: Collection = db["houses"]
 # API
 @router.get("/")
 async def get(
-    rated_user_id: str | None = Query(default=None, alias="user-id"),
-    reted_reted_house_id: str | None = Query(default=None, alias="house-id"),
+    rater_id: str | None = Query(default=None, alias="rater-id"),
+    rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
+    reted_reted_house_id: str | None = Query(default=None, alias="rated-house-id"),
     rate: int | None = Query(default=None, alias="rate"),
     from_: date | None = Query(default=None, alias="from"),
     to: date | None = None
@@ -32,6 +33,14 @@ async def get(
         result.append(Rating.parse_obj(rate_dic))
         
     rate_list = result
+    
+    if rater_id:
+        result = []
+        for rated in rate_list:
+            rated: Rating  
+            if rated.rater_id == rater_id:
+                result.append(rated)
+        rate_list = result
     
     if rated_user_id:
         result = []
@@ -84,8 +93,9 @@ async def get(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create(
-    rated_user_id: str | None = Query(default=None, alias="user-id"),
-    reted_house_id: str | None = Query(default=None, alias="house-id"),
+    rater_id: str | None = Query(default=None, alias="rater-id"),
+    rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
+    reted_house_id: str | None = Query(default=None, alias="rated-house-id"),
     rate: int | None = Query(default=None, alias="rate")
     ):
     
@@ -100,13 +110,14 @@ async def create(
     
     new_rate: RatingConstructor = RatingConstructor()
     
-    try:
-        user: User = User.parse_obj(users.find_one({"_id": ObjectId(rated_user_id)}))
-        new_rate.rated_user_id = str(user.id)
-    except Exception:  
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"There is no user with that id: {rated_user_id}.")
+    if rated_user_id:
+        try:
+            user: User = User.parse_obj(users.find_one({"_id": ObjectId(rated_user_id)}))
+            new_rate.rated_user_id = str(user.id)
+        except Exception:  
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"There is no user with that id: {rated_user_id}.")
 
     if reted_house_id:
         try:
@@ -126,6 +137,7 @@ async def create(
             new_rate.rate = rate
     
     new_rate.date = datetime.now(timezone("Europe/Madrid"))
+    new_rate.rater_id=rater_id
 
     inserted_rate: InsertOneResult = ratings.insert_one(jsonable_encoder(new_rate.exclude_unset()))
     created_rate: Rating = Rating.parse_obj(ratings.find_one({"_id": ObjectId(inserted_rate.inserted_id)}))

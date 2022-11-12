@@ -20,7 +20,7 @@ houses: Collection = db["houses"]
 @router.get("/")
 async def get(
     rated_user_id: str | None = Query(default=None, alias="user-id"),
-    reted_house_id: str | None = Query(default=None, alias="house-id"),
+    reted_reted_house_id: str | None = Query(default=None, alias="house-id"),
     rate: int | None = Query(default=None, alias="rate"),
     from_: date | None = Query(default=None, alias="from"),
     to: date | None = None
@@ -41,11 +41,11 @@ async def get(
                 result.append(rated)
         rate_list = result
         
-    if reted_house_id:
+    if reted_reted_house_id:
         result = []
         for rated in rate_list:
             rated: Rating  
-            if rated.reted_house_id == reted_house_id:
+            if rated.reted_reted_house_id == reted_reted_house_id:
                 result.append(rated)
         rate_list = result
         
@@ -84,18 +84,57 @@ async def get(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create(
-    date_: date, 
-    rating: int, 
-    user_Id: str, 
-    house_Id: str
+    rated_user_id: str | None = Query(default=None, alias="user-id"),
+    reted_house_id: str | None = Query(default=None, alias="house-id"),
+    rate: int | None = Query(default=None, alias="rate")
     ):
-    date_ = datetime.combine(date_, time.min)
-    if rating >= 0 and rating <= 5:
-        ratings.insert_one({"date": date_, "rating": rating, "house_id": house_Id, 
-                           "user_id": user_Id})
-        response.status_code = 201
-    else:
-        response.status_code = 400
+    
+    if not rated_user_id and not reted_house_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Messages needs a rated_user_id or a reted_house_id.")
+    if rated_user_id and reted_house_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Messages needs a rated_user_id or a reted_house_id, but not both.")
+    
+    new_rate: RatingConstructor = RatingConstructor()
+    
+    try:
+        user: User = User.parse_obj(users.find_one({"_id": ObjectId(rated_user_id)}))
+        new_rate.rated_user_id = str(user.id)
+    except Exception:  
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no user with that id: {rated_user_id}.")
+
+    if reted_house_id:
+        try:
+            house: House = House.parse_obj(houses.find_one({"_id": ObjectId(reted_house_id)}))
+            new_rate.reted_house_id = str(house.id)
+        except Exception: 
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"There is no house with that id: {reted_house_id}.")
+    
+    if rate:
+        if(not(rate>=0 and rate<=5)):
+            raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Sorry, no numbers below zero (0) or above five (5): {rate}.")
+        else:
+            new_rate.rate = rate
+    
+    new_rate.date = datetime.now(timezone("Europe/Madrid"))
+
+    inserted_rate: InsertOneResult = ratings.insert_one(jsonable_encoder(new_rate.exclude_unset()))
+    created_rate: Rating = Rating.parse_obj(ratings.find_one({"_id": ObjectId(inserted_rate.inserted_id)}))
+
+    return created_rate.to_response()    
+    
+     
+     
+     
         
 @router.put("/{id}")
 async def update(id: str, date_: date | None = None, rating: int | None = None):

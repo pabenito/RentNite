@@ -36,7 +36,7 @@ app.include_router(
 )
 
 app.include_router(
-    users.router,
+    ratings.router,
     prefix="/ratings",
     tags=["entities", "ratings"]
 )

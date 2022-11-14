@@ -58,8 +58,9 @@ Chats{
 ```
 Ratings{
     rater_id,
-    rate,
-    rated_user_id | rated_house_id
+    date,
+    rated_user_id | rated_house_id,
+    rate
   }
 ```
 

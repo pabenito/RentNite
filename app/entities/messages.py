@@ -1,5 +1,5 @@
 # Import libraries
-from fastapi import APIRouter, Query, status, HTTPException
+from fastapi import APIRouter, Query, status, HTTPException, Body
 from fastapi.encoders import jsonable_encoder
 from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
@@ -84,66 +84,93 @@ async def get(
     return messages_list
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def post(
-    message: str, 
-    sender_id: str = Query(alias="sender-id"), 
-    response_to: str | None = Query(default=None, alias="response-to"),
-    house_id: str | None = Query(default=None, alias="house-id"), 
-    chat_id: str | None = Query(default=None, alias="chat-id")
-):
-    if not house_id and not chat_id:
+async def post(message : MessagePost = Body(examples = 
+    {
+        "Chat message": {
+            "value": {
+                "sender_id": "string",
+                "message": "string",
+                "chat_id": "string"
+            }
+        },
+        "House comment": {
+            "value": {
+                "sender_id": "string",
+                "message": "string",
+                "house_id": "string"
+            }
+        }, 
+        "Response to another message": {
+            "description" : "Can be a response to a chat message or to a house comment",
+            "value": {
+                "sender_id": "string",
+                "message": "string",
+                "response_to": "string"
+            }
+        }
+    }
+)):
+    if not message.house_id and not message.chat_id and not message.response_to:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Messages needs a house_id or a chat_id.")
-    if house_id and chat_id:
+            detail="Messages needs a house_id, a chat_id or a response_to")
+    if ((message.house_id and message.chat_id) 
+        or (message.house_id and message.response_to) 
+        or (message.chat_id and message.response_to)):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Messages needs a house_id or a chat_id, but not both.")
+            detail="Messages needs a house_id, a chat_id or a response_to, but only one of them")
 
     new_message: MessageConstructor = MessageConstructor()
 
     try:
-        user: User = User.parse_obj(users.find_one({"_id": ObjectId(sender_id)}))
+        user: User = User.parse_obj(users.find_one({"_id": ObjectId(message.sender_id)}))
         new_message.sender_id = str(user.id)
         new_message.sender_username = user.username
     except: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"There is no user with that id: {sender_id}.")
+            detail=f"There is no user with that id: {message.sender_id}.")
 
-    if house_id:
+    if message.house_id:
         try:
-            house: House = House.parse_obj(houses.find_one({"_id": ObjectId(house_id)}))
+            house: House = House.parse_obj(houses.find_one({"_id": ObjectId(message.house_id)}))
             new_message.house_id = str(house.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail=f"There is no house with that id: {house_id}.")
+                detail=f"There is no house with that id: {message.house_id}.")
     
-    if chat_id:
+    if message.chat_id:
         try:
-            chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(chat_id)}))
+            chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(message.chat_id)}))
             new_message.chat_id = str(chat.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail=f"There is no chat with that id: {chat_id}.")
+                detail=f"There is no chat with that id: {message.chat_id}.")
         if new_message.sender_id != chat.guest_id and new_message.sender_id != chat.owner_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, 
-                detail=f"The sender must be the guest '{chat.guest_id}' or the owner '{chat.owner_id}' of the booking, but is: {sender_id}.")
+                detail=f"The sender must be the guest '{chat.guest_id}' or the owner '{chat.owner_id}' of the booking, but is: {message.sender_id}.")
 
-    if response_to:
+    if message.response_to:
         try:
-            response_to_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(response_to)}))
+            response_to_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(message.response_to)}))
             new_message.response_to = str(response_to_message.id)
+            if response_to_message.chat_id:
+                chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(response_to_message.chat_id)}))
+                new_message.chat_id = str(chat.id)
+            if response_to_message.house_id:
+                house: House = House.parse_obj(houses.find_one({"_id": ObjectId(response_to_message.house_id)}))
+                new_message.house_id = str(house.id)
         except: 
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail=f"There is no message with that id: {response_to}.")
+                detail=f"There is no message with that id: {message.response_to}.")
 
     new_message.date = datetime.now(timezone("Europe/Madrid"))
-    new_message.message = message
+    new_message.message = message.message
 
     inserted_message: InsertOneResult = messages.insert_one(jsonable_encoder(new_message.exclude_unset()))
     created_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(inserted_message.inserted_id)}))

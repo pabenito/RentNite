@@ -111,16 +111,17 @@ async def get(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ChatResponse)
-async def post(
-    booking_id: str = Query(alias="booking-id"), 
-):    
+async def post(chat: ChatPost):    
+    booking_id : str = chat.booking_id
     new_chat: ChatConstructor = ChatConstructor()
 
     try:
         booking : Booking = Booking.parse_obj(bookings.find_one({"_id": ObjectId(booking_id)}))
         new_chat.booking_id = str(booking.id) 
         new_chat.booking_from = booking.from_
-        new_chat.booking_to= booking.to 
+        new_chat.booking_to= booking.to
+        new_chat.guest_id = booking.guest_id
+        new_chat.guest_username = booking.guest_name 
     except: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
@@ -142,15 +143,6 @@ async def post(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no user with that username: {house.owner_name}.")
-
-    try:
-        guest: User = User.parse_obj(users.find_one({"username": booking.user_name}))
-        new_chat.guest_id = str(guest.id) 
-        new_chat.guest_username = guest.username
-    except: 
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail=f"There is no user with that username: {booking.user_name}.")
 
     inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat.exclude_unset()))
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))

@@ -68,15 +68,21 @@ class HouseBase(BaseModel):
     rooms: int 
     bathrooms: int 
     owner_name: str = Field(alias="ownerName")
+    owner_id: str = Field(alias="ownerId")
+    image: str
+    longitude: float 
+    latitude: float 
 
 class BookingBase(BaseModel):
     state: State
     from_: datetime
     to: datetime 
     cost: int 
-    user_name: str = Field(alias="userName")
+    guest_id: str = Field(alias="guestId")
+    guest_name: str = Field(alias="guestName")
     house_id: str = Field(alias="houseId")
     house_address: str = Field(alias="houseAddress")
+    meeting_location : str = Field(alias="meetingLocation")
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -157,15 +163,21 @@ class HouseConstructor(Simplifier):
     rooms: int | None 
     bathrooms: int | None 
     owner_name: str | None = Field(alias="ownerName")
+    owner_id: str | None = Field(alias="ownerId")
+    image: str | None
+    longitude: float | None 
+    latitude: float | None 
 
 class BookingConstructor(Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
     cost: int | None 
-    user_name: str | None = Field(alias="userName")
+    guest_id: str | None = Field(alias="guestId")
+    guest_name: str | None = Field(alias="guestName")
     house_id: str | None = Field(alias="houseId")
     house_address: str | None = Field(alias="houseAddress")
+    meeting_location : str | None = Field(alias="meetingLocation")
 
 class RatingConstructor(Simplifier):
     rater_id: str | None 
@@ -173,3 +185,15 @@ class RatingConstructor(Simplifier):
     rated_user_id: str | None = None
     reted_house_id: str | None = None
     rate: int | None 
+
+# Models for post
+
+class ChatPost(BaseModel):
+    booking_id : str
+
+class MessagePost(BaseModel):
+    sender_id: str
+    message: str
+    response_to: str | None = None
+    house_id: str | None = None
+    chat_id: str | None = None

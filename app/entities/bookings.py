@@ -17,6 +17,9 @@ users = db["users"]
 # Save possible states for later
 states = ["Accepted", "Declined", "Requested", "Cancelled"]
 
+#Constants
+RNE = "Reserva no encontrada."
+
 # API
 
 
@@ -29,7 +32,7 @@ async def get():
 async def create(from_: date, to: date, cost: float, guestId: str, houseId: str, meetingLocation: str | None = None):
     try:
         house = houses.find_one({"_id": ObjectId(houseId)})
-    except:
+    except Exception:
         house = None
 
     if house is None:
@@ -38,7 +41,7 @@ async def create(from_: date, to: date, cost: float, guestId: str, houseId: str,
 
     try:
         guest = users.find_one({"_id": ObjectId(guestId)})
-    except:
+    except Exception:
         guest = None
 
     if guest is None:
@@ -84,11 +87,11 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
 
     try:
         booking = bookings.find_one({"_id": ObjectId(id)})
-    except:
+    except Exception:
         booking = None
 
     if booking is None:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada.")
+        raise HTTPException(status_code=404, detail=RNE)
 
     # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
     # independientemente de si se ha introducido en el PUT o no
@@ -107,11 +110,11 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
 async def get_by_id(id: str):
     try:
         booking = bookings.find_one(filter={"_id": ObjectId(id)}, projection={"_id": 0})
-    except:
+    except Exception:
         booking = None
 
     if booking is None:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada.")
+        raise HTTPException(status_code=404, detail=RNE)
 
     return booking
 
@@ -157,8 +160,8 @@ async def get_range(size: int, offset: int = 0):
 async def delete(id: str):
     try:
         booking = bookings.find_one_and_delete({"_id": ObjectId(id)})
-    except:
+    except Exception:
         booking = None
 
     if booking is None:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada.")
+        raise HTTPException(status_code=404, detail=RNE)

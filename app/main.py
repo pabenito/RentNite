@@ -1,5 +1,8 @@
 # Import libraries
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 # Import modules
 from .opendata import osm, aemet
@@ -7,6 +10,10 @@ from .entities import bookings, houses, users, ratings, messages, chats
 
 # Create app
 app = FastAPI()
+
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+# templates = Jinja2Templates(directory="templates")
+
 
 # Include modules
 app.include_router(
@@ -61,3 +68,7 @@ app.include_router(
 @app.get("/")
 async def root():
     return {"message": "Welcome to Rentnite"}
+
+# @app.get("/houses/", response_class=HTMLResponse)
+# async def red_houses(request: Request):
+#     return templates.TemplateResponse("offeredHouses.html", @rute )

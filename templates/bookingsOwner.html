@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Mis reservas</title>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <h1>Mis reservas</h1>
+    {% if bookings|count > 0 %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <table class="table">
+                <th>Estado</th>
+                <th>Desde</th>
+                <th>Hasta</th>
+                <th>Coste total</th>
+                <th>Cliente</th>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.state }}</td>
+                    <td>{{ booking.from_.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ booking.to.strftime('%d-%m-%Y') }}</td>
+                    <td>{{ booking.cost }}</td>
+                    <td>{{ booking.guestName }}</td>
+                    <td><a class="btn btn-warning" href="/edit/{{ booking._id}}">Editar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 bg-warning warning_mesagge">
+                <label>A&uacute;n no existen reservas.</label>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+    {% endif %}
+    <script type="text/javascript">
+        window.onload = function() {
+            if(!window.location.hash) {
+                window.location = window.location + '#loaded';
+                window.location.reload();
+            }
+        }
+    </script>
+    {% endblock content %}
+</body>
+</html>

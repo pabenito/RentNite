@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - RentNite</title>
+</head>
+
+<body>
+
+    <header>
+        <img alt="Brand" width="225" height="50" src="static/img/image.png">
+        <a href="register.html" role="button" class="btn btn-outline-light rounded-0">Registro</a>
+    </header>
+
+    <div>
+        <div>
+            <div>
+                <img src="static/img/image.png" id="icon" alt="User Icon" />
+            </div>
+            <h1>Inicie sesión</h1>
+
+            <!-- Login Form -->
+            <form id="login" method="post" action="index.html" onsubmit="return validacionLogin()">
+                <input title="Usuario" type="text" id="user" class="fadeIn second" name="login"
+                    placeholder="correo"><br>
+                <input title="Contraseña" type="password" id="password" class="fadeIn third" name="login"
+                    placeholder="contraseña"><br>
+                <input type="submit" class="fadeIn fourth" value="Entrar">
+                <input type="button" class="fadeIn fourth" value="Entrar sin iniciar sesion"
+                    onclick="location.href='indexNoUsuario.html'">
+            </form>
+
+            <!-- Remind Passowrd -->
+            <div id="formFooter">
+                <a class="underlineHover" href="">He olvidado la contraseña</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+
+</html>

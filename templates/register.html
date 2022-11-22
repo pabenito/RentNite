@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register</title>
+</head>
+
+<body>
+    <header>
+        <a href="login.html" role="button" class="btn btn-outline-light rounded-0">Login</a>
+    </header>
+
+    <main>
+        <h1 style="text-align: center;">Registro de nuevo usuario</h1>
+        <div>
+            <h6 style="text-align: center;">Por favor rellene todos los campos.</h6>
+            <div>
+                <div>
+                    <input type="text" class="form-control" id="dni" placeholder="0A" required>
+                    <label for="dni">DNI/NIE*</label>
+                </div>
+                <div>
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre" autocomplete="family-name"
+                        required>
+                    <label for="nombre">Nombre*</label>
+                </div>
+                <div>
+                    <input type="email" class="form-control" id="correo" placeholder="nombre@correo.com"
+                        autocomplete="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                    <label for="correo">Correo electrónico*</label>
+                </div>
+                <div>
+                    <input type="tel" class="form-control" id="telefono" placeholder="+00 123 45 67 89"
+                        autocomplete="tel" pattern="[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2} [0-9]{2}" required>
+                    <label for="telefono">Teléfono*</label>
+                </div>
+                <div>
+                    <input type="password" class="form-control" id="contraseña" placeholder="contraseña"
+                        autocomplete="new-password" required>
+                    <label for="contraseña">Contraseña*</label>
+                </div>
+                <div>
+                    <input type="password" class="form-control" id="contraseña2" placeholder="repita contraseña"
+                        required>
+                    <label for="contraseña2">Repita contraseña*</label>
+                </div>
+                <div>
+                    <input type="date" class="form-control" id="fechaNacimiento" min="2022-06-18" autocomplete="bday"
+                        required>
+                    <label for="fechaNacimiento">Fecha de nacimiento*</label>
+                </div>
+                <a role="button" class="btn btn-outline-secondary" href="login.html">Cancelar</a>
+                <button type="submit">Confirmar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

@@ -1,1 +1,61 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Casas Ofertadas</title>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <h1>Casas Ofertadas</h1>
+    {% if houses|count > 0 %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <img alt="Casa" width="225" height="50" src= {{ house.image }} >
+            <table class="table">
+                <th>Direccion</th>
+                <th>Capacidad</th>
+                <th>Precio</th>
+                <th>Habitaciones</th>
+                <th>Baños</th>
+                <th>Dueño</th>
+                <th>Longitud y latitud</th>
+                {% for house in houses %}
+                <tr>
+                    <td>{{ house.address }}</td>
+                    <td>{{ house.capacity }}</td>
+                    <td>{{ house.price }}</td>
+                    <td>{{ house.rooms }}</td>
+                    <td>{{ house.bathrooms }}</td>
+                    <td>{{ house.owner_name }}</td>
+                    <td>{{ house.longitude }} ; {{ house.latitude }} </td>
+                    <td><a class="btn btn-warning" href="/edit/{{ booking._id}}">Editar</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 bg-warning warning_mesagge">
+                <label>A&uacute;n No hay casas ofertadas</label>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+    {% endif %}
+    <script type="text/javascript">
+        window.onload = function() {
+            if(!window.location.hash) {
+                window.location = window.location + '#loaded';
+                window.location.reload();
+            }
+        }
+    </script>
+    {% endblock content %}
+</body>
+</html>

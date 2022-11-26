@@ -31,6 +31,7 @@ app.include_router(
 
 app.include_router(
     web.router,
+    prefix="/web",
     tags=["web"]
 )
 

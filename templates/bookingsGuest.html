@@ -25,7 +25,7 @@
                     <td>{{ booking.to.strftime('%d-%m-%Y') }}</td>
                     <td>{{ booking.cost }}</td>
                     <td>{{ booking.guestName }}</td>
-                    <td><a class="btn btn-warning" href="/edit/{{ booking._id}}">Editar</a></td>
+                    <td><a class="btn btn-warning" href="/web/bookings/{{ booking._id}}">Detalles</a></td>
                 </tr>
                 {% endfor %}
             </table>

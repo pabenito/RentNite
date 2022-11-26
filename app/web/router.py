@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from . import bookings, cookies, houses
+from . import bookings, cookies, houses, profile
 
 router = APIRouter()
 
@@ -19,4 +19,12 @@ router.include_router(
     houses.router,
     prefix="/houses",
     tags=["houses"]
+    
+)
+
+router.include_router(
+    profile.router,
+    prefix="/profile",
+    tags=["profile"]
+    
 )

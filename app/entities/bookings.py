@@ -24,7 +24,7 @@ RNE = "Reserva no encontrada."
 
 
 @router.get("/")
-async def get():
+def get():
     return list(bookings.find(projection={"_id": 0}))
 
 

@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 # Import modules
 from .opendata import osm, aemet
 from .entities import bookings, houses, users, ratings, messages, chats
+from .web import bookings as bookings_web
 
 # Create app
 app = FastAPI()
@@ -63,6 +64,15 @@ app.include_router(
     prefix="/chats",
     tags=["entities", "chats"]
 )
+
+# Web
+
+app.include_router(
+    bookings_web.router,
+    prefix="/web/bookings",
+    tags=["web", "bookings"]
+)
+
 
 
 @app.get("/")

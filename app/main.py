@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 from .opendata import osm, aemet
 from .entities import bookings, houses, users, ratings, messages, chats
 from .web import bookings as bookings_web
+from .web import cookies as cookies
 
 # Create app
 app = FastAPI()
@@ -71,6 +72,12 @@ app.include_router(
     bookings_web.router,
     prefix="/web/bookings",
     tags=["web", "bookings"]
+)
+
+app.include_router(
+    cookies.router,
+    prefix="/web/cookies",
+    tags=["web", "cookies"]
 )
 
 

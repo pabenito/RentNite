@@ -77,6 +77,6 @@ async def login(request:Request):
 async def login(request:Request):
     return templates.TemplateResponse("profile.html", {"request": request})
 
-# @app.get("/houses/", response_class=HTMLResponse)
-# async def red_houses(request: Request):
-#     return templates.TemplateResponse("offeredHouses.html", @rute )
+@app.get("/houses/", response_class=HTMLResponse)
+async def red_houses(request: Request):
+    return templates.TemplateResponse("offeredHouses.html", {"request": request}  )

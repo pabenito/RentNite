@@ -21,15 +21,16 @@
                     {% for house in houses %}
                     <div class="col-md-4">
                         <div class="thumbnail">
-                                <img src="{{ house.image }}" alt="Imagen casa ofertada" style="width:100%">
+                                <img src="{{ house.image }}" alt="Imagen casa ofertada" style="width:100%" onclick="">
                                 <div class="caption">
                                     <p> Direccion: {{ house.address }} </p>
                                     <p> Capacidad: {{ house.capacity }} </p>
                                     <p> Precio: {{ house.price }} </p>
                                     <p> Habitaciones: {{ house.rooms }} </p>
                                     <p> Baños: {{ house.bathrooms }} </p>
-                                    <a href="http://127.0.0.1:8000/houses/profile/{{ house.ownerId}}"><p> Dueño: {{ house.ownerName }} </p></a>
+                                    <a href="profile/{{house.ownerId}}"><p> Dueño: {{ house.ownerName }} </p></a>
                                     <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
+                                    <button onclick="booking">Reservar</button>
                                 </div>
                         </div>
                     </div>

@@ -11,8 +11,8 @@ from .entities import bookings, houses, users, ratings, messages, chats
 # Create app
 app = FastAPI()
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-# templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
 # Include modules
@@ -68,6 +68,14 @@ app.include_router(
 @app.get("/")
 async def root():
     return {"message": "Welcome to Rentnite"}
+
+@app.get("/login", response_class=HTMLResponse)
+async def login(request:Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.get("/profile", response_class=HTMLResponse)
+async def login(request:Request):
+    return templates.TemplateResponse("profile.html", {"request": request})
 
 # @app.get("/houses/", response_class=HTMLResponse)
 # async def red_houses(request: Request):

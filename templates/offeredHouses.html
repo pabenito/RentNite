@@ -15,29 +15,18 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            
-            <table class="table">
-                <th>Foto</th>
-                <th>Direccion</th>
-                <th>Capacidad</th>
-                <th>Precio</th>
-                <th>Habitaciones</th>
-                <th>Baños</th>
-                <th>Dueño</th>
-                <th>Longitud y latitud</th>
-                {% for house in houses %}
-                <tr>
-                    <td><img alt="Casa" width="257" height="205" src="{{ house.image }}"></td>
-                    <td>{{ house.address }}</td>
-                    <td>{{ house.capacity }}</td>
-                    <td>{{ house.price }}</td>
-                    <td>{{ house.rooms }}</td>
-                    <td>{{ house.bathrooms }}</td>
-                    <td>{{ house.owner_name }}</td>
-                    <td>{{ house.longitude }} ; {{ house.latitude }} </td>
-                </tr>
-                {% endfor %}
-            </table>
+            {% for house in houses %}
+
+        <img alt="Casa" width="257" height="205" src={{ house.image }}>
+          <p> <h2>{{ house.address }}</h2> </p>
+            {{ house.capacity }}
+            {{ house.price }}
+            {{ house.rooms }}
+            {{ house.bathrooms }}
+            {{ house.owner_name }}
+            {{ house.longitude }} ; {{ house.latitude }}
+
+            {% endfor %}
         </div>
         <div class="col-md-2"></div>
     </div>

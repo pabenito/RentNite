@@ -16,22 +16,27 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
+            <iframe src="https://i.imgur.com/oq3yPM6.jpeg" alt="Imagen casa ofertada" style="width:100%" onclick=""></iframe>
+            <iframe src="https://i.imgur.com/oq3yPM6.jpeg" height="596" width="345" frameborder="0" scrolling="no" ></iframe>
+
             <div class="container">
                 <div class="row">
                     {% for house in houses %}
                     <div class="col-md-4">
                         <div class="thumbnail">
-                                <img src="{{ house.image }}" alt="Imagen casa ofertada" style="width:100%" onclick="">
-                                <div class="caption">
-                                    <p> Direccion: {{ house.address }} </p>
-                                    <p> Capacidad: {{ house.capacity }} </p>
-                                    <p> Precio: {{ house.price }} </p>
-                                    <p> Habitaciones: {{ house.rooms }} </p>
-                                    <p> Baños: {{ house.bathrooms }} </p>
-                                    <a href="profile/{{house.ownerId}}"><p> Dueño: {{ house.ownerName }} </p></a>
-                                    <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
-                                    <button onclick="booking">Reservar</button>
-                                </div>
+                            <img src={{ house.image }} alt="Imagen casa ofertada" style="width:100%" onclick="">
+                            <div class="caption">
+                                <p> Direccion: {{ house.address }} </p>
+                                <p> Capacidad: {{ house.capacity }} </p>
+                                <p> Precio: {{ house.price }} </p>
+                                <p> Habitaciones: {{ house.rooms }} </p>
+                                <p> Baños: {{ house.bathrooms }} </p>
+                                <p> Dueño: <a href="profile/{{house.ownerId}}">{{ house.ownerName }}</a> </p>
+                                <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
+                                <p> Coordenadas: {{ house.image }} </p>
+
+                                <button onclick="booking">Reservar</button>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}

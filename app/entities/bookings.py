@@ -2,17 +2,18 @@
 import re
 from datetime import date, datetime, time
 from fastapi import APIRouter, HTTPException, status
+from pymongo.collection import Collection
 
-from bson.objectid import ObjectId
 from app.database import db
+from .models import *
 
 # Create router
 router = APIRouter()
 
 # Initialize DB
-bookings = db["bookings"]
-houses = db["houses"]
-users = db["users"]
+bookings: Collection = db["bookings"]
+houses: Collection = db["houses"]
+users: Collection = db["users"]
 
 # Save possible states for later
 states = ["Accepted", "Declined", "Requested", "Cancelled"]
@@ -21,11 +22,10 @@ states = ["Accepted", "Declined", "Requested", "Cancelled"]
 RNE = "Reserva no encontrada."
 
 # API
-
-
 @router.get("/")
 def get():
-    return list(bookings.find(projection={"_id": 0}))
+    return list(bookings.find())
+    #return list(bookings.find(projection={"_id": 0}))
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

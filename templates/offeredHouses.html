@@ -16,9 +16,6 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            <iframe src="https://i.imgur.com/oq3yPM6.jpeg" alt="Imagen casa ofertada" style="width:100%" onclick=""></iframe>
-            <iframe src="https://i.imgur.com/oq3yPM6.jpeg" height="596" width="345" frameborder="0" scrolling="no" ></iframe>
-
             <div class="container">
                 <div class="row">
                     {% for house in houses %}
@@ -31,10 +28,9 @@
                                 <p> Precio: {{ house.price }} </p>
                                 <p> Habitaciones: {{ house.rooms }} </p>
                                 <p> Baños: {{ house.bathrooms }} </p>
-                                <p> Dueño: <a href="profile/{{house.ownerId}}">{{ house.ownerName }}</a> </p>
+                                <p> Dueño: <span onClick="profile(" {{ house.ownerId }} ");" style="cursor: pointer"> {{ house.ownerName }}</span></p>
+                                <p> Dueño: <a window.location =" {{ house.ownerId }} ">{{ house.ownerName }}</a> </p>
                                 <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
-                                <p> Coordenadas: {{ house.image }} </p>
-
                                 <button onclick="booking">Reservar</button>
                             </div>
                         </div>
@@ -57,17 +53,15 @@
             </div>
         </div>
         {% endif %}
-        <script type="text/javascript">
-            window.onload = function () {
-                if (!window.location.hash) {
-                    window.location = window.location + '#loaded';
-                    window.location.reload();
+      
+        
+
+            <script> 
+                function profile(OwnerId){
+                    console.log(OwnerId);
+                    window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
                 }
-            }
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-            crossorigin="anonymous"></script>
+            </script>
 
         {% endblock content %}
 </body>

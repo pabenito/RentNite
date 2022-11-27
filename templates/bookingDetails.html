@@ -7,8 +7,7 @@
 </head>
 <body>
     {% block content %}
-    <h1 style="text-align: center; margin-top: 30px">Mis reservas</h1>
-    {% if bookings | count > 0 %}
+    <h1 style="text-align: center; margin-top: 30px">Detalles de la reserva</h1>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
@@ -33,7 +32,6 @@
         </div>
         <div class="col-md-2"></div>
     </div>
-    <img src={{ img }}>
     {% else %}
     <div class="row">
         <div class="col-lg-12 text-center">

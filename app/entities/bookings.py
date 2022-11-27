@@ -107,7 +107,7 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
 
 
 @router.get("/{id}")
-async def get_by_id(id: str):
+def get_by_id(id: str):
     try:
         booking = bookings.find_one(filter={"_id": ObjectId(id)}, projection={"_id": 0})
     except Exception:
@@ -123,7 +123,7 @@ async def get_by_id(id: str):
 
 
 @router.get("/search/")
-async def search(guestName: str | None = None, houseId: str | None = None, state: str | None = None):
+def search(guestName: str | None = None, houseId: str | None = None, state: str | None = None):
     if guestName is None and houseId is None and state is None:
         raise HTTPException(
             status_code=400, detail="No se han proporcionado parametros de busqueda.")

@@ -7,5 +7,5 @@ def create_cookie(response: Response):
     response.set_cookie(key="user", value="my_username")
 
 @router.get("/user/")
-def create_cookie(user = Cookie(default=None)):
+def cookie_test(user = Cookie(default=None)):
     return {"user": user}

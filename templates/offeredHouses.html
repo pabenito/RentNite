@@ -28,7 +28,7 @@
                                 <p> Precio: {{ house.price }} </p>
                                 <p> Habitaciones: {{ house.rooms }} </p>
                                 <p> Baños: {{ house.bathrooms }} </p>
-                                <p> Dueño: <span onclick="profile('{{ house.ownerId }}');" style="cursor: pointer"> {{
+                                <p> Dueño: <span onclick="profile('{{ house.owner_id }}');" style="cursor: pointer"> {{
                                         house.owner_name }}</span></p>
                                 <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
                                 <button onclick="booking">Reservar</button>

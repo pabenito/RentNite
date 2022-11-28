@@ -41,7 +41,7 @@ def get(address: str | None = None, capacity: int | None = None, price: float | 
 
 
 @router.get("/{id}")
-async def get_by_id(id: str):
+def get_by_id(id: str):
     try:
         house = House.parse_obj(houses.find_one({"_id": ObjectId(id)})).to_response()
     except:

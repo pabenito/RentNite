@@ -20,7 +20,7 @@ bookings: Collection = db["bookings"]
 
 # API
 @router.get("/")
-async def get(
+def get(
     sender_id: str | None = Query(default=None, alias="sender-id"), 
     house_id: str | None = Query(default=None, alias="house-id"), 
     chat_id: str | None = Query(default=None, alias="chat-id"), 
@@ -84,7 +84,7 @@ async def get(
     return messages_list
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def post(message : MessagePost = Body(examples = 
+def post(message : MessagePost = Body(examples = 
     {
         "Chat message": {
             "value": {

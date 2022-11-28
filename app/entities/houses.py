@@ -73,8 +73,8 @@ def create(house: HousePost):
     parameters = jsonable_encoder(house)
     parameters["owner_name"] = owner["username"]
 
-    insertOneResult: InsertOneResult = houses.insert_one(parameters)
-    return House.parse_obj(houses.find_one({"_id": ObjectId(insertOneResult.inserted_id)})).to_response()
+    inserted_house: InsertOneResult = houses.insert_one(parameters)
+    return House.parse_obj(houses.find_one({"_id": ObjectId(inserted_house.inserted_id)})).to_response()
 
 
 @router.put("/{id}")

@@ -4,6 +4,7 @@ from datetime import date, datetime, time
 from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, HTTPException, status
 from pymongo.collection import Collection
+from pymongo.results import InsertOneResult
 
 from app.database import db
 from .models import *
@@ -71,7 +72,8 @@ def create(booking : BookingPost):
 
     new_booking.state = State.REQUESTED
 
-    bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
+    inserted_booking: InsertOneResult = bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
+    return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
 #Este put no esta hecho con BaseModel
 @router.put("/{id}")

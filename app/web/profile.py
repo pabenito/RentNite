@@ -11,3 +11,7 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/", response_class=HTMLResponse)
 def read_item(request: Request,user = Cookie(default=None)):
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
+
+#@router.get("/{id}", response_class=HTMLResponse)
+#def read_item_id(request: Request,id: str):
+#    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id)})

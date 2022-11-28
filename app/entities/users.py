@@ -58,7 +58,7 @@ def get_by_id(response: Response, id: str):
 
 #Borra un usuario
 @router.delete("/{id}")
-def get_by_id(response: Response, id: str):
+def delete(response: Response, id: str):
     try:
         user = users.find_one_and_delete({"_id": ObjectId(id)})
     except Exception:

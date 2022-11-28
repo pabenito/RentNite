@@ -1,6 +1,6 @@
 from pydantic import Field, EmailStr, BaseModel
 from bson.objectid import ObjectId
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from copy import deepcopy
 import uuid
@@ -8,10 +8,10 @@ import uuid
 # Enums
 
 class State(Enum):
-    ACCEPTED = "Accepted"
-    DECLINED = "Declined"
-    REQUESTED = "Requested"
-    CANCELLED = "Cancelled"
+    ACCEPTED = "Aceptada"
+    DECLINED = "Rechazada"
+    REQUESTED = "Solicitada"
+    CANCELLED = "Cancelada"
 
 # Define our Entities and Plain models, differs in id type
 
@@ -77,7 +77,7 @@ class BookingBase(BaseModel):
     state: State
     from_: datetime
     to: datetime 
-    cost: int 
+    cost: float 
     guest_id: str = Field(alias="guestId")
     guest_name: str = Field(alias="guestName")
     house_id: str = Field(alias="houseId")
@@ -172,7 +172,7 @@ class BookingConstructor(Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
-    cost: int | None 
+    cost: float | None 
     guest_id: str | None = Field(alias="guestId")
     guest_name: str | None = Field(alias="guestName")
     house_id: str | None = Field(alias="houseId")
@@ -197,3 +197,14 @@ class MessagePost(BaseModel):
     response_to: str | None = None
     house_id: str | None = None
     chat_id: str | None = None
+
+class BookingPost(BaseModel):
+    state: State
+    from_: date
+    to: date
+    cost: float
+    guest_id: str
+    guest_name: None
+    house_id: str
+    house_address: None
+    meeting_location : str | None = None

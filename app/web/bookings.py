@@ -13,11 +13,20 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class=HTMLResponse)
 def list_bookings(request: Request):
+    # List of all bookings
     return templates.TemplateResponse("bookings.html", {"request": request, "bookings": bookings_api.get()})
 
 @router.get("/booked", response_class=HTMLResponse)
 def my_bookings(request: Request, user = Cookie(default=None)):
-    return templates.TemplateResponse("bookings.html", {"request": request, "bookings": bookings_api.search(guest_name=user)})
+    # List of bookings that you have booked
+    user = "Asier Gallego"
+    return templates.TemplateResponse("bookings.html", {"request": request, "bookings": bookings_api.search(guest_name=user), "kind": "as_guest"})
+
+@router.get("/myHouses", response_class=HTMLResponse)
+def houses_booked(request: Request, user = Cookie(default=None)):
+    # List of bookings with your houses
+    user = "Asier Gallego"
+    return templates.TemplateResponse("bookings.html", {"request": request, "bookings": bookings_api.get_by_house_owner_name(owner_name=user), "kind": "as_owner"})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def booking_details(request: Request, id: str):

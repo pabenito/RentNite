@@ -166,6 +166,18 @@ def search(
 
     return result
 
+# Get bookings by house owner name
+@router.get("/getByHouseOwner")
+def get_by_house_owner_name(owner_name: str):
+    bookings_list = list(bookings.find())
+    result = []
+
+    for b in bookings_list:
+        house = houses_api.get_by_id(b["house_id"])
+        if house["owner_name"] == owner_name:
+            result.append(Booking.parse_obj(b).to_response())
+
+    return result
 
 @ router.get("/range/")
 def get_range(size: int, offset: int = 0):

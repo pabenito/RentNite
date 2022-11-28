@@ -13,12 +13,32 @@
         <div class="col-md-4">
             <table class="table">
                 <tr>
-                    <td class="h3">Direcci&oacute;n de la casa:</td>
-                    <td class="h5">{{ booking.houseAddress }}</td>
+                    <td class="h3">Estado:</td>
+                    <td class="h5">{{ booking.state.value }}</td>
+                </tr>
+                <tr>
+                    <td class="h3">Fecha de comienzo:</td>
+                    <td class="h5">{{ booking.from_.strftime('%d-%m-%Y') }}</td>
+                </tr>
+                <tr>
+                    <td class="h3">Fecha de fin:</td>
+                    <td class="h5">{{ booking.to.strftime('%d-%m-%Y') }}</td>
+                </tr>
+                <tr>
+                    <td class="h3">Coste total:</td>
+                    <td class="h5">{{ booking.cost }} €</td>
                 </tr>
                 <tr>
                     <td class="h3">Cliente:</td>
-                    <td class="h5">{{ booking.guestName }}</td>
+                    <td class="h5">{{ booking.guest_name }}</td>
+                </tr>
+                <tr>
+                    <td class="h3">Direcci&oacute;n de la casa:</td>
+                    <td class="h5">{{ booking.house_address }}</td>
+                </tr>
+                <tr>
+                    <td class="h3">Lugar de reuni&oacute;n:</td>
+                    <td class="h5">{{ booking.meeting_location }}</td>
                 </tr>
             </table>
         </div>
@@ -27,12 +47,17 @@
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4 d-flex justify-content-between">
-            {% if user != booking.guestName %}
-            <button type="button" class="btn btn-outline-success">Valorar cliente</button>
-            {% else %}
-            <button type="button" class="btn btn-outline-success">Valorar casa</button>
+            {% if user == booking.guest_name %}
+            <button type="button" class="btn btn-outline-primary">Valorar casa</button>
             {% endif %}
-            <button type="button" class="btn btn-outline-danger">Eliminar reserva</button>
+            {% if true %}
+            <button type="button" class="btn btn-outline-primary">Valorar cliente</button>
+            {% if booking.state == REQUESTED %}
+            <button type="button" class="btn btn-outline-success">Aceptar reserva</button>
+            <button type="button" class="btn btn-outline-warning">Cancelar reserva</button>
+            {% endif %}
+            <button type="button" class="btn btn-outline-danger">Declinar reserva</button>
+            {% endif %}
         </div>
         <div class="col-md-4"></div>
     </div>

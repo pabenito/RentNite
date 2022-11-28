@@ -1,11 +1,15 @@
 # Import libraries
 import re
 from datetime import date, datetime, time
+from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, HTTPException, status
 from pymongo.collection import Collection
 
 from app.database import db
 from .models import *
+
+from ..entities import houses as houses_api
+#from ..entities import users as users_api
 
 # Create router
 router = APIRouter()
@@ -24,44 +28,53 @@ RNE = "Reserva no encontrada."
 # API
 @router.get("/")
 def get():
-    return list(bookings.find())
-    #return list(bookings.find(projection={"_id": 0}))
+    bookings_list = list(bookings.find())
+    result = []
+
+    for b in bookings_list:
+        result.append(Booking.parse_obj(b).to_response())
+
+    return result
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create(from_: date, to: date, cost: float, guestId: str, houseId: str, meetingLocation: str | None = None):
-    try:
-        house = houses.find_one({"_id": ObjectId(houseId)})
-    except Exception:
-        house = None
+async def create(booking : BookingPost):
+    new_booking: BookingConstructor = BookingConstructor()
 
-    if house is None:
+    try:
+        house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
+        new_booking.house_id = str(house.id)
+        new_booking.house_address = str(house.address)
+    except:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
 
     try:
-        guest = users.find_one({"_id": ObjectId(guestId)})
+        guest : User = User.parse_obj(users.find_one({"_id": ObjectId(booking.guest_id)}))
+        new_booking.guest_id = str(guest.id)
+        new_booking.guest_name = str(guest.username)
     except Exception:
-        guest = None
-
-    if guest is None:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
 
-    # Comprobar si la id introducida corresponde a una casa
+    from_ = datetime.combine(booking.from_, time.min)
+    to = datetime.combine(booking.to, time.min)
+    
+    new_booking.from_ = from_
+    new_booking.to = to
 
-    from_ = datetime.combine(from_, time.min)
-    to = datetime.combine(to, time.min)
-
-    if cost > 0 and from_ < to:
-        bookings.insert_one({"state": "Requested", "from_":  from_,
-                            "to": to, "cost": cost, "guestId": guestId,
-                            "guestName": guest["username"], "houseId": houseId,
-                            "houseAddress": house["address"], "meetingLocation": meetingLocation})
+    if booking.cost > 0 and booking.from_ < booking.to:
+        new_booking.cost = booking.cost
     else:
         raise HTTPException(
             status_code=400, detail="Coste o fecha incorrectos.")
 
+    if booking.meeting_location is not None:
+        new_booking.meeting_location = booking.meeting_location
+
+    new_booking.state = State.REQUESTED
+
+    bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
 
 @router.put("/{id}")
 async def update(id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
@@ -109,14 +122,9 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
 @router.get("/{id}")
 def get_by_id(id: str):
     try:
-        booking = bookings.find_one(filter={"_id": ObjectId(id)}, projection={"_id": 0})
+        return Booking.parse_obj(bookings.find_one({"_id" : ObjectId(id)})).to_response()
     except Exception:
-        booking = None
-
-    if booking is None:
         raise HTTPException(status_code=404, detail=RNE)
-
-    return booking
 
 
 # Get global

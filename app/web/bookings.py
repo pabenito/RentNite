@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import bookings as bookings_api
 from ..entities import houses as houses_api
+from ..entities.models import *
 
 router = APIRouter()
 
@@ -19,4 +20,6 @@ def my_bookings(request: Request):
 
 @router.get("/{id}", response_class=HTMLResponse)
 def booking_details(request: Request, id: str, user = Cookie(default=None)):
-    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": bookings_api.get_by_id(id), "user": user})
+    booking = bookings_api.get_by_id(id)
+    # "house": houses_api.get_by_id(booking["house_id"]),
+    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "user": user})

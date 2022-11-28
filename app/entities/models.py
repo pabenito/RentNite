@@ -208,3 +208,14 @@ class BookingPost(BaseModel):
     house_id: str
     house_address: None = None
     meeting_location : str | None = None
+
+class HousePost(BaseModel):
+    address: str 
+    capacity: int 
+    price: int 
+    rooms: int 
+    bathrooms: int 
+    owner_id: str = Field(alias="ownerId")
+    image: str
+    longitude: float 
+    latitude: float 

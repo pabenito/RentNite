@@ -48,3 +48,9 @@ def update_booking_state(request: Request, id: str, state: State = Form()):
     # Update a booking from a form
     bookings_api.update(id=id, state=state)
     return booking_details(request=request, id=id)
+
+@router.get("/{id}/chat")
+def goto_chat(request: Request, id: str):
+    # TODO
+    # This will send you to the chat page of the booking
+    return None

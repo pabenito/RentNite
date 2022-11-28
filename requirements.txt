@@ -8,3 +8,5 @@ requests
 email-validator
 jinja2
 pytz
+folium
+branca

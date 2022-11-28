@@ -60,15 +60,20 @@
             <a class="btn btn-outline-primary" href="#" role="button">Valorar cliente</a>
             {% if booking.state == State.REQUESTED %}
             <form method="PUT" action="/bookings/{{ booking.id }}">
-                <input class="btn btn-outline-success" type="button" value="Aceptar reserva">
+                <input type="hidden" name="state" value="{{ State.ACCEPTED.value }}"/>
+                <input class="btn btn-outline-success" type="submit" value="Aceptar reserva">
             </form>
-            <form method="PUT" action="/entities/bookings/{{ booking.id }}?state=Cancelada">
+            <form method="PUT" action="/bookings/{{ booking.id }}">
+                <input type="hidden" name="state" value="{{ State.CANCELLED.value }}"/>
                 <input class="btn btn-outline-warning" type="submit" value="Cancelar reserva">
             </form>
             {% endif %}
-            <form method="PUT" action="/entities/bookings/{{ booking.id }}?state=Rechazada">
+            {% if booking.state != State.DECLINED %}
+            <form method="POST" action="/bookings/{{ booking.id }}">
+                <input type="hidden" name="state" value="{{ State.DECLINED.value }}"/>
                 <input class="btn btn-outline-danger" type="submit" value="Rechazar reserva">
             </form>
+            {% endif %}
             {% endif %}
         </div>
         <div class="col-md-4"></div>

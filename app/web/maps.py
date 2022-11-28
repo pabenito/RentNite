@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from pydantic import BaseModel, Field
 from fastapi.responses import HTMLResponse
 from folium import Map, Circle, Marker, Popup, Icon
@@ -6,8 +6,28 @@ from branca.element import Figure
 
 router = APIRouter()
 
+class POI(BaseModel):
+    latitude: float
+    longitude: float
+    color: str = "blue"
+    popup: str = None
+    icon: str = "circle"
+
+class House(POI):
+    color: str = "red"
+    popup: str = Field(alias="address"), 
+    icon: str = "home"
+
+class Bus(POI):
+    color: str = "blue"
+    popup: str = Field(alias="number"), 
+    icon: str = "bus"
+
 def create_map(latitude: float, longitude: float, zoom: int = 17):
     return Map(location=[latitude, longitude], zoom_start=zoom)
+
+def create_figure(width: int = 600, height: int = 400):
+    return Figure(width=width, height=height)
 
 def create_marker(
     latitude: float,
@@ -40,20 +60,32 @@ def create_marker_bus(
 ):
     return create_marker(latitude, longitude, color, icon, number)
 
-def plot(map: Map, marker: Marker, width: int = 600, height: int = 400):
-    fig = Figure(width=width, height=height)
-    marker.add_to(map)
-    fig.add_child(map)
-    return fig.render()
+def plot(map: Map, figure: Figure = Depends(create_figure)):
+    figure.add_child(map)
+    return figure.render()
+
+@router.get("/", response_class=HTMLResponse)
+def marker(marker: list[POI], map: Map = Depends(create_map)):
+    return plot(map, marker)
 
 @router.get("/marker", response_class=HTMLResponse)
 def marker(map: Map = Depends(create_map), marker: Marker = Depends(create_marker)):
-    return plot(map, marker)
+    marker.add_to(map)
+    return plot(map)
 
 @router.get("/bus", response_class=HTMLResponse)
 def bus(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_bus)):
+    marker.add_to(map)
     return plot(map, marker)
 
 @router.get("/house", response_class=HTMLResponse)
 def house(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_house)):
+    marker.add_to(map)
     return plot(map, marker)
+
+@router.get("/buses", response_class=HTMLResponse)
+def house(buses: list[Bus], map: Map = Depends(create_map)):
+    for bus in buses:
+        bus: Bus = bus
+        create_marker_bus(**bus.dict()).add_to(map)
+    return plot(map)

@@ -19,9 +19,6 @@ bookings: Collection = db["bookings"]
 houses: Collection = db["houses"]
 users: Collection = db["users"]
 
-# Save possible states for later
-states = ["Accepted", "Declined", "Requested", "Cancelled"]
-
 #Constants
 RNE = "Reserva no encontrada."
 
@@ -38,7 +35,7 @@ def get():
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create(booking : BookingPost):
+def create(booking : BookingPost):
     new_booking: BookingConstructor = BookingConstructor()
 
     try:
@@ -76,8 +73,9 @@ async def create(booking : BookingPost):
 
     bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
 
+#Este put no esta hecho con BaseModel
 @router.put("/{id}")
-async def update(id: str, state: str | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
+async def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
 
     # Formatear las fechas correctamente si se han proporcionado
     if from_ is not None:
@@ -85,8 +83,11 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
     if to is not None:
         to = datetime.combine(to, time.min)
 
+    if state is not None:
+        state = state.value
+
     # Inicializar diccionario con todos los datos a introducir, borrando los que son None
-    data = {"state": state, "from_": from_, "to": to, "cost": cost, "meetingLocation": meetingLocation}
+    data = {"state": state, "from_": from_, "to": to, "cost": cost, "meeting_location": meetingLocation}
     data = {k: v for k, v in data.items() if v is not None}
 
     # Comprobar si se han introducido 0 datos y lanzar una excepcion si se da el caso
@@ -94,8 +95,8 @@ async def update(id: str, state: str | None = None, from_: date | None = None, t
         raise HTTPException(
             status_code=400, detail="No hay nada que actualizar.")
 
-    # Comprobar si el estado y el coste tienen un formato correcto y lanzar una excepcion en caso contrario
-    if (state is not None and state not in states) or (cost is not None and cost <= 0):
+    # Comprobar si el coste tiene un formato correcto y lanzar una excepcion en caso contrario
+    if cost is not None and cost <= 0:
         raise HTTPException(status_code=400, detail="Valores incorrectos.")
 
     try:
@@ -146,13 +147,13 @@ def search(
     if guest_name is not None:
         guest_name = re.compile(".*" + guest_name + ".*",
                                re.IGNORECASE)  # type: ignore
-        params['guestName'] = {"$regex": guest_name}
+        params['guest_name'] = {"$regex": guest_name}
 
     if guest_id is not None:
-        params['guestId'] = guest_id
+        params['guest_id'] = guest_id
 
     if house_id is not None:
-        params['houseId'] = house_id
+        params['house_id'] = house_id
 
     if state is not None:
         params['state'] = state.value
@@ -167,19 +168,25 @@ def search(
 
 
 @ router.get("/range/")
-async def get_range(size: int, offset: int = 0):
+def get_range(size: int, offset: int = 0):
     if offset < 0 or size <= 0:
         raise HTTPException(
             status_code=400, detail="El tamaño o el offset no tienen un formato correcto.")
 
-    return list(bookings.find(projection={"_id": 0}, skip=offset, limit=size))
+    bookings_list = list(bookings.find(skip=offset, limit=size))
+    result = []
+
+    for b in bookings_list:
+        result.append(Booking.parse_obj(b).to_response())
+    
+    return result
 
 
 @ router.delete("/{id}")
-async def delete(id: str):
+def delete(id: str):
     try:
         booking = bookings.find_one_and_delete({"_id": ObjectId(id)})
-    except Exception:
+    except:
         booking = None
 
     if booking is None:

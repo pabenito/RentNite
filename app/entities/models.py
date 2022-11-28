@@ -78,11 +78,11 @@ class BookingBase(BaseModel):
     from_: datetime
     to: datetime 
     cost: float 
-    guest_id: str = Field(alias="guestId")
-    guest_name: str = Field(alias="guestName")
-    house_id: str = Field(alias="houseId")
-    house_address: str = Field(alias="houseAddress")
-    meeting_location : str = Field(alias="meetingLocation")
+    guest_id: str
+    guest_name: str
+    house_id: str
+    house_address: str
+    meeting_location : str | None = None
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -199,7 +199,7 @@ class MessagePost(BaseModel):
     chat_id: str | None = None
 
 class BookingPost(BaseModel):
-    state: State
+    state: None = None
     from_: date
     to: date
     cost: float

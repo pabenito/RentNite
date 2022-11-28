@@ -15,18 +15,18 @@ bookings = db["bookings"]
 
 # API
 @router.get("/")
-async def root():
+def root():
     return {"message": "Welcome to users microservice"}
 
 #Inserta un usuario en la base de datos
 @router.post("/")
-async def create(response: Response, username: str, email: str):
+def create(response: Response, username: str, email: str):
     users.insert_one({"username": username, "email": email})
     response.status_code = 201
 
 #Actualiza un usuario 
 @router.put("/{id}")
-async def update(response: Response,id: str, username: str | None = None, email: str | None = None):
+def update(response: Response,id: str, username: str | None = None, email: str | None = None):
     data = {"username": username, "email": email}
     data = {k: v for k, v in data.items() if v is not None}
     
@@ -45,7 +45,7 @@ async def update(response: Response,id: str, username: str | None = None, email:
 
 #Devuelve un usuario por su id
 @router.get("/{id}")
-async def get_by_id(response: Response, id: str):
+def get_by_id(response: Response, id: str):
     try:
         user = users.find_one({"_id": ObjectId(id)}, {"_id": 0})
     except Exception:
@@ -58,7 +58,7 @@ async def get_by_id(response: Response, id: str):
 
 #Borra un usuario
 @router.delete("/{id}")
-async def get_by_id(response: Response, id: str):
+def delete(response: Response, id: str):
     try:
         user = users.find_one_and_delete({"_id": ObjectId(id)})
     except Exception:
@@ -69,7 +69,7 @@ async def get_by_id(response: Response, id: str):
 
 #Devuelve la lista de casas de un usuario
 @router.get("/{user_id}/houses")
-async def get_houses_from_user(response: Response, user_id: str):
+def get_houses_from_user(response: Response, user_id: str):
     try:
         user = users.find_one({"_id": ObjectId(user_id)}, {"_id": 0})
     except Exception:
@@ -89,7 +89,7 @@ async def get_houses_from_user(response: Response, user_id: str):
 
 #Devuelve la lista de reservas de un usuario
 @router.get("/{user_id}/bookings")
-async def get_bookings_from_user(response: Response, user_id: str):
+def get_bookings_from_user(response: Response, user_id: str):
     try:
         params = dict()
         params['guestId'] = user_id

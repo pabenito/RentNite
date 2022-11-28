@@ -8,5 +8,9 @@ requests
 email-validator
 jinja2
 pytz
+<<<<<<< HEAD
 folium
 branca
+=======
+python-multipart
+>>>>>>> 0eaa5947faa62443587959a7d8db53010c560bb1

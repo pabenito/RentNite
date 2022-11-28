@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - RentNite</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -22,11 +25,9 @@
             <h1>Inicie sesión</h1>
 
             <!-- Login Form -->
-            <form id="login" method="post" >
+            <form id="login" method="post" onsubmit="return validacionLogin()">
                 <input title="Usuario" type="text" id="user" class="fadeIn second" name="login"
                     placeholder="correo"><br>
-                <input title="Contraseña" type="password" id="password" class="fadeIn third" name="login"
-                    placeholder="contraseña"><br>
                 <input type="submit" class="fadeIn fourth" value="Entrar">
             </form>
 
@@ -37,6 +38,13 @@
 
         </div>
     </div>
+    <script>
+        function validacionLogin() {
+            const n = document.getElementById("user").value;
+            window.location = ("http://127.0.0.1:8000/login/" + n);
+        }
+    </script>
+
 </body>
 
 

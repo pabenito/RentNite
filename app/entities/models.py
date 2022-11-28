@@ -1,6 +1,6 @@
 from pydantic import Field, EmailStr, BaseModel
 from bson.objectid import ObjectId
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 from copy import deepcopy
 import uuid
@@ -8,10 +8,10 @@ import uuid
 # Enums
 
 class State(Enum):
-    ACCEPTED = "Accepted"
-    DECLINED = "Declined"
-    REQUESTED = "Requested"
-    CANCELLED = "Cancelled"
+    ACCEPTED = "Aceptada"
+    DECLINED = "Rechazada"
+    REQUESTED = "Solicitada"
+    CANCELLED = "Cancelada"
 
 # Define our Entities and Plain models, differs in id type
 
@@ -64,11 +64,11 @@ class UserBase(BaseModel):
 class HouseBase(BaseModel):
     address: str 
     capacity: int 
-    price: int 
+    price: float 
     rooms: int 
     bathrooms: int 
-    owner_name: str = Field(alias="ownerName")
-    owner_id: str = Field(alias="ownerId")
+    owner_name: str
+    owner_id: str
     image: str
     longitude: float 
     latitude: float 
@@ -77,12 +77,12 @@ class BookingBase(BaseModel):
     state: State
     from_: datetime
     to: datetime 
-    cost: int 
-    guest_id: str = Field(alias="guestId")
-    guest_name: str = Field(alias="guestName")
-    house_id: str = Field(alias="houseId")
-    house_address: str = Field(alias="houseAddress")
-    meeting_location : str = Field(alias="meetingLocation")
+    cost: float 
+    guest_id: str
+    guest_name: str
+    house_id: str
+    house_address: str
+    meeting_location : str | None = None
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -159,11 +159,11 @@ class UserConstructor(Simplifier):
 class HouseConstructor(Simplifier):
     address: str | None 
     capacity: int | None 
-    price: int | None 
+    price: float | None 
     rooms: int | None 
     bathrooms: int | None 
-    owner_name: str | None = Field(alias="ownerName")
-    owner_id: str | None = Field(alias="ownerId")
+    owner_name: str | None
+    owner_id: str | None
     image: str | None
     longitude: float | None 
     latitude: float | None 
@@ -172,7 +172,7 @@ class BookingConstructor(Simplifier):
     state: State | None
     from_: datetime | None
     to: datetime | None 
-    cost: int | None 
+    cost: float | None 
     guest_id: str | None = Field(alias="guestId")
     guest_name: str | None = Field(alias="guestName")
     house_id: str | None = Field(alias="houseId")
@@ -197,3 +197,25 @@ class MessagePost(BaseModel):
     response_to: str | None = None
     house_id: str | None = None
     chat_id: str | None = None
+
+class BookingPost(BaseModel):
+    state: None = None
+    from_: date
+    to: date
+    cost: float
+    guest_id: str
+    guest_name: None = None
+    house_id: str
+    house_address: None = None
+    meeting_location : str | None = None
+
+class HousePost(BaseModel):
+    address: str 
+    capacity: int 
+    price: float 
+    rooms: int 
+    bathrooms: int 
+    owner_id: str
+    image: str
+    longitude: float 
+    latitude: float 

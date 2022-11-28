@@ -6,38 +6,39 @@ from branca.element import Figure
 
 router = APIRouter()
 
-class POI(BaseModel):
-    latitude: float
-    longitude: float
-    color: str = "blue"
-    popup: str = None
-    icon: str = "circle"
-
-class House(POI):
-    color: str = "red"
-    popup: str = Field(alias="address"), 
-    icon: str = "home"
-
-class Bus(POI):
-    color: str = "blue"
-    popup: str = Field(alias="number"), 
-    icon: str = "bus"
-
 def create_map(latitude: float, longitude: float, zoom: int = 17):
     return Map(location=[latitude, longitude], zoom_start=zoom)
 
-def create_marker(poi: POI):
+def create_marker(
+    latitude: float,
+    longitude: float,
+    color: str = "blue",
+    icon: str = "circle",
+    popup: str = None,
+):
     return Marker(
       location = [poi.latitude, poi.longitude],
       icon= Icon(color=poi.color, icon=poi.icon, prefix='fa'),
       popup = Popup(poi.popup, show = True) if poi.popup else None
     )
 
-def create_marker_house(house: House):
-    return create_marker(house)
+def create_marker_house(
+    latitude: float,
+    longitude: float,
+    address: str,
+    color: str = "red",
+    icon: str = "home",
+):
+    return create_marker(latitude, longitude, color, icon, address)
 
-def create_marker_bus(bus: Bus):
-    return create_marker(bus)
+def create_marker_bus(
+    latitude: float,
+    longitude: float,
+    number: str,
+    color: str = "blue",
+    icon: str = "bus",
+):
+    return create_marker(latitude, longitude, color, icon, number)
 
 def plot(map: Map, marker: Marker, width: int = 600, height: int = 400):
     fig = Figure(width=width, height=height)
@@ -45,14 +46,14 @@ def plot(map: Map, marker: Marker, width: int = 600, height: int = 400):
     fig.add_child(map)
     return fig.render()
 
-@router.post("/marker", response_class=HTMLResponse)
+@router.get("/marker", response_class=HTMLResponse)
 def marker(map: Map = Depends(create_map), marker: Marker = Depends(create_marker)):
     return plot(map, marker)
 
-@router.post("/bus", response_class=HTMLResponse)
+@router.get("/bus", response_class=HTMLResponse)
 def bus(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_bus)):
     return plot(map, marker)
 
-@router.post("/house", response_class=HTMLResponse)
+@router.get("/house", response_class=HTMLResponse)
 def house(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_house)):
     return plot(map, marker)

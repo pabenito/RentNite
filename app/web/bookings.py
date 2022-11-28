@@ -36,7 +36,12 @@ def booking_details(request: Request, id: str):
     return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user": user, "State": State})
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
-def create_booking(request: Request, id: str, user = Cookie(default=None), from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: float = Form()):
+def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: float = Form()):
     # Create a new booking given a house id
     booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost)
     bookings_api.create(booking)
+
+@router.put("/{id}")
+def update_booking(request: Request, id: str, from_: date | None = Form(), to: date | None = Form(), cost: float | None = Form(), state: State | None = Form()):
+    # Update a booking from a form
+    bookings_api.update(id=id, state=state, from_=from_, to=to, cost=cost)

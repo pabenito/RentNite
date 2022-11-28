@@ -75,7 +75,7 @@ def create(booking : BookingPost):
 
 #Este put no esta hecho con BaseModel
 @router.put("/{id}")
-async def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
+def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
 
     # Formatear las fechas correctamente si se han proporcionado
     if from_ is not None:

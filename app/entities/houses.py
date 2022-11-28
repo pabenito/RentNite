@@ -3,6 +3,7 @@ import re
 from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, HTTPException, status
 from pymongo.collection import Collection
+from pymongo.results import InsertOneResult
 from app.database import db
 from .models import *
 
@@ -19,8 +20,8 @@ users: Collection = db["users"]
 def get(address: str | None = None, capacity: int | None = None, price: float | None = None, 
         rooms: int | None = None,bathrooms: int | None = None, owner_id: str | None = None, 
         owner_name: str | None = None, image: str | None = None,latitude: float | None = None, 
-        longitude: float | None = None, offset: int = 0, size: int = 10):
-    if offset < 0 or size <= 0:
+        longitude: float | None = None, offset: int = 0, size: int = 0):
+    if offset < 0 or size < 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid offset or size.")
 
     filter = {"capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms,
@@ -35,7 +36,10 @@ def get(address: str | None = None, capacity: int | None = None, price: float | 
         filter["owner_name"] = {"$regex": re.compile(
             ".*" + owner_name + ".*", re.IGNORECASE)}
 
-    result: list = list(houses.find(filter, skip = offset, limit = size))
+    if size == 0:
+        result: list = list(houses.find(filter))
+    else:
+        result: list = list(houses.find(filter, skip = offset, limit = size))
     
     return [House.parse_obj(house).to_response() for house in result]
 
@@ -54,7 +58,7 @@ def get_by_id(id: str):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create(house: HousePost):
+def create(house: HousePost):
     if house.capacity <= 0 or house.price < 0 or house.rooms <= 0 or house.bathrooms <= 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
 
@@ -69,18 +73,19 @@ async def create(house: HousePost):
     parameters = jsonable_encoder(house)
     parameters["owner_name"] = owner["username"]
 
-    houses.insert_one(parameters)
+    insertOneResult: InsertOneResult = houses.insert_one(parameters)
+    return House.parse_obj(houses.find_one({"_id": ObjectId(insertOneResult.inserted_id)})).to_response()
 
 
 @router.put("/{id}")
-async def update(id: str, house: HouseConstructor):
-    if ((house.capacity or 1) <= 0) or ((house.price or 1) < 0) or ((house.rooms or 1) <= 0) or ((house.bathrooms or 1) <= 0):
+def update(id: str, house: HouseConstructor):
+    if house.capacity is not None and house.capacity <= 0 or house.price is not None and house.price < 0 or house.rooms is not None and house.rooms <= 0 or house.bathrooms is not None and house.bathrooms <= 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
 
     parameters = house.exclude_unset()
 
-    if len(parameters) == 0:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "No data was given to update the house.")
+    print(id)
+    print(parameters)
 
     try:
         result = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": parameters})
@@ -92,7 +97,7 @@ async def update(id: str, house: HouseConstructor):
 
 
 @router.delete("/{id}")
-async def delete(id: str):
+def delete(id: str):
     try:
         house = houses.find_one_and_delete({"_id": ObjectId(id)})
     except:
@@ -103,7 +108,7 @@ async def delete(id: str):
 
 
 @router.get("/owner/{owner_name}/guests")
-async def get_guests_by_owner_name(owner_name: str):
+def get_guests_by_owner_name(owner_name: str):
     owner_name = re.compile(".*" + owner_name + ".*", re.IGNORECASE)  # type: ignore
 
     houses_ids = list(houses.find({"owner_name": {"$regex": owner_name}}, {"_id": 1}))

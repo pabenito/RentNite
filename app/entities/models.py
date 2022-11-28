@@ -64,7 +64,7 @@ class UserBase(BaseModel):
 class HouseBase(BaseModel):
     address: str 
     capacity: int 
-    price: int 
+    price: float 
     rooms: int 
     bathrooms: int 
     owner_name: str
@@ -159,11 +159,11 @@ class UserConstructor(Simplifier):
 class HouseConstructor(Simplifier):
     address: str | None 
     capacity: int | None 
-    price: int | None 
+    price: float | None 
     rooms: int | None 
     bathrooms: int | None 
-    owner_name: str | None = Field(alias="ownerName")
-    owner_id: str | None = Field(alias="ownerId")
+    owner_name: str | None
+    owner_id: str | None
     image: str | None
     longitude: float | None 
     latitude: float | None 
@@ -212,7 +212,7 @@ class BookingPost(BaseModel):
 class HousePost(BaseModel):
     address: str 
     capacity: int 
-    price: int 
+    price: float 
     rooms: int 
     bathrooms: int 
     owner_id: str

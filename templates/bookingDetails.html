@@ -40,6 +40,10 @@
                     <td class="h3">Lugar de reuni&oacute;n:</td>
                     <td class="h5">{{ booking.meeting_location }}</td>
                 </tr>
+                <tr>
+                    <td class="h3">Propietario de la casa:</td>
+                    <td class="h5">{{ house.owner_name }}</td>
+                </tr>
             </table>
         </div>
         <div class="col-md-4"></div>
@@ -50,13 +54,13 @@
             {% if user == booking.guest_name %}
             <button type="button" class="btn btn-outline-primary">Valorar casa</button>
             {% endif %}
-            {% if true %}
+            {% if user == house.owner_name %}
             <button type="button" class="btn btn-outline-primary">Valorar cliente</button>
-            {% if booking.state == REQUESTED %}
+            {% if booking.state == State.REQUESTED %}
             <button type="button" class="btn btn-outline-success">Aceptar reserva</button>
             <button type="button" class="btn btn-outline-warning">Cancelar reserva</button>
             {% endif %}
-            <button type="button" class="btn btn-outline-danger">Declinar reserva</button>
+            <button type="button" class="btn btn-outline-danger">Rechazar reserva</button>
             {% endif %}
         </div>
         <div class="col-md-4"></div>

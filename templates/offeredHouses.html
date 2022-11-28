@@ -28,7 +28,8 @@
                                 <p> Precio: {{ house.price }} </p>
                                 <p> Habitaciones: {{ house.rooms }} </p>
                                 <p> Baños: {{ house.bathrooms }} </p>
-                                <p> Dueño: <span onclick="profile('{{ house.ownerId }}');" style="cursor: pointer"> {{ house.ownerName }}</span></p>
+                                <p> Dueño: <span onclick="profile('{{ house.ownerId }}');" style="cursor: pointer"> {{
+                                        house.ownerName }}</span></p>
                                 <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
                                 <button onclick="booking">Reservar</button>
                             </div>
@@ -52,15 +53,14 @@
             </div>
         </div>
         {% endif %}
-      
-        
 
-            <script> 
-                function profile(OwnerId){
-                    console.log(OwnerId);
-                    window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
-                }
-            </script>
+
+
+        <script>
+            function profile(OwnerId) {
+                window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
+            }
+        </script>
 
         {% endblock content %}
 </body>

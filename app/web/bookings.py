@@ -22,4 +22,4 @@ def my_bookings(request: Request, user = Cookie(default=None)):
 def booking_details(request: Request, id: str):
     user = "Asier Gallego"
     booking = bookings_api.get_by_id(id)
-    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id("6362cfdcf5eb52f2c794b5de"), "user": user, "State": State})
+    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user": user, "State": State})

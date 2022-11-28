@@ -37,13 +37,15 @@
                     <td class="h5">{{ booking.house_address }}</td>
                 </tr>
                 <tr>
-                    <td class="h3">Lugar de reuni&oacute;n:</td>
-                    <td class="h5">{{ booking.meeting_location }}</td>
-                </tr>
-                <tr>
                     <td class="h3">Propietario de la casa:</td>
                     <td class="h5">{{ house.owner_name }}</td>
                 </tr>
+                {% if booking.meeting_location != null %}
+                <tr>
+                    <td class="h3">Lugar de reuni&oacute;n:</td>
+                    <td class="h5">{{ booking.meeting_location }}</td>
+                </tr>
+                {% endif %}
             </table>
         </div>
         <div class="col-md-4"></div>
@@ -52,16 +54,31 @@
         <div class="col-md-4"></div>
         <div class="col-md-4 d-flex justify-content-between">
             {% if user == booking.guest_name %}
-            <button type="button" class="btn btn-outline-primary">Valorar casa</button>
+            <a class="btn btn-outline-primary" href="#" role="button">Valorar casa</a>
             {% endif %}
             {% if user == house.owner_name %}
-            <button type="button" class="btn btn-outline-primary">Valorar cliente</button>
+            <a class="btn btn-outline-primary" href="#" role="button">Valorar cliente</a>
             {% if booking.state == State.REQUESTED %}
-            <button type="button" class="btn btn-outline-success">Aceptar reserva</button>
-            <button type="button" class="btn btn-outline-warning">Cancelar reserva</button>
+            <form method="PUT" action="/entities/bookings/{{ booking.id }}?state=Aceptada">
+                <input class="btn btn-outline-success" type="submit" value="Aceptar reserva">
+            </form>
+            <form method="PUT" action="/entities/bookings/{{ booking.id }}?state=Cancelada">
+                <input class="btn btn-outline-warning" type="submit" value="Cancelar reserva">
+            </form>
             {% endif %}
-            <button type="button" class="btn btn-outline-danger">Rechazar reserva</button>
+            <form method="PUT" action="/entities/bookings/{{ booking.id }}?state=Rechazada">
+                <input class="btn btn-outline-danger" type="submit" value="Rechazar reserva">
+            </form>
             {% endif %}
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <a href="/houses/{{ house.id }}" >
+                <img src="{{ house.image }}" alt="Foto de la casa." style="width:70%;"></img>
+            </a>
         </div>
         <div class="col-md-4"></div>
     </div>

@@ -131,28 +131,39 @@ def get_by_id(id: str):
 
 
 @router.get("/search/")
-def search(guestName: str | None = None, houseId: str | None = None, state: str | None = None):
-    if guestName is None and houseId is None and state is None:
+def search(
+    guest_name: str | None = None,
+    guest_id: str | None = None,
+    house_id: str | None = None,
+    state: State | None = None
+):
+    if guest_name is None and guest_id is None and house_id is None and state is None:
         raise HTTPException(
             status_code=400, detail="No se han proporcionado parametros de busqueda.")
 
     params = dict()
 
-    if guestName is not None:
-        guestName = re.compile(".*" + guestName + ".*",
+    if guest_name is not None:
+        guest_name = re.compile(".*" + guest_name + ".*",
                                re.IGNORECASE)  # type: ignore
-        params['guestName'] = {"$regex": guestName}
+        params['guestName'] = {"$regex": guest_name}
 
-    if houseId is not None:
-        params['houseId'] = houseId
+    if guest_id is not None:
+        params['guestId'] = guest_id
+
+    if house_id is not None:
+        params['houseId'] = house_id
 
     if state is not None:
-        if state not in states:
-            raise HTTPException(
-                status_code=400, detail="El estado proporcionado no es valido.")
-        params['state'] = state
+        params['state'] = state.value
 
-    return list(bookings.find(filter=params, projection={"_id": 0}))
+    bookings_list = list(bookings.find(filter=params))
+    result = []
+
+    for b in bookings_list:
+        result.append(Booking.parse_obj(b).to_response())
+
+    return result
 
 
 @ router.get("/range/")

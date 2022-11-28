@@ -37,9 +37,9 @@ def create_marker(
     popup: str = None,
 ):
     return Marker(
-      location = [poi.latitude, poi.longitude],
-      icon= Icon(color=poi.color, icon=poi.icon, prefix='fa'),
-      popup = Popup(poi.popup, show = True) if poi.popup else None
+      location = [latitude, longitude],
+      icon= Icon(color=color, icon=icon, prefix='fa'),
+      popup = Popup(popup, show = True) if popup else None
     )
 
 def create_marker_house(
@@ -60,13 +60,17 @@ def create_marker_bus(
 ):
     return create_marker(latitude, longitude, color, icon, number)
 
-def plot(map: Map, figure: Figure = Depends(create_figure)):
+def plot(map: Map, width: int = 600, height: int = 400):
+    figure = Figure(width=width, height=height)
     figure.add_child(map)
     return figure.render()
 
-@router.get("/", response_class=HTMLResponse)
-def marker(marker: list[POI], map: Map = Depends(create_map)):
-    return plot(map, marker)
+@router.post("/", response_class=HTMLResponse)
+def marker(markers: list[POI], map: Map = Depends(create_map)):
+    for poi in markers:
+        poi: POI = poi 
+        create_marker(**poi.dict(exclude_unset=True)).add_to(map)
+    return plot(map)
 
 @router.get("/marker", response_class=HTMLResponse)
 def marker(map: Map = Depends(create_map), marker: Marker = Depends(create_marker)):
@@ -82,10 +86,3 @@ def bus(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_b
 def house(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_house)):
     marker.add_to(map)
     return plot(map, marker)
-
-@router.get("/buses", response_class=HTMLResponse)
-def house(buses: list[Bus], map: Map = Depends(create_map)):
-    for bus in buses:
-        bus: Bus = bus
-        create_marker_bus(**bus.dict()).add_to(map)
-    return plot(map)

@@ -204,7 +204,7 @@ class BookingPost(BaseModel):
     to: date
     cost: float
     guest_id: str
-    guest_name: None
+    guest_name: None = None
     house_id: str
-    house_address: None
+    house_address: None = None
     meeting_location : str | None = None

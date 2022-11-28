@@ -67,8 +67,8 @@ class HouseBase(BaseModel):
     price: int 
     rooms: int 
     bathrooms: int 
-    owner_name: str = Field(alias="ownerName")
-    owner_id: str = Field(alias="ownerId")
+    owner_name: str
+    owner_id: str
     image: str
     longitude: float 
     latitude: float 
@@ -215,7 +215,7 @@ class HousePost(BaseModel):
     price: int 
     rooms: int 
     bathrooms: int 
-    owner_id: str = Field(alias="ownerId")
+    owner_id: str
     image: str
     longitude: float 
     latitude: float 

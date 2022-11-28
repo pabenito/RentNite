@@ -21,11 +21,10 @@ def get(address: str | None = None, capacity: int | None = None, price: float | 
         owner_name: str | None = None, image: str | None = None,latitude: float | None = None, 
         longitude: float | None = None, offset: int = 0, size: int = 10):
     if offset < 0 or size <= 0:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST,
-                            "Invalid offset or size.")
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid offset or size.")
 
     filter = {"capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms,
-              "ownerId": owner_id, "image": image, "latitude": latitude, "longitude": longitude}
+              "owner_id": owner_id, "image": image, "latitude": latitude, "longitude": longitude}
     filter = {k: v for k, v in filter.items() if v is not None}
 
     if address is not None:
@@ -33,7 +32,7 @@ def get(address: str | None = None, capacity: int | None = None, price: float | 
             ".*" + address + ".*", re.IGNORECASE)}
 
     if owner_name is not None:
-        filter["ownerName"] = {"$regex": re.compile(
+        filter["owner_name"] = {"$regex": re.compile(
             ".*" + owner_name + ".*", re.IGNORECASE)}
 
     result: list = list(houses.find(filter, skip = offset, limit = size))
@@ -68,7 +67,7 @@ async def create(house: HousePost):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No user was found with the given ID.")
 
     parameters = jsonable_encoder(house)
-    parameters["ownerName"] = owner["username"]
+    parameters["owner_name"] = owner["username"]
 
     houses.insert_one(parameters)
 
@@ -103,15 +102,15 @@ async def delete(id: str):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "House not found.")
 
 
-@router.get("/owner/{ownerName}/guests")
-async def get_guests_by_owner_name(ownerName: str):
-    ownerName = re.compile(".*" + ownerName + ".*", re.IGNORECASE)  # type: ignore
+@router.get("/owner/{owner_name}/guests")
+async def get_guests_by_owner_name(owner_name: str):
+    owner_name = re.compile(".*" + owner_name + ".*", re.IGNORECASE)  # type: ignore
 
-    houses_ids = list(houses.find({"ownerName": {"$regex": ownerName}}, {"_id": 1}))
+    houses_ids = list(houses.find({"owner_name": {"$regex": owner_name}}, {"_id": 1}))
 
     if len(houses_ids) == 0:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Owner name not found.")
 
-    houses_ids = [{"houseId": str(house_id.get("_id"))} for house_id in houses_ids]
+    houses_ids = [{"house_id": str(house_id.get("_id"))} for house_id in houses_ids]
     
-    return bookings.distinct("guestName", {"$or": houses_ids})
+    return bookings.distinct("guest_name", {"$or": houses_ids})

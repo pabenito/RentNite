@@ -27,6 +27,6 @@ def booking_details(request: Request, id: str):
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
 def create_booking(request: Request, id: str, user = Cookie(default=None), state: State = Form(), from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: float = Form()):
-    # Request a booking given a house id
+    # Create a new booking given a house id
     booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost)
     bookings_api.create(booking)

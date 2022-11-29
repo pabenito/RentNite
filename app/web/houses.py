@@ -58,7 +58,7 @@ def update_house(request: Request, user = Cookie(default=None), id: str = Form()
 def house_details(request: Request, id: str, user = Cookie(default=None)):
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": houses_api.get_by_id(id), "creating": False, 
                                                             "editing": False, "comments": messages_api.get(None, id, None, None, None),
-                                                            "ratings": ratings_api.get(None,None,id,None,None,None), 
+                                                            "ratings": ratings_api.get(None,None,None,id,None,None,None), 
                                                             "date": date.today(), "user": user})
 
 @router.get("/{id}/edit", response_class=HTMLResponse)

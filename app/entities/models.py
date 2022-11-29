@@ -88,6 +88,7 @@ class RatingBase(BaseModel):
     rater_id: str
     date: datetime  
     rated_user_id: str | None = None
+    rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int
 
@@ -183,6 +184,7 @@ class RatingConstructor(Simplifier):
     rater_id: str | None 
     date: datetime | None 
     rated_user_id: str | None = None
+    rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int | None 
 

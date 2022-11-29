@@ -235,16 +235,18 @@
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{rate.rater_id}}</a>
+                                <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
                                 {{rate.date.strftime('%d/%m/%Y')}}
                             </th>
                         </tr>
                     </table>
-                    <table class="table">
-                        <tr>
-                            <td>{{rate.rate}}</td>
-                        </tr>
-                    </table>
+                    <div class="text-center my-4">
+                        <table class="table">
+                            <tr>
+                                <td>{{rate.rate}}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </tr>
                 {% endfor %}
             </table>
@@ -252,9 +254,9 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
             {% endif %}
             <div class="text-center my-4">
-                <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar" >
-                    <p class="clasificacion" >
-                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5" >
+                <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar">
+                    <p class="clasificacion">
+                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
                         <!--
                       --><label for="radio1">★</label>
                         <!--
@@ -262,7 +264,7 @@
                         <!--
                       --><label for="radio2">★</label>
                         <!--
-                      --><input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3" >
+                      --><input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
                         <!--
                       --><label for="radio3">★</label>
                         <!--
@@ -274,7 +276,7 @@
                         <!--
                       --><label for="radio5">★</label>
                     </p>
-                    <button class="btn btn-primary" ><span class="h3">Puntuar</label></button>
+                    <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
                 </form>
             </div>
             <div class="col-md-2"></div>

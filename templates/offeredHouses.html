@@ -2,12 +2,26 @@
 <html>
 
 <head>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+    </style>
     <meta charset="UTF-8" />
     <title>Casas Ofertadas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -15,7 +29,7 @@
     {% include "navbar.html" %}
 
     {% block content %}
-    <h1>Casas Ofertadas</h1>
+    <h1 style="text-align: center; margin-top: 30px; margin-bottom: 30px;">Casas ofertadas</h1>
     {% if houses | count > 0 %}
     <div class="row">
         <div class="col-md-2"></div>
@@ -23,21 +37,28 @@
             <div class="container">
                 <div class="row">
                     {% for house in houses %}
+
                     <div class="col-md-4">
-                        <div class="thumbnail">
-                            <img src={{ house.image }} alt="Imagen casa ofertada" style="width:100%" onclick="">
-                            <div class="caption">
-                                <p> Direccion: {{ house.address }} </p>
-                                <p> Capacidad: {{ house.capacity }} </p>
-                                <p> Precio: {{ house.price }} </p>
-                                <p> Habitaciones: {{ house.rooms }} </p>
-                                <p> Baños: {{ house.bathrooms }} </p>
-                                <p> Dueño: <span onclick="profile('{{ house.owner_id }}');" style="cursor: pointer"> {{
-                                        house.owner_name }}</span></p>
-                                <p> Coordenadas: {{ house.longitude }} ; {{ house.latitude }} </p>
-                                <button onclick="booking">Reservar</button>
-                            </div>
-                        </div>
+                        <table style="width:100%">
+                            <td>
+                                <div class="thumbnail">
+                                    <img src={{ house.image }} alt="Imagen casa ofertada" style="width:100%" onclick="">
+                                    <div class="caption">
+                                        <p> id: {{ house.house_Id }} </p>
+                                        <p> Direccion: {{ house.address }} </p>
+                                        <p> Habitaciones: {{ house.rooms }} </p>
+                                        <p> Baños: {{ house.bathrooms }} </p>
+                                        <p> Precio: {{ house.price }} </p>
+                                        <p> Dueño: <span onclick="profile('{{ house.owner_id }}');"
+                                                style="cursor: pointer">
+                                                {{
+                                                house.owner_name }}</span></p>
+                                        <button onclick="Reservar(' {{ house }}');">Reservar</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </table>
+
                     </div>
                     {% endfor %}
                 </div>
@@ -64,9 +85,14 @@
             function profile(OwnerId) {
                 window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
             }
+
+            function profile(OwnerId) {
+                window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
+            }
         </script>
 
         {% endblock content %}
 </body>
+
 
 </html>

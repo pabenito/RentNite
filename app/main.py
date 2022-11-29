@@ -45,12 +45,14 @@ app.include_router(
 app.include_router(
     entities.router,
     prefix="/entities",
-    tags=["entities"]
+    tags=["entities"],
+    
 )
 
 app.include_router(
     web.router,
-    tags=["web"]
+    tags=["web"],
+    
 )
 
 

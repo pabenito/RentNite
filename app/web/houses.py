@@ -72,8 +72,12 @@ def delete_house(request: Request, id: str, user = Cookie(default=None)):
         return your_houses(request)
 
 @router.post("/{id}/addComment", response_class=HTMLResponse)
-def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form()):
+def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form(title="coment")):
     message: MessagePost = MessagePost(sender_id="636ad4aa5baf6bcddce08814", message=comment, house_id=id)
     messages_api.post(message)
-
+    return house_details(request, id, user)
+    
+@router.post("/{id}/addRate", response_class=HTMLResponse)
+def add_rate(request: Request, id: str, user = Cookie(default=None), estrellas:int = Form() ):
+    ratings_api.create("636ad4aa5baf6bcddce08814",None,id,estrellas)
     return house_details(request, id, user)

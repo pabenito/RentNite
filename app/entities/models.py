@@ -88,7 +88,7 @@ class RatingBase(BaseModel):
     rater_id: str
     date: datetime  
     rated_user_id: str | None = None
-    reted_house_id: str | None = None
+    rated_house_id: str | None = None
     rate: int
 
 # Entities models
@@ -183,7 +183,7 @@ class RatingConstructor(Simplifier):
     rater_id: str | None 
     date: datetime | None 
     rated_user_id: str | None = None
-    reted_house_id: str | None = None
+    rated_house_id: str | None = None
     rate: int | None 
 
 # Models for post

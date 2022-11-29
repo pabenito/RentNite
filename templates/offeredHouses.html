@@ -44,7 +44,6 @@
                                 <div class="thumbnail">
                                     <img src={{ house.image }} alt="Imagen casa ofertada" style="width:100%" onclick="">
                                     <div class="caption">
-                                        <p> id: {{ house.house_Id }} </p>
                                         <p> Direccion: {{ house.address }} </p>
                                         <p> Habitaciones: {{ house.rooms }} </p>
                                         <p> Baños: {{ house.bathrooms }} </p>
@@ -53,7 +52,7 @@
                                                 style="cursor: pointer">
                                                 {{
                                                 house.owner_name }}</span></p>
-                                        <button onclick="Reservar(' {{ house }}');">Reservar</button>
+                                        <button onclick="Reservar('{{ house.id }}');">Reservar</button>
                                     </div>
                                 </div>
                             </td>
@@ -86,8 +85,8 @@
                 window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
             }
 
-            function profile(OwnerId) {
-                window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
+            function Reservar(houseId) {
+                window.location = ("http://127.0.0.1:8000/houses/" + houseId);
             }
         </script>
 

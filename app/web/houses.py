@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from ..entities import houses as houses_api
 from ..entities import messages as messages_api
+from ..entities import ratings as ratings_api
 from ..entities.models import MessagePost, HouseConstructor, HousePost
 from datetime import date
 
@@ -56,7 +57,8 @@ def update_house(request: Request, user = Cookie(default=None), id: str = Form()
 @router.get("/{id}", response_class=HTMLResponse)
 def house_details(request: Request, id: str, user = Cookie(default=None)):
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": houses_api.get_by_id(id), "creating": False, 
-                                                            "editing": False, "comments": messages_api.get(None, id, None, None, None), 
+                                                            "editing": False, "comments": messages_api.get(None, id, None, None, None),
+                                                            "ratings": ratings_api.get(None,None,id,None,None,None), 
                                                             "date": date.today(), "user": user})
 
 @router.get("/{id}/edit", response_class=HTMLResponse)

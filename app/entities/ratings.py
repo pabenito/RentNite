@@ -21,7 +21,7 @@ houses: Collection = db["houses"]
 async def get(
     rater_id: str | None = Query(default=None, alias="rater-id"),
     rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
-    reted_reted_house_id: str | None = Query(default=None, alias="rated-house-id"),
+    reted_house_id: str | None = Query(default=None, alias="rated-house-id"),
     rate: int | None = Query(default=None, alias="rate"),
     from_: date | None = Query(default=None, alias="from"),
     to: date | None = None
@@ -50,11 +50,11 @@ async def get(
                 result.append(rated)
         rate_list = result
         
-    if reted_reted_house_id:
+    if reted_house_id:
         result = []
         for rated in rate_list:
             rated: Rating  
-            if rated.reted_reted_house_id == reted_reted_house_id:
+            if rated.reted_house_id == reted_house_id:
                 result.append(rated)
         rate_list = result
         

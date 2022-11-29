@@ -112,11 +112,11 @@ def create(
     if not rated_user_id and not rated_house_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Messages needs a rated_user_id or a rated_house_id.")
+            detail="Ratings needs a rated_user_id or a rated_house_id.")
     if rated_user_id and rated_house_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, 
-            detail="Messages needs a rated_user_id or a rated_house_id, but not both.")
+            detail="Ratings needs a rated_user_id or a rated_house_id, but not both.")
     
     new_rate: RatingConstructor = RatingConstructor()
     

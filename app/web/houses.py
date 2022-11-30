@@ -16,7 +16,7 @@ def read_item(request: Request):
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
 @router.get("/myHouses", response_class=HTMLResponse)
-def your_houses(request: Request, user = Cookie(default=None)):
+def my_houses(request: Request, user = Cookie(default=None)):
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
 
 @router.get("/create")
@@ -50,9 +50,9 @@ def update_house(request: Request, user = Cookie(default=None), id: str = Form()
                                                        longitude = longitude_float, latitude=latitude_float)
             houses_api.update(id, house)
 
-        return house_details(request, id, user)
+        return my_houses(request, user)
     except:
-        return edit_house(request, id, error="Los valores introducidos no son validos.")
+        return edit_house(request, id, user, "Los valores introducidos no son validos.")
 
 @router.get("/{id}", response_class=HTMLResponse)
 def house_details(request: Request, id: str, user = Cookie(default=None)):
@@ -69,7 +69,7 @@ def edit_house(request: Request, id: str, user = Cookie(default=None), error: st
 @router.get("/{id}/delete")
 def delete_house(request: Request, id: str, user = Cookie(default=None)):
         houses_api.delete(id)
-        return your_houses(request)
+        return my_houses(request, user)
 
 @router.post("/{id}/addComment", response_class=HTMLResponse)
 def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form(title="coment")):

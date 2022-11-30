@@ -150,7 +150,7 @@
                 </tr>
                 <tr>
                     <td class="h5">Coordenadas:</td>
-                    <td>{{ house.longitude }} ; {{ house.latitude }}</td>
+                    <td>{{ house.latitude }} ; {{ house.longitude }}</td>
                 </tr>
             </table>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
@@ -160,17 +160,16 @@
                     <tr>
                         <td class>Fecha de inicio:</td>
                         <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required
-                                onchange="onDateChanged(event)" /></td>
+                                onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td>Fecha de fin:</td>
                         <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
-                                onchange="onDateChanged(event)" /></td>
+                                onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td>Precio:</td>
-                        <td><input type="text" id="cost" name="cost" class="form-control" value="{{house.price}} &euro;"
-                                disabled /></td>
+                        <td><input type="text" id="cost" name="cost" value="{{house.price}} &euro;" class="form-control" disabled /></td>
                     </tr>
                 </table>
                 <div class="text-center my-4">
@@ -285,13 +284,15 @@
 
 
         <script type="text/javascript">
-            function onDateChanged(e) {
+            function onDateChanged() {
                 from_ = document.getElementById("from_").value;
                 to = document.getElementById("to").value;
                 house_price = document.getElementById("house_price").value;
                 cost = document.getElementById("cost");
 
-                cost.value = ((new Date(to) - new Date(from_)) / 86400000 + 1) * house_price;
+                var new_cost = ((new Date(to) - new Date(from_)) / 86400000 + 1) * house_price;
+                new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
+                cost.value = new_cost + " €";
             }
         </script>
         {% endblock content %}

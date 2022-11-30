@@ -170,13 +170,13 @@ def search(
 
 # Get bookings by house owner name
 @router.get("/getByHouseOwner")
-def get_by_house_owner_name(owner_name: str):
+def get_by_house_owner_id(owner_id: str):
     bookings_list = list(bookings.find())
     result = []
 
     for b in bookings_list:
         house = houses_api.get_by_id(b["house_id"])
-        if house["owner_name"] == owner_name:
+        if house["owner_id"] == owner_id:
             result.append(Booking.parse_obj(b).to_response())
 
     return result

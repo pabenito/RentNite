@@ -59,13 +59,13 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 d-flex justify-content-between">
-            {% if user == booking.guest_name or user == house.owner_name %}
+            {% if user == booking.guest_id or user == house.owner_id %}
             <a class="btn btn-outline-info" href="#" role="button">Chat</a>
             {% endif %}
-            {% if user == booking.guest_name %}
+            {% if user == booking.guest_id %}
             <a class="btn btn-outline-primary" href="#" role="button">Valorar casa</a>
             {% endif %}
-            {% if user == house.owner_name %}
+            {% if user == house.owner_id %}
             <a class="btn btn-outline-primary" href="#" role="button">Valorar cliente</a>
                 {% if booking.state == State.REQUESTED %}
                 <form method="POST" action="/bookings/{{ booking.id }}">

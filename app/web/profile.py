@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-def usuraios(request: Request, user=Cookie(default=None)):
+def usuarios(request: Request, user=Cookie(default=None)):
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
 
 

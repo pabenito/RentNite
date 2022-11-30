@@ -61,12 +61,39 @@
     {% include "navbar.html" %}
 
     {% block content %}
-
-    <h1 id="username">{{ user.username }}</h1>
-    <h2 id="email">{{ user.email }}</h2>
-    <h3> {{ id }} </h3>
-    {% if not creating and not editing %}
     <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <h1>Perfil</h1>
+                        <label class="font-weight-bold fs-3">{{ user.username }}</label>
+                        <label class="text-black-50 fs-5">{{ user.email }}</label>
+                        <div class="row mt-3">
+                            
+                            <div class="col">
+                                <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
+                                    <button type="button" class="btn btn-primary">Editar</button>
+                                </form>
+                            </div>
+                            <div class="col">
+                                <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
+                                    <button type="button" class="btn btn-primary">Mensaje</button>
+                                </form>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+
+
+    {% if not creating and not editing %}
+    <div class="row mt-5">
         <div class="col-md-2"></div>
         <div class="col-md-8">
             {% if ratings | count > 0 %}

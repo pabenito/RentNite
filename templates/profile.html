@@ -95,6 +95,7 @@
     <div class="row mt-5">
         <div class="col-md-2"></div>
         <div class="col-md-8">
+
             {% if ratings | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
             <table class="table-primary mx-5">
@@ -121,6 +122,8 @@
             {% else %}
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
+
+            
             <div>
                 <form method="post" action="/profile/{{ identificador }}/addRate" title="puntuar">
                     <p class="clasificacion">

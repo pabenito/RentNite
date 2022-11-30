@@ -63,7 +63,7 @@ def get_by_id(id: str):
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Messages needs a rated_user_id or a rated_house_id.")
+            detail="User doesnt exists.")
     else:
         return user
 

@@ -77,4 +77,4 @@ async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm =
         
     singleton = login.Singleton()
     singleton.user=user
-    return profile.perfil_usuario(request,user)
+    return profile.perfil_usuario(request)

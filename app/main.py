@@ -1,9 +1,11 @@
 # Import libraries
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from app.web import login
+from app.web import profile
 
 # Import modules
 from .entities import router as entities
@@ -48,17 +50,28 @@ app.include_router(
     entities.router,
     prefix="/entities",
     tags=["entities"],
-    
+
 )
 
 app.include_router(
     web.router,
     tags=["web"],
-    
+
 )
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to Rentnite"}
+async def root(token: str = Depends(oauth2_scheme)):
+    return {"the_token": token}
+
+
+@app.post('/token')
+async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await login.authenticate_user(form_data.username, form_data.password)
+    if not user:
+       
+        return login.login(request,"Usario o contraseña no validos")
+        
+    return profile.perfil_usuario(request,user)

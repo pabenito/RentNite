@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Cookie, Form
+from fastapi import APIRouter, Request, Cookie, Depends, Form, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -32,22 +32,33 @@ templates = Jinja2Templates(directory="templates")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 async def authenticate_user(email: str, password: str):
-    user = await users_api.general_get(None,email)
+    userl = users_api.general_get(None,email)
+    user = userl[0]
     if not user:
         return False 
-    if not verify_password(user, password):
+    if not verify_password(user , password):
         return False
-    return user 
+    return user.pop("id")
 
 def verify_password(user:users_api.User, password:str):
-     return bcrypt.verify(password, user.password_hash)
+    #  return bcrypt.verify(password, user.password_hash)
+    return (password == user.pop("password_hash"))
 
 
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    try:
+        user = token
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail='Invalid username or password'
+        )
+    finally:
+        login(Request,None)
+
+    return await users_api.get_by_id(user)
 
 @router.get("/", response_class=HTMLResponse)
-def login(request: Request,user = Cookie(default=None)):
-    return templates.TemplateResponse("login.html", {"request": request})
+def login(request: Request,err = Cookie(default=None)):
+    return templates.TemplateResponse("login.html", {"request": request, "err":err})
 
-@router.get("/do", response_class=HTMLResponse)
-def do_login(request: Request, email:str = Form()):
-    return templates.TemplateResponse("profile.html", {"request": request})

@@ -19,18 +19,14 @@ bookings = db["bookings"]
 # API
 
 
-@router.get("/")
-def root():
-    return {"message": "Welcome to users microservice"}
-
 # Inserta un usuario en la base de datos
 
 
 @router.post("/")
 def create(response: Response, username: str, email: str, password: str):
-    salida = bcrypt.hash(password)
+    # salida = bcrypt.hash(password)
     users.insert_one(
-        {"username": username, "email": email, "password_hash": salida})
+        {"username": username, "email": email, "password_hash": password})
     response.status_code = 201
 
 # Actualiza un usuario
@@ -102,11 +98,33 @@ def general_get(username: str | None = Query(default=None, alias="username"),
 
     result = []
     for user in user_list:
-        user: User 
+        user: User
         result.append(user.to_response())
     user_list = result
-    
+
     return user_list
+
+
+# @router.get("/")
+# def login_get(username: str | None = Query(default=None, alias="username"),
+#                 email: str | None = Query(default=None, alias="email"),
+#     ):
+
+#     filter = {"username": username, "email": email}
+#     filter = {k: v for k, v in filter.items() if v is not None}
+
+
+#     if username is not None:
+#         filter["username"] = {"$regex": re.compile(
+#             ".*" + username + ".*", re.IGNORECASE)}
+
+#     if email is not None:
+#         filter["owner_name"] = {"$regex": re.compile(
+#             ".*" + email + ".*", re.IGNORECASE)}
+    
+#     result = (houses.find_one(filter))
+    
+#     return result
 
 
 # Borra un usuario

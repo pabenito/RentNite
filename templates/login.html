@@ -19,16 +19,18 @@
 
     <div>
         <div>
-            <div>
-                <img src="static/img/image.png" id="icon" alt="User Icon" />
-            </div>
             <h1>Inicie sesión</h1>
-
+            {% if err  %}
+            <label> {{ err }} </label>
+            {% endif %}
             <!-- Login Form -->
-          
-                <input title="email" type="text" id="email" class="fadeIn second" name="email" placeholder="correo"><br>
-                <a onclick="validacionLogin();"> Entrar </a>
-           
+            <form method="post" action="/token">
+                <input title="username" type="text" id="username" class="fadeIn second" name="username" placeholder="correo"
+                    name="username"> <br>
+                <input title="password" type="password" id="password" class="fadeIn second" placeholder="contraseña"
+                    name="password"><br>
+                <input class="btn btn-outline-success" type="submit" value="Entrar">
+            </form>
 
             <!-- Remind Passowrd -->
             <div id="formFooter">

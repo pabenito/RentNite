@@ -16,14 +16,14 @@ def usuraios(request: Request, user=Cookie(default=None)):
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
 
 
-@router.get("/{email}", response_class=HTMLResponse)
-def perfil_usuario(request: Request, email: str):
-    id = "636ad4aa5baf6bcddce08814"
+@router.get("/{id}", response_class=HTMLResponse)
+def perfil_usuario(request: Request, id: str):
+    #id = "636ad4aa5baf6bcddce08814"
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None)})
 
 
-@router.post("/{email}/addRate", response_class=HTMLResponse)
-def add_Rate(request: Request, email: str, estrellas: int = Form()):
-    ratings_api.create("636ad4aa5baf6bcddce08814", email, None, estrellas)
+@router.post("/{id}/addRate", response_class=HTMLResponse)
+def add_Rate(request: Request, id: str, estrellas: int = Form()):
+    ratings_api.create("636ad4aa5baf6bcddce08814", id, None, estrellas)
 
-    return perfil_usuario(request, email)
+    return perfil_usuario(request, id)

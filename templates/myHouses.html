@@ -23,7 +23,7 @@
                 <p class="text text-center mt-2" style="height: 300px">
                     <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
                 </p>
-                <table class="table table-info">
+                <table class="table table-info" style="height: 330px">
                     <tr>
                         <td class="h4">Direcci&oacute;n:</td>
                         <td>{{ house.address }}</td>
@@ -47,10 +47,6 @@
                     <tr>
                         <td class="h4">Propietario:</td>
                         <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a></td>
-                    </tr>
-                    <tr>
-                        <td class="h4">Coordenadas:</td>
-                        <td>{{ house.latitude }} ; {{ house.longitude }}</td>
                     </tr>
                 </table>
                 <div class="text-center mt-3 mb-5">

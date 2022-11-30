@@ -60,7 +60,7 @@
     {% include "navbar.html" %}
 
     {% block content %}
-    <h1 class="text text-center mt-4">Detalles de la casa</h1>
+    <h1 class="text text-center my-4">Detalles de la casa</h1>
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
@@ -76,41 +76,41 @@
                     <input type="hidden" name="id" value="{{house.id}}" />
                     {% endif %}
                     <tr>
-                        <td class>Direcci&oacute;n:</td>
+                        <td class="h5">Direcci&oacute;n:</td>
                         <td><input type="text" name="address" value="{{house.address}}" class="form-control" required />
                         </td>
                     </tr>
                     <tr>
-                        <td>Capacidad:</td>
+                        <td class="h5">Capacidad:</td>
                         <td><input type="number" name="capacity" value={{house.capacity}} class="form-control"
                                 required /></td>
                     </tr>
                     <tr>
-                        <td>Precio:</td>
+                        <td class="h5">Precio:</td>
                         <td><input type="text" name="price" value={{house.price}} class="form-control" required /></td>
                     </tr>
                     <tr>
-                        <td>Habitaciones:</td>
+                        <td class="h5">Habitaciones:</td>
                         <td><input type="number" name="rooms" value={{house.rooms}} class="form-control" required />
                         </td>
                     </tr>
                     <tr>
-                        <td>Cuartos de ba&ntilde;o:</td>
+                        <td class="h5">Cuartos de ba&ntilde;o:</td>
                         <td><input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
                                 required /></td>
                     </tr>
                     <tr>
-                        <td>Latidud:</td>
+                        <td class="h5">Latidud:</td>
                         <td><input type="text" name="latitude" value={{house.latitude}} class="form-control" required />
                         </td>
                     </tr>
                     <tr>
-                        <td>Longitud:</td>
+                        <td class="h5">Longitud:</td>
                         <td><input type="text" name="longitude" value={{house.longitude}} class="form-control"
                                 required /></td>
                     </tr>
                 </table>
-                {{error}}
+                <h5 class="text text-center text-danger">{{error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
                     {% if house.address != "" %}
@@ -148,32 +148,30 @@
                     <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a>
                     </td>
                 </tr>
-                <tr>
-                    <td class="h5">Coordenadas:</td>
-                    <td>{{ house.latitude }} ; {{ house.longitude }}</td>
-                </tr>
             </table>
+            <iframe src="/map/house?latitude={{house.latitude}}&longitude={{house.longitude}}&address={{house.address}}" width="100%" height="300px"></iframe>
+            <h2 class="text text-center my-4">Hacer una reserva</h2>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
                 <label id="house_price" style="display: none">{{house.price}}</label>
                 <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814" />
                 <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
-                <table class="table table-borderless">
+                <table class="table table-info">
                     <tr>
-                        <td class>Fecha de inicio:</td>
+                        <td class="h5">Fecha de inicio:</td>
                         <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
-                        <td>Fecha de fin:</td>
+                        <td class="h5">Fecha de fin:</td>
                         <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
-                        <td>Precio:</td>
+                        <td class="h5">Precio:</td>
                         <td><input type="text" id="cost_display" value="{{house.price}} &euro;" class="form-control" disabled /></td>
                     </tr>
                 </table>
-                <div class="text text-center text-danger">{{booking_error}}</div>
+                <h5 class="text text-center text-danger">{{booking_error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>

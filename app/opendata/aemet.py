@@ -15,27 +15,38 @@ aemet.api_debugging(True)
 
 # API
 @router.get("/")
-async def root():
+def root():
     return {"message": "Welcome to AEMET microservice"}
 
 @router.get("/town")
-async def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
+def get_town(town: dict = Depends(aemet.get_town_by_coordinates)):
     return town
 
 @router.get("/forecast/temperature/daily")
-async def get_forecast_daily(town: dict = Depends(aemet.get_town_by_coordinates)):
+def get_forecast_temperature_daily_urlParameters(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
+@router.get("/forecast/temperature/daily")
+def get_forecast_temperature_daily(latitude :float | None = None,longitude:float | None = None):
+    town: dict = aemet.get_town_by_coordinates(latitude=latitude,longitude=longitude)
+    return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))    
+
 @router.get("/forecast/temperature/hourly")
-async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+def get_forecast_temperature_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_temp_hourly_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
 @router.get("/forecast/precipitation/daily")
-async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+def get_forecast_precipitation_daily_urlParameters(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
+@router.get("/forecast/precipitation/daily")
+def get_forecast_precipitation_daily(latitude :float | None = None,longitude:float | None = None):
+    town: dict = aemet.get_town_by_coordinates(latitude=latitude,longitude=longitude)
+    return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
+    
+
 @router.get("/forecast/precipitation/hourly")
-async def get_forecast_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
+def get_forecast_precipitation_hourly(town: dict = Depends(aemet.get_town_by_coordinates) ):
     return get_hourly_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
     
@@ -60,6 +71,7 @@ def get_temp_hourly_from_map(map: dict):
     return Aux
 
 def get_Daily_precipitation_from_map(complete: dict):
+    print(complete)
     complete.pop("response")
     dias = complete["data"][0]["prediccion"]
     Dict = {}

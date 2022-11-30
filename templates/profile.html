@@ -68,10 +68,9 @@
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
                         <h1>Perfil</h1>
-                        <label class="font-weight-bold fs-3">{{ user.username }}</label>
-                        <label class="text-black-50 fs-5">{{ user.email }}</label>
+                        <p class="font-weight-bold fs-3">{{ user.username }}</p>
+                        <p class="text-black-50 fs-5">{{ user.email }}</p>
                         <div class="row mt-3">
-                            
                             <div class="col">
                                 <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
                                     <button type="button" class="btn btn-primary">Editar</button>

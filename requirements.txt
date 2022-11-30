@@ -11,3 +11,4 @@ pytz
 folium
 branca
 python-multipart
+passlib[bcrypt]

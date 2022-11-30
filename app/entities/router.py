@@ -12,7 +12,7 @@ router.include_router(
 router.include_router(
     houses.router,
     prefix="/houses",
-    tags=["houses"]
+    tags=["houses"],
 )
 
 router.include_router(

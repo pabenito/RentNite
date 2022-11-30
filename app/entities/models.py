@@ -59,7 +59,8 @@ class ChatBase(BaseModel):
 
 class UserBase(BaseModel):
     username: str
-    email: EmailStr  
+    email: EmailStr
+    password_hash: str  
 
 class HouseBase(BaseModel):
     address: str 
@@ -88,7 +89,8 @@ class RatingBase(BaseModel):
     rater_id: str
     date: datetime  
     rated_user_id: str | None = None
-    reted_house_id: str | None = None
+    rated_user_Name: str | None = None
+    rated_house_id: str | None = None
     rate: int
 
 # Entities models
@@ -155,6 +157,8 @@ class MessageConstructor(Simplifier):
 class UserConstructor(Simplifier):
     username: str | None
     email: EmailStr | None  
+    password_hash: str | None  
+
 
 class HouseConstructor(Simplifier):
     address: str | None 
@@ -183,7 +187,8 @@ class RatingConstructor(Simplifier):
     rater_id: str | None 
     date: datetime | None 
     rated_user_id: str | None = None
-    reted_house_id: str | None = None
+    rated_user_Name: str | None = None
+    rated_house_id: str | None = None
     rate: int | None 
 
 # Models for post

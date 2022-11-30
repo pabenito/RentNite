@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from ..entities import houses as houses_api
 from ..entities import messages as messages_api
+from ..entities import ratings as ratings_api
 from ..entities.models import MessagePost, HouseConstructor, HousePost
 from datetime import date
 
@@ -14,9 +15,9 @@ templates = Jinja2Templates(directory="templates")
 def read_item(request: Request):
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
-@router.get("/yourHouses", response_class=HTMLResponse)
-def your_houses(request: Request, user = Cookie(default=None)):
-    return templates.TemplateResponse("yourHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
+@router.get("/myHouses", response_class=HTMLResponse)
+def my_houses(request: Request, user = Cookie(default=None)):
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
 
 @router.get("/create")
 def create_house(request: Request, user = Cookie(default=None)):
@@ -49,15 +50,16 @@ def update_house(request: Request, user = Cookie(default=None), id: str = Form()
                                                        longitude = longitude_float, latitude=latitude_float)
             houses_api.update(id, house)
 
-        return house_details(request, id, user)
+        return my_houses(request, user)
     except:
-        return edit_house(request, id, error="Los valores introducidos no son validos.")
+        return edit_house(request, id, user, "Los valores introducidos no son validos.")
 
 @router.get("/{id}", response_class=HTMLResponse)
-def house_details(request: Request, id: str, user = Cookie(default=None)):
+def house_details(request: Request, id: str, user = Cookie(default=None), booking_error: str = ""):
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": houses_api.get_by_id(id), "creating": False, 
-                                                            "editing": False, "comments": messages_api.get(None, id, None, None, None), 
-                                                            "date": date.today(), "user": user})
+                                                            "editing": False, "comments": messages_api.get(None, id, None, None, None),
+                                                            "ratings": ratings_api.get(None,None,None,id,None,None,None), 
+                                                            "date": date.today(), "booking_error": booking_error, "user": user})
 
 @router.get("/{id}/edit", response_class=HTMLResponse)
 def edit_house(request: Request, id: str, user = Cookie(default=None), error: str = ""):
@@ -67,11 +69,15 @@ def edit_house(request: Request, id: str, user = Cookie(default=None), error: st
 @router.get("/{id}/delete")
 def delete_house(request: Request, id: str, user = Cookie(default=None)):
         houses_api.delete(id)
-        return your_houses(request)
+        return my_houses(request, user)
 
 @router.post("/{id}/addComment", response_class=HTMLResponse)
-def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form()):
+def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form(title="coment")):
     message: MessagePost = MessagePost(sender_id="636ad4aa5baf6bcddce08814", message=comment, house_id=id)
     messages_api.post(message)
-
+    return house_details(request, id, user)
+    
+@router.post("/{id}/addRate", response_class=HTMLResponse)
+def add_rate(request: Request, id: str, user = Cookie(default=None), estrellas:int = Form() ):
+    ratings_api.create("636ad4aa5baf6bcddce08814",None,id,estrellas)
     return house_details(request, id, user)

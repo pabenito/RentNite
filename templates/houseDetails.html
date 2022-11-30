@@ -1,178 +1,311 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Detalles de la casa</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <!--NavBar-->
-        {% include "navbar.html" %}
 
-        {% block content %}
-        <h1 class="text text-center mt-4">Detalles de la casa</h1>
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <p class="text text-center mt-2" style="height: 300px">
-                    <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
-                </p>
-                {% if creating or editing %}
-                <form method="post" action="/houses/save">
-                    <table class="table table-info">
-                        {% if creating %}
-                        <input type="hidden" name="id" value="None"/>
-                        {% else %}
-                        <input type="hidden" name="id" value="{{house.id}}"/>
-                        {% endif %}
-                        <tr>
-                            <td class>Direcci&oacute;n:</td>
-                            <td><input type="text" name="address" value="{{house.address}}" class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Capacidad:</td>
-                            <td><input type="number" name="capacity" value={{house.capacity}} class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Precio:</td>
-                            <td><input type="text" name="price" value={{house.price}} class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Habitaciones:</td>
-                            <td><input type="number" name="rooms" value={{house.rooms}} class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Cuartos de ba&ntilde;o:</td>
-                            <td><input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Latidud:</td>
-                            <td><input type="text" name="latitude" value={{house.latitude}} class="form-control" required/></td>
-                        </tr>
-                        <tr>
-                            <td>Longitud:</td>
-                            <td><input type="text" name="longitude" value={{house.longitude}} class="form-control" required/></td>
-                        </tr>
-                    </table>
-                    {{error}}
-                    <div class="text-center my-4">
-                        <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
-                        {% if house.address != "" %}
-                        <div class="btn btn-danger mx-3">
-                            <a class="h3" href="/houses/{{house.id}}/delete" style="color: white; text-decoration: none">Eliminar</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </form>
-                {% else %}
-                <table class="table table-info my-4">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalles de la casa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <style>
+        #form {
+            width: 250px;
+            margin: 0 auto;
+            height: 50px;
+        }
+
+        #form p {
+            text-align: center;
+        }
+
+        #form label {
+            font-size: 20px;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        label {
+            color: grey;
+            font-weight: 100
+        }
+
+        .clasificacion {
+            direction: rtl;
+            unicode-bidi: bidi-override;
+        }
+
+        label:hover,
+        label:hover~label {
+            color: orange;
+        }
+
+        input[type="radio"]:checked~label {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <!--NavBar-->
+    {% include "navbar.html" %}
+
+    {% block content %}
+    <h1 class="text text-center my-4">Detalles de la casa</h1>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <p class="text text-center mt-2" style="height: 300px">
+                <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
+            </p>
+            {% if creating or editing %}
+            <form method="post" action="/houses/save">
+                <table class="table table-info">
+                    {% if creating %}
+                    <input type="hidden" name="id" value="None" />
+                    {% else %}
+                    <input type="hidden" name="id" value="{{house.id}}" />
+                    {% endif %}
                     <tr>
                         <td class="h5">Direcci&oacute;n:</td>
-                        <td>{{ house.address }}</td>
+                        <td><input type="text" name="address" value="{{house.address}}" class="form-control" required />
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Capacidad:</td>
-                        <td>{{ house.capacity }}</td>
+                        <td><input type="number" name="capacity" value={{house.capacity}} class="form-control"
+                                required /></td>
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
-                        <td>{{ house.price }} &euro;</td>
+                        <td><input type="text" name="price" value={{house.price}} class="form-control" required /></td>
                     </tr>
                     <tr>
                         <td class="h5">Habitaciones:</td>
-                        <td>{{ house.rooms }}</td>
+                        <td><input type="number" name="rooms" value={{house.rooms}} class="form-control" required />
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Cuartos de ba&ntilde;o:</td>
-                        <td>{{ house.bathrooms }}</td>
+                        <td><input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
+                                required /></td>
                     </tr>
                     <tr>
-                        <td class="h5">Propietario:</td>
-                        <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a></td>
+                        <td class="h5">Latidud:</td>
+                        <td><input type="text" name="latitude" value={{house.latitude}} class="form-control" required />
+                        </td>
                     </tr>
                     <tr>
-                        <td class="h5">Coordenadas:</td>
-                        <td>{{ house.longitude }} ; {{ house.latitude }}</td>
+                        <td class="h5">Longitud:</td>
+                        <td><input type="text" name="longitude" value={{house.longitude}} class="form-control"
+                                required /></td>
                     </tr>
                 </table>
-                <form method="post" action="/bookings/{{house.id}}/requestBooking">
-                    <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814"/>
-                    <input type="hidden" id="house_price" value="{{house.price}}"/>
-                    <table class="table table-borderless">
-                        <tr>
-                            <td class>Fecha de inicio:</td>
-                            <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required 
-                                       onchange="onDateChanged(event)"/></td>
+                <h5 class="text text-center text-danger">{{error}}</h5>
+                <div class="text-center my-4">
+                    <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
+                    {% if house.address != "" %}
+                    <div class="btn btn-danger mx-3">
+                        <a class="h3" href="/houses/{{house.id}}/delete"
+                            style="color: white; text-decoration: none">Eliminar</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </form>
+            {% else %}
+            <table class="table table-info my-4">
+                <tr>
+                    <td class="h5">Direcci&oacute;n:</td>
+                    <td>{{ house.address }}</td>
+                </tr>
+                <tr>
+                    <td class="h5">Capacidad:</td>
+                    <td>{{ house.capacity }}</td>
+                </tr>
+                <tr>
+                    <td class="h5">Precio:</td>
+                    <td>{{ house.price }} &euro;</td>
+                </tr>
+                <tr>
+                    <td class="h5">Habitaciones:</td>
+                    <td>{{ house.rooms }}</td>
+                </tr>
+                <tr>
+                    <td class="h5">Cuartos de ba&ntilde;o:</td>
+                    <td>{{ house.bathrooms }}</td>
+                </tr>
+                <tr>
+                    <td class="h5">Propietario:</td>
+                    <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a>
+                    </td>
+                </tr>
+            </table>
+            <iframe src="/map/house?latitude={{house.latitude}}&longitude={{house.longitude}}&address={{house.address}}" width="100%" height="300px"></iframe>
+            <h2 class="text text-center my-4">Hacer una reserva</h2>
+            <form method="post" action="/bookings/{{house.id}}/requestBooking">
+                <label id="house_price" style="display: none">{{house.price}}</label>
+                <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814" />
+                <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
+                <table class="table table-info">
+                    <tr>
+                        <td class="h5">Fecha de inicio:</td>
+                        <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required
+                                onchange="onDateChanged()" /></td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Fecha de fin:</td>
+                        <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
+                                onchange="onDateChanged()" /></td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Precio:</td>
+                        <td><input type="text" id="cost_display" value="{{house.price}} &euro;" class="form-control" disabled /></td>
+                    </tr>
+                </table>
+                <h5 class="text text-center text-danger">{{booking_error}}</h5>
+                <div class="text-center my-4">
+                    <button class="btn btn-primary"><span class="h3">Reservar</span></button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    {% if not creating and not editing %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            {% if comments | count > 0 %}
+            <h3 class="h3 my-4">Comentarios</h3>
+            <table class="table-primary mx-5">
+                {% for comment in comments %}
+                <tr>
+                    <table class="table">
+                        <tr class="table-primary">
+                            <th>
+                                <a class="ms-3 me-4"
+                                    href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
+                                {{comment.date.strftime('%d/%m/%Y')}}
+                            </th>
                         </tr>
+                    </table>
+                    <table class="table">
                         <tr>
-                            <td>Fecha de fin:</td>
-                            <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
-                                       onchange="onDateChanged(event)"/></td>
+                            <td>{{comment.message}}</td>
                         </tr>
-                        <tr>
-                            <td>Precio:</td>
-                            <td><input type="text" id="cost" name="cost" class="form-control" value="{{house.price}} &euro;" disabled/></td>
+                    </table>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p class="text text-center h4 mt-3 mb-5">No hay comentarios</p>
+            {% endif %}
+            <form method="post" action="/houses/{{house.id}}/addComment" title="coment">
+                <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
+                <div class="text-center my-4">
+                    <button class="btn btn-primary"><span class="h3">Comentar</label></button>
+                    </p>
+            </form>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    {% endif %}
+
+
+
+    {% if not creating and not editing %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            {% if ratings | count > 0 %}
+            <h3 class="h3 my-4">Ratings</h3>
+            <table class="table-primary mx-5">
+                {% for rate in ratings %}
+                <tr>
+                    <table class="table">
+                        <tr class="table-primary">
+                            <th>
+                                <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
+                                {{rate.date.strftime('%d/%m/%Y')}}
+                            </th>
                         </tr>
                     </table>
                     <div class="text-center my-4">
-                        <button class="btn btn-primary"><span class="h3">Reservar</span></button>
-                    </div>
-                </form>
-                {% endif %}
-            </div>
-            <div class="col-md-4"></div>
-        </div>
-        {% if not creating and not editing %}
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                {% if comments | count > 0 %}
-                <h3 class="h3 my-4">Comentarios</h3>
-                <table class="table-primary mx-5">
-                    {% for comment in comments %}
-                    <tr>
-                        <table class="table">
-                            <tr class="table-primary">
-                                <th>
-                                    <a class="ms-3 me-4" href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
-                                    {{comment.date.strftime('%d/%m/%Y')}}
-                                </th>
-                            </tr>
-                        </table>
                         <table class="table">
                             <tr>
-                                <td>{{comment.message}}</td>
+                                <td>{{rate.rate}}</td>
                             </tr>
                         </table>
-                    </tr>
-                    {% endfor %}
-                </table>
-                {% else %}
-                <p class="text text-center h4 mt-3 mb-5">No hay comentarios</p>
-                {% endif %}
-                <form method="post" action="/houses/{{house.id}}/addComment">
-                    <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
-                    <div class="text-center my-4">
-                        <button class="btn btn-primary"><span class="h3">Comentar</label></button>
+                    </div>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
+            {% endif %}
+            <div class="text-center my-4">
+                <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar">
+                    <p class="clasificacion">
+                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
+                        <!--
+                      --><label for="radio1">★</label>
+                        <!--
+                      --><input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
+                        <!--
+                      --><label for="radio2">★</label>
+                        <!--
+                      --><input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
+                        <!--
+                      --><label for="radio3">★</label>
+                        <!--
+                      --><input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
+                        <!--
+                      --><label for="radio4">★</label>
+                        <!--
+                      --><input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
+                        <!--
+                      --><label for="radio5">★</label>
                     </p>
+                    <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
                 </form>
             </div>
             <div class="col-md-2"></div>
         </div>
         {% endif %}
-        <script type="text/javascript">
-            function onDateChanged(e) {
-                from_ = document.getElementById("from_").value;
-                to = document.getElementById("to").value;
-                house_price = document.getElementById("house_price").value;
-                cost = document.getElementById("cost");
 
-                cost.value = ((new Date(to) - new Date(from_))/86400000 + 1) * house_price;
+
+        <script type="text/javascript">
+            function onDateChanged() {
+                from_ = new Date(document.getElementById("from_").value);
+                to = new Date(document.getElementById("to").value);
+                house_price = document.getElementById("house_price").innerText;
+                cost = document.getElementById("cost");
+                cost_display = document.getElementById("cost_display");
+
+                today = new Date().setHours(0, 0, 0, 0);
+
+                if (from_ >= today && from_ <= to) {
+                    var new_cost = ((to - from_) / 86400000 + 1) * house_price;
+                    new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
+                    cost.value = new_cost;
+                    cost_display.style.color = "black";
+                    cost_display.value = new_cost + " €";
+                } else {
+                    cost_display.style.color = "red";
+                    cost_display.value = "Fechas incorrectas";
+                }
             }
         </script>
         {% endblock content %}
-    </body>
+</body>
+
 </html>

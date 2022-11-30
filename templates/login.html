@@ -25,11 +25,10 @@
             <h1>Inicie sesión</h1>
 
             <!-- Login Form -->
-            <form id="login" method="post" onsubmit="return validacionLogin()">
-                <input title="Usuario" type="text" id="user" class="fadeIn second" name="login"
-                    placeholder="correo"><br>
-                <input type="submit" class="fadeIn fourth" value="Entrar">
-            </form>
+          
+                <input title="email" type="text" id="email" class="fadeIn second" name="email" placeholder="correo"><br>
+                <a onclick="validacionLogin();"> Entrar </a>
+           
 
             <!-- Remind Passowrd -->
             <div id="formFooter">
@@ -40,8 +39,8 @@
     </div>
     <script>
         function validacionLogin() {
-            const n = document.getElementById("user").value;
-            window.location = ("http://127.0.0.1:8000/login/" + n);
+            const n = document.getElementById("email").value;
+            window.location = ("http://127.0.0.1:8000/profile/" + n);
         }
     </script>
 

@@ -84,9 +84,6 @@ def update(id: str, house: HouseConstructor):
 
     parameters = house.exclude_unset()
 
-    print(id)
-    print(parameters)
-
     try:
         result = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": parameters})
     except:

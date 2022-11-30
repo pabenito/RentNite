@@ -15,9 +15,9 @@ templates = Jinja2Templates(directory="templates")
 def read_item(request: Request):
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
-@router.get("/yourHouses", response_class=HTMLResponse)
+@router.get("/myHouses", response_class=HTMLResponse)
 def your_houses(request: Request, user = Cookie(default=None)):
-    return templates.TemplateResponse("yourHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
 
 @router.get("/create")
 def create_house(request: Request, user = Cookie(default=None)):

@@ -1,9 +1,9 @@
 # Import libraries
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+
 
 # Import modules
 from .entities import router as entities
@@ -54,6 +54,7 @@ app.include_router(
     tags=["web"],
     
 )
+
 
 
 @app.get("/")

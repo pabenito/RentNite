@@ -4,6 +4,7 @@ from app.database import db as db
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
 import re
+from passlib.hash import bcrypt
 from .models import *
 
 
@@ -26,16 +27,18 @@ def root():
 
 
 @router.post("/")
-def create(response: Response, username: str, email: str):
-    users.insert_one({"username": username, "email": email})
+def create(response: Response, username: str, email: str, password: str):
+    salida = bcrypt.hash(password)
+    users.insert_one(
+        {"username": username, "email": email, "password_hash": salida})
     response.status_code = 201
 
 # Actualiza un usuario
 
 
 @router.put("/{id}")
-def update(response: Response, id: str, username: str | None = None, email: str | None = None):
-    data = {"username": username, "email": email}
+def update(response: Response, id: str, username: str | None = None, email: str | None = None,  password: str | None = None):
+    data = {"username": username, "email": email, "password": password}
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:
@@ -69,41 +72,41 @@ def get_by_id(id: str):
         return user
 
 
-# @router.get("/")
-# def general_get(username: str | None = Query(default=None, alias="username"),
-#                 email: str | None = Query(default=None, alias="email")):
+@router.get("/")
+def general_get(username: str | None = Query(default=None, alias="username"),
+                email: str | None = Query(default=None, alias="email")):
 
-#     user_list: list = list(users.find())
-#     result: list = []
+    user_list: list = list(users.find())
+    result: list = []
 
-#     for user_dic in user_list:
-#         result.append(User.parse_obj(user_dic))
+    for user_dic in user_list:
+        result.append(User.parse_obj(user_dic))
 
-#     user_list = result
+    user_list = result
 
-#     if username:
-#         result = []
-#         for user in user_list:
-#             user: User
-#             if user.username == username:
-#                 result.append(user)
-#         user_list = result
+    if username:
+        result = []
+        for user in user_list:
+            user: User
+            if user.username == username:
+                result.append(user)
+        user_list = result
 
-#     if email:
-#         result = []
-#         for user in user_list:
-#             user: User
-#             if user.email == email:
-#                 result.append(user)
-#         user_list = result
+    if email:
+        result = []
+        for user in user_list:
+            user: User
+            if user.email == email:
+                result.append(user)
+        user_list = result
 
-#     result = []
-#     for user in user_list:
-#         user: User 
-#         result.append(user.to_response())
-#     user_list = result
+    result = []
+    for user in user_list:
+        user: User 
+        result.append(user.to_response())
+    user_list = result
     
-#     return user_list
+    return user_list
 
 
 # Borra un usuario

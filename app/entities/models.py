@@ -59,7 +59,8 @@ class ChatBase(BaseModel):
 
 class UserBase(BaseModel):
     username: str
-    email: EmailStr  
+    email: EmailStr
+    password_hash: str  
 
 class HouseBase(BaseModel):
     address: str 
@@ -156,6 +157,8 @@ class MessageConstructor(Simplifier):
 class UserConstructor(Simplifier):
     username: str | None
     email: EmailStr | None  
+    password_hash: str | None  
+
 
 class HouseConstructor(Simplifier):
     address: str | None 

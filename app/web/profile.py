@@ -19,7 +19,7 @@ def usuraios(request: Request, user=Cookie(default=None)):
 @router.get("/{id}", response_class=HTMLResponse)
 def perfil_usuario(request: Request, id: str):
     #id = "636ad4aa5baf6bcddce08814"
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None)})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": id})
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)

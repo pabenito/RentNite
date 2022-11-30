@@ -21,7 +21,7 @@ houses: Collection = db["houses"]
 def get(
     rater_id: str | None = Query(default=None, alias="rater-id"),
     rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
-    rated_user_Name: str | None = Query(default=None, alias="rated-user-id"),
+    rated_user_Name: str | None = Query(default=None, alias="rated-user-name"),
     rated_house_id: str | None = Query(default=None, alias="rated-house-id"),
     rate: int | None = Query(default=None, alias="rate"),
     from_: date | None = Query(default=None, alias="from"),
@@ -36,6 +36,14 @@ def get(
     
     rate_list = result
 
+    if rated_user_id:
+        result = []
+        for rated in rate_list:
+            rated: Rating  
+            if rated.rated_user_id == rated_user_id:
+                result.append(rated)
+        rate_list = result
+        
     if rater_id:
         result = []
         for rated in rate_list:

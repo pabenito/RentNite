@@ -64,7 +64,7 @@
 
     <h1 id="username">{{ user.username }}</h1>
     <h2 id="email">{{ user.email }}</h2>
-
+    <h3> {{ id }} </h3>
     {% if not creating and not editing %}
     <div class="row">
         <div class="col-md-2"></div>
@@ -96,7 +96,7 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
             <div>
-                <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
+                <form method="post" action="/profile/{{ identificador }}/addRate" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
                         <!--

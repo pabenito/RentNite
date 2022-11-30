@@ -45,7 +45,9 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
     # Create a new booking given a house id
     cost_float = float(cost)
     booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost_float)
-    bookings_api.create(booking)
+    inserted_booking = bookings_api.create(booking)
+
+    return booking_details(request, inserted_booking["id"])
 
 @router.post("/{id}")
 def update_booking_state(request: Request, id: str, state: State = Form()):

@@ -59,6 +59,7 @@ app.include_router(
 
 )
 
+#oauth2
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
@@ -74,4 +75,6 @@ async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm =
        
         return login.login(request,"Usario o contraseña no validos")
         
+    singleton = login.Singleton()
+    singleton.user=user
     return profile.perfil_usuario(request,user)

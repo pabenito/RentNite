@@ -10,6 +10,8 @@ from .entities import router as entities
 from .opendata import router as opendata
 from .web import router as web
 
+base_url = "http://127.0.0.1:8000"
+
 # Create app
 app = FastAPI()
 

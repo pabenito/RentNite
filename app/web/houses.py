@@ -55,11 +55,11 @@ def update_house(request: Request, user = Cookie(default=None), id: str = Form()
         return edit_house(request, id, user, "Los valores introducidos no son validos.")
 
 @router.get("/{id}", response_class=HTMLResponse)
-def house_details(request: Request, id: str, user = Cookie(default=None)):
+def house_details(request: Request, id: str, user = Cookie(default=None), booking_error: str = ""):
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": houses_api.get_by_id(id), "creating": False, 
                                                             "editing": False, "comments": messages_api.get(None, id, None, None, None),
                                                             "ratings": ratings_api.get(None,None,None,id,None,None,None), 
-                                                            "date": date.today(), "user": user})
+                                                            "date": date.today(), "booking_error": booking_error, "user": user})
 
 @router.get("/{id}/edit", response_class=HTMLResponse)
 def edit_house(request: Request, id: str, user = Cookie(default=None), error: str = ""):

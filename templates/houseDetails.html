@@ -154,8 +154,9 @@
                 </tr>
             </table>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
+                <label id="house_price" style="display: none">{{house.price}}</label>
                 <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814" />
-                <input type="hidden" id="house_price" value="{{house.price}}" />
+                <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
                 <table class="table table-borderless">
                     <tr>
                         <td class>Fecha de inicio:</td>
@@ -169,9 +170,10 @@
                     </tr>
                     <tr>
                         <td>Precio:</td>
-                        <td><input type="text" id="cost" name="cost" value="{{house.price}} &euro;" class="form-control" disabled /></td>
+                        <td><input type="text" id="cost_display" value="{{house.price}} &euro;" class="form-control" disabled /></td>
                     </tr>
                 </table>
+                <div class="text text-center text-danger">{{booking_error}}</div>
                 <div class="text-center my-4">
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>
@@ -285,14 +287,24 @@
 
         <script type="text/javascript">
             function onDateChanged() {
-                from_ = document.getElementById("from_").value;
-                to = document.getElementById("to").value;
-                house_price = document.getElementById("house_price").value;
+                from_ = new Date(document.getElementById("from_").value);
+                to = new Date(document.getElementById("to").value);
+                house_price = document.getElementById("house_price").innerText;
                 cost = document.getElementById("cost");
+                cost_display = document.getElementById("cost_display");
 
-                var new_cost = ((new Date(to) - new Date(from_)) / 86400000 + 1) * house_price;
-                new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
-                cost.value = new_cost + " €";
+                today = new Date().setHours(0, 0, 0, 0);
+
+                if (from_ >= today && from_ <= to) {
+                    var new_cost = ((to - from_) / 86400000 + 1) * house_price;
+                    new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
+                    cost.value = new_cost;
+                    cost_display.style.color = "black";
+                    cost_display.value = new_cost + " €";
+                } else {
+                    cost_display.style.color = "red";
+                    cost_display.value = "Fechas incorrectas";
+                }
             }
         </script>
         {% endblock content %}

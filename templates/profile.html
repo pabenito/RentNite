@@ -68,7 +68,7 @@
 
         .upload .round {
             position: absolute;
-            bottom: 0;
+            bottom: 75%;
             right: 0;
             background: #00B4FF;
             width: 32px;
@@ -99,7 +99,7 @@
     <div class="row">
         <div class="col-md-5"></div>
         <div class="col-md-2">
-            <div class="card mt-5">
+            <div class="card mt-5"  >
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
                         <h1>Perfil</h1>
@@ -110,18 +110,36 @@
                                 <input name="file" type="file">
                                 <i class="fa fa-camera" style="color: #fff;"></i>
                             </div>
-                            <button type="submit" class="btn btn-primary">Subir</button>
+                            <button type="submit" class="btn btn-primary mb-3">Subir</button>
                         </form>
                     </div>
-                    <p class="font-weight-bold fs-3">{{ user.username }}</p>
-                    <p class="text-black-50 fs-5">{{ user.email }}</p>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
-                                <button type="button" class="btn btn-primary">Editar</button>
-                            </form>
+                    {% if editable -%}
+                        <form method="post" action="/profile/save">
+                            <input type="hidden" name="id" value={{identificador}}>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}" name="username" ></li>
+                                <li class="list-group-item">Email: <input type="text" placeholder="{{user.email}}" name="email" ></li>
+                                <li class="list-group-item">Contraseña: <input type="password" name="password" ></li>
+                            </ul> 
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary mx-2">Confirmar</button>
+                                </div>
+                            </div>
+                        </form>
+                    {%- else -%}
+                        <p class="font-weight-bold fs-3">{{ user.username }}</p>
+                        <p class="text-black-50 fs-5">{{ user.email }}</p>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <button class="btn btn-primary mx-2">
+                                    <a class="h6" href="/profile/{{identificador}}/edit" style="color: white; text-decoration: none">Editar</a>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
+
+                    
                 </div>
             </div>
         </div>

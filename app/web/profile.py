@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Cookie, Form, File, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
@@ -39,4 +39,15 @@ def upload_photo(request: Request, id: str, file: bytes = File()):
     #lickr.authenticate_via_browser
     #flickr.upload("perfil",fileobj=file,title="RentNitePrueba",is_public=1)
 
+    return perfil_usuario(request)
+
+@router.get("/{id}/edit", response_class=HTMLResponse)
+def edit(request: Request, id: str):
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": id,"editable":True})
+
+@router.post("/save", response_class=HTMLResponse)
+def save(request: Request,id: str=Form(),password:str=Form(),username:str=Form(),email:str=Form()):
+    print(id)
+    users_api.update(id=id,username=username,email=email,password=password)
+    
     return perfil_usuario(request)

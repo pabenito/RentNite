@@ -65,7 +65,7 @@ def get_by_id(id: str):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User doesnt exists.")
     else:
-        return user
+        return User.parse_obj(user).to_response()
 
 
 @router.get("/")

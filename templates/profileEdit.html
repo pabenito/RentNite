@@ -15,7 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Profile - RentNite</title>
     <style>
         #form {
@@ -54,40 +53,6 @@
         input[type="radio"]:checked~label {
             color: orange;
         }
-
-        .upload {
-            width: 100px;
-            position: relative;
-            margin: auto;
-        }
-
-        .upload img {
-            border-radius: 50%;
-            border: 6px solid #eaeaea;
-        }
-
-        .upload .round {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #00B4FF;
-            width: 32px;
-            height: 32px;
-            line-height: 33px;
-            text-align: center;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .upload .round input[type="file"] {
-            position: absolute;
-            transform: scale(2);
-            opacity: 0;
-        }
-
-        input[type=file]::-webkit-file-upload-button {
-            cursor: pointer;
-        }
     </style>
 </head>
 
@@ -103,26 +68,19 @@
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
                         <h1>Perfil</h1>
-                        <form method="post" action="/profile/{{identificador}}/uploadPhoto" >
-                            <div class="upload">
-                                <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" width = 100 height = 100 alt="">
-                            <div class=" round">
-                                <input name="file" type="file">
-                                <i class="fa fa-camera" style="color: #fff;"></i>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Subir</button>
+                        <form>
+                            <p class="font-weight-bold fs-3">{{ user.username }}</p>
+                            <p class="text-black-50 fs-5">{{ user.email }}</p>
                         </form>
-                    </div>
-                    <p class="font-weight-bold fs-3">{{ user.username }}</p>
-                    <p class="text-black-50 fs-5">{{ user.email }}</p>
-                    <div class="row mt-3">
-                        <div class="col">
-                            <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
-                                <button type="button" class="btn btn-primary">Editar</button>
-                            </form>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
+                                    <button type="button" class="btn btn-primary">Editar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div>    
             </div>
         </div>
         <div class="col-md-5"></div>
@@ -161,7 +119,7 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
-
+            
             <div>
                 <form method="post" action="/profile/{{ identificador }}/addRate" title="puntuar">
                     <p class="clasificacion">

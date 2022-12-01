@@ -1,5 +1,5 @@
 # Import libraries
-from fastapi import APIRouter, Response, HTTPException, status, Query
+from fastapi import APIRouter, Response, HTTPException, status, Query, File, UploadFile
 from app.database import db as db
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
@@ -33,13 +33,14 @@ def create(response: Response, username: str, email: str, password: str):
 
 
 @router.put("/{id}")
-def update(response: Response, id: str, username: str | None = None, email: str | None = None,  password: str | None = None):
-    data = {"username": username, "email": email, "password": password}
+def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
+    data = {"username": username, "email": email, "password": password, "photo": photo}
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:
-        response.status_code = 400
-        return
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Datos no introducidos.")
 
     try:
         user = users.find_one_and_update(
@@ -47,8 +48,7 @@ def update(response: Response, id: str, username: str | None = None, email: str 
     except:
         user = None
 
-    if user is None:
-        response.status_code = 404
+    
 
 # Devuelve un usuario por su id
 

@@ -68,7 +68,7 @@
 
         .upload .round {
             position: absolute;
-            bottom: 0;
+            bottom: 75%;
             right: 0;
             background: #00B4FF;
             width: 32px;
@@ -103,31 +103,57 @@
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
                         <h1>Perfil</h1>
-                        <form method="post" action="/profile/{{identificador}}/uploadPhoto" >
+                        <form method="post" action="/profile/{{identificador}}/uploadPhoto">
                             <div class="upload">
-                                <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg" width = 100 height = 100 alt="">
-                            <div class=" round">
-                                <input name="file" type="file">
-                                <i class="fa fa-camera" style="color: #fff;"></i>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Subir</button>
+                                <img src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                                    width=100 height=100 alt="">
+                                <div class=" round">
+                                    <input name="file" type="file">
+                                    <i class="fa fa-camera" style="color: #fff;"></i>
+                                </div>
+                                <button type="submit" class="btn btn-primary mb-3">Subir</button>
                         </form>
                     </div>
+                    {% if editable -%}
+                    <form method="post" action="/profile/save">
+                        <input type="hidden" name="id" value={{identificador}}>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
+                                    name="username" value="{{user.username}}"></li>
+                            <li class="list-group-item">Email: <input type="text" placeholder="{{user.email}}"
+                                    name="email" value="{{user.email}}"></li>
+                            <li class="list-group-item">Contraseña: <input type="password" name="password"
+                                    value="{{user.password_hash}}"></li>
+                        </ul>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary mx-2">Confirmar</button>
+                            </div>
+                        </div>
+                    </form>
+                    {%- else -%}
                     <p class="font-weight-bold fs-3">{{ user.username }}</p>
                     <p class="text-black-50 fs-5">{{ user.email }}</p>
                     <div class="row mt-3">
+
+
                         <div class="col">
-                            <form method="post" action="/profile/{{user.email}}/addRate" title="puntuar">
-                                <button type="button" class="btn btn-primary">Editar</button>
-                            </form>
+                            <button class="btn btn-primary mx-2">
+                                <a class="h6" href="/profile/{{identificador}}/edit"
+                                    style="color: white; text-decoration: none">Editar</a>
+                            </button>
                         </div>
+
+
                     </div>
+                    {% endif %}
+
+
                 </div>
             </div>
         </div>
         <div class="col-md-5"></div>
     </div>
-
 
     {% if not creating and not editing %}
     <div class="row mt-5">
@@ -144,13 +170,24 @@
                             <th>
                                 <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
                                 {{rate.date.strftime('%d/%m/%Y')}}
+
+                                {% for i in range(rate.rate) %}
+                                ★
+                                {% endfor %}
+
                             </th>
                         </tr>
                     </table>
                     <div class="text-center my-4">
                         <table class="table">
                             <tr>
-                                <td>{{rate.rate}}</td>
+                                <td>
+                                    <p>
+                                        {% for i in range(rate.rate) %}
+                                        ★
+                                        {% endfor %}
+                                    </p>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -161,9 +198,11 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
+            {% if perfil and perfil != identificador %}
 
-            <div>
-                <form method="post" action="/profile/{{ identificador }}/addRate" title="puntuar">
+
+            <div class="d-flex flex-column align-items-center text-center">
+                <form method="post" action="/profile/{{ user.id }}/addRate" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
                         <!--
@@ -185,10 +224,12 @@
                         <!--
                       --><label for="radio5">★</label>
                     </p>
+
                     <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
+
                 </form>
-                <div class="col-md-2"></div>
             </div>
+            {% endif %}
             {% endif %}
             {% endblock content %}
 

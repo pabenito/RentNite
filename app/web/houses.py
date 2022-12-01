@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Cookie, Form
+from fastapi import APIRouter, Request, Cookie, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
@@ -15,7 +15,7 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -23,7 +23,7 @@ def read_item(request: Request):
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -31,7 +31,7 @@ def my_houses(request: Request):
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -43,7 +43,7 @@ def create_house(request: Request):
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), address: str = Form(), capacity: int = Form(), price: str = Form(), rooms: int = Form(), 
                  bathrooms: int = Form(), latitude: str = Form(), longitude: str = Form()):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
     
@@ -69,7 +69,7 @@ def update_house(request: Request, id: str = Form(), address: str = Form(), capa
 
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -86,7 +86,7 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -96,7 +96,7 @@ def edit_house(request: Request, id: str, error: str = ""):
 
 @router.get("/{id}/delete")
 def delete_house(request: Request, id: str):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -106,7 +106,7 @@ def delete_house(request: Request, id: str):
 
 @router.post("/{id}/addComment", response_class=HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -117,7 +117,7 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
     
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_rate(request: Request, id: str, estrellas: int = Form()):
-    user_id = __getUser()
+    user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
 
@@ -125,10 +125,6 @@ def add_rate(request: Request, id: str, estrellas: int = Form()):
 
     return house_details(request, id)
 
-# Private methods
-
-def __getUser():
-    return str(login_api.Singleton().user)
 
 def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool, editing: bool, error: str, booking_error: str, comments: list | None, 
                        ratings: list | None, today_date: date | None, tomorrow_date: date | None, tiempo: dict | None, temperatura: dict | None, 
@@ -137,3 +133,11 @@ def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool
                                                             "error": error, "booking_error": booking_error, "comments": comments, "ratings": ratings, 
                                                             "today_date": today_date, "tomorrow_date": tomorrow_date, "tiempo": tiempo, 
                                                             "temperatura": temperatura, "user_id": user_id})
+    
+# Private methods
+def __chechUser():
+    session = login_api.Singleton()
+    if session.user is None:
+        raise HTTPException(
+            status_code=401, detail="No se ha iniciado sesión.")
+    return session.user

@@ -13,13 +13,6 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/", response_class=HTMLResponse)
-def list_bookings(request: Request):
-    # List of all bookings
-    return templates.TemplateResponse("bookings.html", {"request": request,
-        "bookings": bookings_api.get(),
-        "title": "Reservas"})
-
 @router.get("/booked", response_class=HTMLResponse)
 def my_bookings(request: Request):
     # List of bookings that you have booked
@@ -45,14 +38,14 @@ def booking_details(request: Request, id: str):
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
 def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form()):
-    # Check if the dates are valid
-    if from_ >= to or from_ < date.today():
-        return houses.house_details(request, id, booking_error = "Fechas incorrectas")
-
     # Create a new booking given a house id
     cost_float = float(cost)
-    booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost_float)
-    inserted_booking = bookings_api.create(booking)
+
+    try:
+        booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost_float)
+        inserted_booking = bookings_api.create(booking)
+    except HTTPException as e:
+        return houses.house_details(request, id, booking_error=e.detail)
 
     return booking_details(request, inserted_booking["id"])
 

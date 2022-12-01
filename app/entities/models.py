@@ -223,3 +223,9 @@ class HousePost(BaseModel):
     bathrooms: int 
     owner_id: str
     image: str
+
+    
+class UserPost(BaseModel):
+    username: str 
+    email: EmailStr 
+    password_hash: str

@@ -50,7 +50,7 @@ def edit(request: Request, id: str):
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user,"editable":True})
 
 @router.post("/save", response_class=HTMLResponse)
-def save(request: Request,id: str=Form(),password:str=Form(),username:str=Form(),email:str=Form()):
+def save(request: Request,password:str=Form(),username:str=Form(),email:str=Form()):
     user = __chechUser()
 
     users_api.update(id=user,username=username,email=email,password=password)

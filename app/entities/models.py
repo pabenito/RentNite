@@ -84,6 +84,8 @@ class BookingBase(BaseModel):
     house_id: str
     house_address: str
     meeting_location : str | None = None
+    latitude: float
+    longitude: float
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -177,11 +179,13 @@ class BookingConstructor(Simplifier):
     from_: datetime | None
     to: datetime | None 
     cost: float | None 
-    guest_id: str | None = Field(alias="guestId")
-    guest_name: str | None = Field(alias="guestName")
-    house_id: str | None = Field(alias="houseId")
-    house_address: str | None = Field(alias="houseAddress")
-    meeting_location : str | None = Field(alias="meetingLocation")
+    guest_id: str | None
+    guest_name: str | None
+    house_id: str | None
+    house_address: str | None
+    meeting_location : str | None
+    latitude: float | None
+    longitude: float | None
 
 class RatingConstructor(Simplifier):
     rater_id: str | None 
@@ -204,14 +208,11 @@ class MessagePost(BaseModel):
     chat_id: str | None = None
 
 class BookingPost(BaseModel):
-    state: None = None
     from_: date
     to: date
     cost: float
     guest_id: str
-    guest_name: None = None
     house_id: str
-    house_address: None = None
     meeting_location : str | None = None
 
 class HousePost(BaseModel):
@@ -222,5 +223,3 @@ class HousePost(BaseModel):
     bathrooms: int 
     owner_id: str
     image: str
-    longitude: float 
-    latitude: float 

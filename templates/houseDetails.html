@@ -266,13 +266,15 @@
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4"
-                                    href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
+                                <a class="ms-3 me-4" href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
                                 {{comment.date.strftime('%d/%m/%Y')}}
+                                {% if comment.sender_id == user_id %}
+                                <div class=" round">
+                                    <i class="fa fa-camera" style="color: #fff;"></i>
+                                </div>
+                                {% endif %}
                             </th>
                         </tr>
-                    </table>
-                    <table class="table">
                         <tr>
                             <td>{{comment.message}}</td>
                         </tr>

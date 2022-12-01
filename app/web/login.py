@@ -40,7 +40,7 @@ async def authenticate_user(email: str, password: str):
         return False 
     if not verify_password(user , password):
         return False
-    return user.pop("id")
+    return user["id"]
 
 def verify_password(user:users_api.User, password:str):
     return sha256_crypt.verify(password, user["password_hash"])

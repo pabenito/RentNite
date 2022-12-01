@@ -47,7 +47,7 @@ def createPost(user: UserPost):
 
 @router.put("/{id}")
 def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
-    data = {"username": username, "email": email, "password": sha256_crypt.hash(password), "photo": photo}
+    data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:

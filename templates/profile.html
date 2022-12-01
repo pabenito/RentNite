@@ -177,7 +177,14 @@
                     <div class="text-center my-4">
                         <table class="table">
                             <tr>
-                                <td>{{rate.rate}}</td>
+                                <td>
+                                    <p>
+                                    <p> {{ rate.rate }}</p>
+                                    {% for i in range(rate.rate) %}
+                                    ★
+                                    {% endfor %}
+                                    </p>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -188,8 +195,11 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
-            {% if user.id == identificador %}
-            <div>
+            {% if user.id != identificador %}
+            <p> {{ user.id }}</p>
+            <p> {{ identificador }}</p>
+
+            <div class="d-flex flex-column align-items-center text-center">
                 <form method="post" action="/profile/{{ user.id }}/addRate" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
@@ -216,8 +226,6 @@
                     <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
 
                 </form>
-
-                <div class="col-md-2"></div>
             </div>
             {% endif %}
             {% endif %}

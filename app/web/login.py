@@ -62,3 +62,5 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 def login(request: Request,err = Cookie(default=None)):
     return templates.TemplateResponse("login.html", {"request": request, "err":err})
 
+
+

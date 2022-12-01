@@ -4,8 +4,11 @@ from app.database import db as db
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
 import re
-from passlib.hash import bcrypt
+from passlib.hash import sha256_crypt
 from .models import *
+from fastapi.encoders import jsonable_encoder
+from pymongo.results import InsertOneResult
+
 
 
 # Create router
@@ -23,18 +26,28 @@ bookings = db["bookings"]
 
 
 @router.post("/")
-def create(response: Response, username: str, email: str, password: str):
-    # salida = bcrypt.hash(password)
+def create(username: str, email: str, password: str):
+    salida = sha256_crypt.hash(password)
     users.insert_one(
-        {"username": username, "email": email, "password_hash": password})
-    response.status_code = 201
+        {"username": username, "email": email, "password_hash": salida})
+    
+@router.post("/", status_code=status.HTTP_201_CREATED)
+def createPost(user: UserPost):
+    if user.email == None or user.password_hash == None or user.username == None:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
+
+
+    parameters = jsonable_encoder(user)
+
+    inserted_user: InsertOneResult = users.insert_one(parameters)
+    return User.parse_obj(users.find_one({"_id": ObjectId(inserted_user.inserted_id)})).to_response()
 
 # Actualiza un usuario
 
 
 @router.put("/{id}")
 def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
-    data = {"username": username, "email": email, "password": password, "photo": photo}
+    data = {"username": username, "email": email, "password": sha256_crypt.hash(password), "photo": photo}
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:

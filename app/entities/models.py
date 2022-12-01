@@ -224,3 +224,8 @@ class HousePost(BaseModel):
     image: str
     longitude: float 
     latitude: float 
+    
+class UserPost(BaseModel):
+    username: str 
+    email: EmailStr 
+    password_hash: str

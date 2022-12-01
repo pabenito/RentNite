@@ -5,7 +5,9 @@ from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
 from .profile import perfil_usuario
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.hash import bcrypt
+from passlib.hash import sha256_crypt
+from ..entities.models import *
+
 
 router = APIRouter()
 
@@ -41,8 +43,8 @@ async def authenticate_user(email: str, password: str):
     return user.pop("id")
 
 def verify_password(user:users_api.User, password:str):
-    #  return bcrypt.verify(password, user.password_hash)
-    return (password == user.pop("password_hash"))
+    return sha256_crypt.verify(password, user["password_hash"])
+    #return (password == user.pop("password_hash"))
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -61,6 +63,16 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 @router.get("/", response_class=HTMLResponse)
 def login(request: Request,err = Cookie(default=None)):
     return templates.TemplateResponse("login.html", {"request": request, "err":err})
+
+@router.post("/login/register", response_class=HTMLResponse)
+def create_user(request: Request, username: str = Form(), correo: str = Form(), password: str = Form()):
+    try:
+       users_api.create(username,correo,password)
+        # user: UserPost = UserPost(username=username,email=email,password_hash=password)
+    except HTTPException :
+        return login(request,"Los datos son incorrectos")
+
+    return login(request,"Usuario registrado con exito")
 
 
 

@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.web import login
 from app.web import profile
-from app.web import cookies
+from app.web import login
 from fastapi.responses import RedirectResponse
 
 # Import modules
@@ -77,4 +77,8 @@ async def generate_token(response: Response ,form_data: OAuth2PasswordRequestFor
         return login.login("Usario o contraseña no validos")
         
     response.set_cookie(key="user", value=user)
-    return RedirectResponse(base_url + "/profile")
+    singleton = login.Singleton()
+    singleton.user=user
+    return RedirectResponse(base_url + "/profile", status_code=status.HTTP_303_SEE_OTHER )
+
+

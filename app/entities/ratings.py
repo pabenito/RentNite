@@ -130,6 +130,7 @@ def create(
     
     if rated_user_id:
         try:
+
             user: User = User.parse_obj(users.find_one({"_id": ObjectId(rated_user_id)}))
             new_rate.rated_user_id = str(user.id)
             
@@ -161,6 +162,7 @@ def create(
     new_rate.rated_user_Name=str(userA.username)
 
     inserted_rate: InsertOneResult = ratings.insert_one(jsonable_encoder(new_rate.exclude_unset()))
+
     created_rate: Rating = Rating.parse_obj(ratings.find_one({"_id": ObjectId(inserted_rate.inserted_id)}))
 
     return created_rate.to_response()    

@@ -6,9 +6,10 @@ from ..entities import users as users_api
 from .profile import perfil_usuario
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import bcrypt
+import requests
 
 router = APIRouter()
-
+base_url = "http://127.0.0.1:8000"
 #PATRON SINGLETON
 class Singleton (object):
 
@@ -45,7 +46,7 @@ def verify_password(user:users_api.User, password:str):
     return (password == user.pop("password_hash"))
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         user = token
     except:
@@ -55,10 +56,15 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         )
     finally:
         login(Request,None)
-
-    return  users_api.get_by_id(user)
+    return user
 
 @router.get("/", response_class=HTMLResponse)
 def login(request: Request,err = Cookie(default=None)):
     return templates.TemplateResponse("login.html", {"request": request, "err":err})
+
+@router.get("/user", response_class=HTMLResponse)
+def user(user: str | None = Cookie(default=None)):
+    return user
+
+    
 

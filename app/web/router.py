@@ -1,5 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Cookie
 from . import bookings, cookies, houses, profile, login, maps
+from fastapi.responses import HTMLResponse
+import requests
+
 
 router = APIRouter()
 
@@ -40,3 +43,6 @@ router.include_router(
     prefix="/map",
     tags=["map"]
 )
+
+
+

@@ -1,11 +1,12 @@
 # Import libraries
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.web import login
 from app.web import profile
+from fastapi.responses import RedirectResponse
 
 # Import modules
 from .entities import router as entities
@@ -69,7 +70,7 @@ async def root(token: str = Depends(oauth2_scheme)):
 
 
 @app.post('/token')
-async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
+async def generate_token(request: Request,response: Response ,form_data: OAuth2PasswordRequestForm = Depends()):
     user = await login.authenticate_user(form_data.username, form_data.password)
     if not user:
        
@@ -77,4 +78,5 @@ async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm =
         
     singleton = login.Singleton()
     singleton.user=user
+    response.set_cookie(key="user",value=user)
     return profile.perfil_usuario(request)

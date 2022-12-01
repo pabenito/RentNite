@@ -18,10 +18,12 @@ api_key="b3b172dc37a0267d33cf70ee2d8303fc"
 
 
 @router.get("/", response_class=HTMLResponse)
-def perfil_usuario(request: Request):
+def perfil_usuario(request: Request, user = Cookie(default=None)):
     s = None
+    print(user)
     if login.get_current_user():
         s = login.Singleton()
+    print(s.user)
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(s.user), "rating": ratings_api.get(None, s.user, None, None, None, None, None), "identificador": s.user})
 

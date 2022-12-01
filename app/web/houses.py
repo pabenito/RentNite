@@ -86,3 +86,4 @@ def add_comment(request: Request, id: str, user = Cookie(default=None), comment:
 def add_rate(request: Request, id: str, user = Cookie(default=None), estrellas:int = Form() ):
     ratings_api.create("636ad4aa5baf6bcddce08814",None,id,estrellas)
     return house_details(request, id, user)
+

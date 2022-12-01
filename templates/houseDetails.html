@@ -61,8 +61,66 @@
 
     {% block content %}
     <h1 class="text text-center my-4">Detalles de la casa</h1>
+    
     <div class="row">
-        <div class="col-md-4"></div>
+        <div class="col-md-4 mx-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        {% for itemKey,itemValue in tiempo.items() -%}
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {%- if  35.0 > itemValue["value"] -%}
+                                <img src=https://live.staticflickr.com/65535/52535108615_05923d4e96.jpg style="height: 75%; width: 75%; object-fit: contain">
+                                {%- elif itemValue["value"] > 35 and 65 > itemValue["value"] -%}
+                                <img src=https://live.staticflickr.com/65535/52534163427_0a218a400e.jpg style="height: 75%; width: 75%; object-fit: contain" >
+                                {%- else -%}
+                                <img src=https://live.staticflickr.com/65535/52535108060_d66d4ce09c.jpg style="height: 75%; width: 75%; object-fit: contain" >
+                                {%- endif -%}
+                            </p>
+                        </div>
+                        {%- endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.0["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.1["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.2["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.3["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.4["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.5["value"]}}%
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="text text-center mt-2" >
+                                {{tiempo.6["value"]}}%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-4">
             <p class="text text-center mt-2" style="height: 300px">
                 <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">

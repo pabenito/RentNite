@@ -31,38 +31,49 @@
     {% block content %}
     <h1 style="text-align: center; margin-top: 30px; margin-bottom: 30px;">Casas ofertadas</h1>
     {% if houses | count > 0 %}
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            <div class="container">
-                <div class="row">
-                    {% for house in houses %}
-
-                    <div class="col-md-4">
-                        <table style="width:100%">
-                            <td>
-                                <div class="thumbnail">
-                                    <img src={{ house.image }} alt="Imagen casa ofertada" style="width:100%" onclick="">
-                                    <div class="caption">
-                                        <p> Direccion: {{ house.address }} </p>
-                                        <p> Habitaciones: {{ house.rooms }} </p>
-                                        <p> Baños: {{ house.bathrooms }} </p>
-                                        <p> Precio: {{ house.price }} </p>
-                                        <p> Dueño: <span onclick="profile('{{ house.owner_id }}');"
-                                                style="cursor: pointer">
-                                                {{
-                                                house.owner_name }}</span></p>
-                                        <button onclick="Reservar('{{ house.id }}');">Reservar</button>
-                                    </div>
-                                </div>
-                            </td>
-                        </table>
-
+    <div class="row mx-3">
+            {% for house in houses %}
+            <div class="col-md-4">
+                <div class="thumbnail">
+                    <p class="text text-center mt-2" style="height: 300px">
+                        <img src={{ house.image }} alt="Casa ofertada"
+                            style="height: 100%; width: 100%; object-fit: contain">
+                    </p>
+                    <table class="table table-info" style="height: 330px">
+                        <tr>
+                            <td class="h4">Direcci&oacute;n:</td>
+                            <td>{{ house.address }}</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Capacidad:</td>
+                            <td>{{ house.capacity }}</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Habitaciones:</td>
+                            <td>{{ house.rooms }}</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Cuartos de ba&ntilde;o:</td>
+                            <td>{{ house.bathrooms }}</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Precio:</td>
+                            <td>{{ house.price }} &euro;</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Propietario:</td>
+                            <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name
+                                    }}</a></td>
+                        </tr>
+                    </table>
+                    <div class="text-center mt-3 mb-5">
+                        <button class="btn btn-primary mx-2" onclick="Reservar('{{ house.id }}');">
+                            Reservar </button>
                     </div>
-                    {% endfor %}
                 </div>
-
             </div>
+            {% endfor %}
+
 
             <div class="col-md-2"></div>
         </div>

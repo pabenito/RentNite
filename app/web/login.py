@@ -74,5 +74,11 @@ def create_user(request: Request, username: str = Form(), correo: str = Form(), 
 
     return login(request,"Usuario registrado con exito")
 
+@router.get("/logout", response_class=HTMLResponse)
+def logout(request: Request,err = Cookie(default=None)):
+    salida = Singleton()
+    salida.user=None
+    return templates.TemplateResponse("login.html", {"request": request, "err":err})
+
 
 

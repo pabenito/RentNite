@@ -56,7 +56,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     finally:
         login(Request,None)
 
-    return await users_api.get_by_id(user)
+    return  users_api.get_by_id(user)
 
 @router.get("/", response_class=HTMLResponse)
 def login(request: Request,err = Cookie(default=None)):

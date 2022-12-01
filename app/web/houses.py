@@ -16,21 +16,24 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     house: HousePost = HousePost(address = "", capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_id = user_id,
                                  image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg", latitude = 0, longitude = 0)
@@ -41,7 +44,8 @@ def create_house(request: Request):
 def update_house(request: Request, id: str = Form(), address: str = Form(), capacity: int = Form(), price: str = Form(), rooms: int = Form(), 
                  bathrooms: int = Form(), latitude: str = Form(), longitude: str = Form()):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
     
     try:
         price_float: float = float(price)
@@ -66,7 +70,8 @@ def update_house(request: Request, id: str = Form(), address: str = Form(), capa
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
     comments: list = messages_api.get(None, id, None, None, None)
@@ -82,7 +87,8 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
 
@@ -91,7 +97,8 @@ def edit_house(request: Request, id: str, error: str = ""):
 @router.get("/{id}/delete")
 def delete_house(request: Request, id: str):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     houses_api.delete(id)
 
@@ -100,7 +107,8 @@ def delete_house(request: Request, id: str):
 @router.post("/{id}/addComment", response_class=HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     message: MessagePost = MessagePost(sender_id="636ad4aa5baf6bcddce08814", message=comment, house_id=id)
     messages_api.post(message)
@@ -110,7 +118,8 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_rate(request: Request, id: str, estrellas: int = Form()):
     user_id = __getUser()
-    __checkUser(user_id)
+    if user_id == "None":
+        return RedirectResponse("/login")
 
     ratings_api.create(user_id, None, id, estrellas)
 
@@ -120,10 +129,6 @@ def add_rate(request: Request, id: str, estrellas: int = Form()):
 
 def __getUser():
     return str(login_api.Singleton().user)
-
-def __checkUser(user_id: str):
-    if user_id == "None":
-        return RedirectResponse("/login")
 
 def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool, editing: bool, error: str, booking_error: str, comments: list | None, 
                        ratings: list | None, today_date: date | None, tomorrow_date: date | None, tiempo: dict | None, temperatura: dict | None, 

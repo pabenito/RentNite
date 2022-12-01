@@ -22,10 +22,10 @@ def perfil_usuario(request: Request):
     user = __chechUser()
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user})
 
-@router.get("/{id]", response_class=HTMLResponse)
-def perfil_usuario(request: Request, id: str):
+@router.get("/{id}", response_class=HTMLResponse)
+def perfil_usuario_distinto(request: Request, id: str):
     user = __chechUser()
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user})
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_Rate(request: Request, id: str, estrellas: int = Form()):

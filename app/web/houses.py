@@ -110,7 +110,7 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
     if user_id == "None":
         return RedirectResponse("/login")
 
-    message: MessagePost = MessagePost(sender_id="636ad4aa5baf6bcddce08814", message=comment, house_id=id)
+    message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
 
     return house_details(request, id)

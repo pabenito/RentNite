@@ -35,15 +35,14 @@ def get_forecast_temperature_daily(latitude :float | None = None,longitude:float
 def get_forecast_temperature_hourly(town: dict = Depends(aemet.get_town_by_coordinates)):
     return get_temp_hourly_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
-@router.get("/forecast/precipitation/daily")
-def get_forecast_precipitation_daily_urlParameters(town: dict = Depends(aemet.get_town_by_coordinates)):
-    return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
-
 @router.get("/forecast/precipitation/dailyPar")
 def get_forecast_precipitation_daily(latitude :float | None = None,longitude:float | None = None):
     town: dict = aemet.get_town_by_coordinates(latitude=latitude,longitude=longitude)
     return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
-    
+
+@router.get("/forecast/precipitation/daily")
+def get_forecast_precipitation_daily_urlParameters(town: dict = Depends(aemet.get_town_by_coordinates)):
+    return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))  
 
 @router.get("/forecast/precipitation/hourly")
 def get_forecast_precipitation_hourly(town: dict = Depends(aemet.get_town_by_coordinates) ):

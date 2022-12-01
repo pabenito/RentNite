@@ -46,7 +46,7 @@ def booking_details(request: Request, id: str):
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
 def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form()):
     # Check if the dates are valid
-    if from_ > to or from_ < date.today():
+    if from_ >= to or from_ < date.today():
         return houses.house_details(request, id, booking_error = "Fechas incorrectas")
 
     # Create a new booking given a house id

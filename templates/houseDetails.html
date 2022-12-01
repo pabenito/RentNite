@@ -69,6 +69,7 @@
     
     <div class="row">
         <div class="col-md-4 mx-3">
+            {% if not creating and not editing %}
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -125,6 +126,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="col-md-4">
             <p class="text text-center mt-2" style="height: 300px">
@@ -213,20 +215,21 @@
                 </tr>
             </table>
             <iframe src="/map/house?latitude={{house.latitude}}&longitude={{house.longitude}}&address={{house.address}}" width="100%" height="300px"></iframe>
+                {% if user_id != house.owner_id %}
             <h2 class="text text-center my-4">Hacer una reserva</h2>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
                 <label id="house_price" style="display: none">{{house.price}}</label>
-                <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814" />
+                <input type="hidden" name="guest_id" value={{user_id}} />
                 <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
                 <table class="table table-info">
                     <tr>
                         <td class="h5">Fecha de inicio:</td>
-                        <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required
+                        <td><input type="date" id="from_" name="from_" value={{today_date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td class="h5">Fecha de fin:</td>
-                        <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
+                        <td><input type="date" id="to" name="to" value={{tomorrow_date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
@@ -239,6 +242,7 @@
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>
             </form>
+                {% endif %}
             {% endif %}
         </div>
         <div class="col-md-4"></div>
@@ -356,8 +360,8 @@
 
                 today = new Date().setHours(0, 0, 0, 0);
 
-                if (from_ >= today && from_ <= to) {
-                    var new_cost = ((to - from_) / 86400000 + 1) * house_price;
+                if (from_ >= today && from_ < to) {
+                    var new_cost = (to - from_) / 86400000 * house_price;
                     new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
                     cost.value = new_cost;
                     cost_display.style.color = "black";

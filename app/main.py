@@ -79,4 +79,4 @@ async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm =
         
     singleton = login.Singleton()
     singleton.user=user
-    return profile.perfil_usuario(request)
+    return RedirectResponse(base_url + "/profile", status_code=status.HTTP_303_SEE_OTHER )

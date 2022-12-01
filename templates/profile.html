@@ -155,7 +155,6 @@
         <div class="col-md-5"></div>
     </div>
 
-
     {% if not creating and not editing %}
     <div class="row mt-5">
         <div class="col-md-2"></div>
@@ -195,9 +194,8 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
-            {% if user.id != identificador %}
-            <p> {{ user.id }}</p>
-            <p> {{ identificador }}</p>
+            {% if perfil and perfil != identificador %}
+           
 
             <div class="d-flex flex-column align-items-center text-center">
                 <form method="post" action="/profile/{{ user.id }}/addRate" title="puntuar">

@@ -58,6 +58,14 @@ def create(booking : BookingPost):
     from_ = datetime.combine(booking.from_, time.min)
     to = datetime.combine(booking.to, time.min)
     
+    # Comprobar si la casa ya esta reservada para esa fecha
+    bookings_list = search(house_id=get_by_id(new_booking.house_id)["id"])
+
+    for b in bookings_list:
+        booking_item = Booking.parse_obj(b)
+        if booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to:
+            raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
+
     new_booking.from_ = from_
     new_booking.to = to
 
@@ -117,6 +125,14 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
     if not dfrom_ < dto:
         raise HTTPException(
             status_code=400, detail="La fecha de inicio no es anterior a la de fin.")
+
+    # Comprobar si la casa ya esta reservada para esa fecha
+    bookings_list = search(house_id=get_by_id(booking["house_id"]))
+    
+    for b in bookings_list:
+        booking_item = Booking.parse_obj(b)
+        if booking_item.id != id and (booking_item.from_ <= dto <= booking_item.to or booking_item.from_ <= dfrom_ <= booking_item.to):
+            raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
 
     booking = bookings.update_one(
         {"_id": ObjectId(id)}, {"$set": data})
@@ -205,3 +221,19 @@ def delete(id: str):
 
     if booking is None:
         raise HTTPException(status_code=404, detail=RNE)
+
+# Auxiliary methods
+
+def __check_overlapping_dates(house_id: str, to: datetime, from_: datetime, id: str | None = None):
+    bookings_list = search(house_id=get_by_id(house_id))
+
+    if id is not None:
+        for b in bookings_list:
+            booking_item = Booking.parse_obj(b)
+            if (id is not None and booking_item.id != id) and (booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to):
+                raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
+    else:
+        for b in bookings_list:
+            booking_item = Booking.parse_obj(b)
+            if booking_item.id != id and (booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to):
+                raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")

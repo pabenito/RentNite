@@ -57,9 +57,17 @@ def create(booking : BookingPost):
 
     from_ = datetime.combine(booking.from_, time.min)
     to = datetime.combine(booking.to, time.min)
-    
+
+    # Comprobar si las fechas son validas
+
+    if date.today() <= booking.from_ < booking.to:
+        new_booking.cost = booking.cost
+    else:
+        raise HTTPException(
+            status_code=400, detail="Fecha incorrecta.")
+
     # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=get_by_id(new_booking.house_id)["id"])
+    bookings_list = search(house_id=houses_api.get_by_id(new_booking.house_id)["id"])
 
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)
@@ -68,12 +76,6 @@ def create(booking : BookingPost):
 
     new_booking.from_ = from_
     new_booking.to = to
-
-    if booking.cost > 0 and booking.from_ < booking.to:
-        new_booking.cost = booking.cost
-    else:
-        raise HTTPException(
-            status_code=400, detail="Coste o fecha incorrectos.")
 
     if booking.meeting_location is not None:
         new_booking.meeting_location = booking.meeting_location
@@ -127,7 +129,7 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
             status_code=400, detail="La fecha de inicio no es anterior a la de fin.")
 
     # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=get_by_id(booking["house_id"]))
+    bookings_list = search(house_id=houses_api.get_by_id(booking["house_id"]))
     
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)

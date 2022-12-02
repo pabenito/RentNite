@@ -1,13 +1,14 @@
+import config
 import pymongo
 import cloudinary
 
 cloudinary.config(
-    cloud_name = "dc4yqjivf",
-    api_key = "387197219888788",
-    api_secret = "D87sGRe-kJFShGl3rnFUoa9vSXc",
+    cloud_name = config.cloud_name,
+    api_key = config.api_key,
+    api_secret = config.api_secret
 )
 
 # Database connection
 
-client = pymongo.MongoClient("mongodb+srv://IWA1:2NMRwrIIMLFSy307@cluster0.br1ipw2.mongodb.net/?retryWrites=true&w=majority")
-db = client["iweb"]
+client = pymongo.MongoClient(config.db_url)
+db = client[config.db_client]

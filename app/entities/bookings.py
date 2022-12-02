@@ -96,68 +96,76 @@ def create(booking : BookingPost):
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
 @router.put("/{id}")
-def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meeting_location: AddressPost | None = None):
+def update(id: str, booking : BookingConstructor):
 
-    # Formatear las fechas correctamente si se han proporcionado
-    if from_ is not None:
-        from_ = datetime.combine(from_, time.min)
-    if to is not None:
-        to = datetime.combine(to, time.min)
-
-    if state is not None:
-        state = state.value
-
-    # Inicializar diccionario con todos los datos a introducir, borrando los que son None
-    data = {"state": state, "from_": from_, "to": to, "cost": cost}
-    data = {k: v for k, v in data.items() if v is not None}
-
-    # Formatear la direccion correctamente si se ha proporcionado
-    if meeting_location is not None:
-        final_address: dict = {"city": meeting_location.city, "street": meeting_location.street, "number": meeting_location.number}
-        
-        geocode_result = geocode(meeting_location.city, meeting_location.street, meeting_location.number)
-
-        if geocode_result is not None:
-            final_address["latitude"] = float(geocode_result["lat"]) # type: ignore
-            final_address["longitude"] = float(geocode_result["lon"]) # type: ignore
-        
-        data["meeting_location"] = final_address
-
-    # Comprobar si se han introducido 0 datos y lanzar una excepcion si se da el caso
-    if len(data) == 0:
+    # Verificar que se han introducido datos
+    if booking.state is None and booking.from_ is None and booking.to is None and booking.cost is None and booking.guest_id is None and booking.house_id is None and booking.meeting_location is None:
         raise HTTPException(
             status_code=400, detail="No hay nada que actualizar.")
 
-    # Comprobar si el coste tiene un formato correcto y lanzar una excepcion en caso contrario
-    if cost is not None and cost <= 0:
-        raise HTTPException(status_code=400, detail="Valores incorrectos.")
+    # Verificar coste
+    if booking.cost is not None and booking.cost <= 0:
+        raise HTTPException(status_code=400, detail="Coste incorrecto.")
 
+    # Obtener objeto booking_db de la bd
     try:
-        booking = bookings.find_one({"_id": ObjectId(id)})
+        booking_bd = bookings.find_one({"_id": ObjectId(id)})
     except Exception:
-        booking = None
+        booking_bd = None
 
-    if booking is None:
+    if booking_bd is None:
         raise HTTPException(status_code=404, detail=RNE)
 
-    # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
-    # independientemente de si se ha introducido en el PUT o no
-    dfrom_ = from_ or booking["from_"]
-    dto = to or booking["to"]
+    # Verificar fechas
+    if booking.from_ is not None or booking.to is not None:
+        # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
+        # independientemente de si se ha introducido en el PUT o no
+        dfrom_ = booking.from_ or booking_bd["from_"]
+        dto = booking.to or booking_bd["to"]
 
-    if not (datetime.combine(date.today(), time.min) <= dfrom_ < dto):
-        raise HTTPException(
-            status_code=400, detail="Fecha incorrecta.")
+        if not (datetime.combine(date.today(), time.min) <= dfrom_ < dto):
+            raise HTTPException(
+                status_code=400, detail="Fecha incorrecta.")
 
-    # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=booking["house_id"])
-    
-    for b in bookings_list:
-        if b["id"] != id and ((b["from_"] <= dto <= b["to"]) or (b["from_"] <= dfrom_ <= b["to"])):
-            raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
+        # Comprobar si la casa ya esta reservada para esa fecha
+        bookings_list = search(house_id=booking_bd["house_id"])
+        for b in bookings_list:
+            if b["id"] != id and ((b["from_"] <= dto <= b["to"]) or (b["from_"] <= dfrom_ <= b["to"])):
+                raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
-    booking = bookings.update_one(
-        {"_id": ObjectId(id)}, {"$set": data})
+    parameters = booking.exclude_unset()
+
+    # Verificar casa
+    if booking.house_id is not None:
+        # Casa
+        try:
+            house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
+            parameters["house_address"] = house.address
+        except:
+            raise HTTPException(
+                status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
+
+    # Verificar cliente
+    if booking.guest_id is not None:
+        # Cliente
+        try:
+            guest : User = User.parse_obj(users.find_one({"_id": ObjectId(booking.guest_id)}))
+            parameters["guest_name"] = guest.username
+        except Exception:
+            raise HTTPException(
+                status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
+
+    # Formatear la direccion correctamente si se ha proporcionado
+    if booking.meeting_location is not None:
+        if booking.meeting_location.street is not None:
+            parameters["meeting_location"]["street"] = booking.meeting_location.street
+        if booking.meeting_location.city is not None:
+            parameters["meeting_location"]["city"] = booking.meeting_location.city
+        if booking.meeting_location.number is not None:
+            parameters["meeting_location"]["number"] = booking.meeting_location.number
+
+    bookings.update_one(
+        {"_id": ObjectId(id)}, {"$set": parameters})
 
 
 @router.get("/{id}")

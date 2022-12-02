@@ -184,9 +184,7 @@ class BookingConstructor(Simplifier):
     to: datetime | None = None
     cost: float | None = None
     guest_id: str | None = None
-    guest_name: str | None = None
     house_id: str | None = None
-    house_address: AddressBase | None = None
     meeting_location : AddressConstructor | None = None
 
 class RatingConstructor(Simplifier):

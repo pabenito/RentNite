@@ -33,8 +33,8 @@ async def get_map_all(map: dict = Depends(get_map)):
 
 # Geocoding
 
-def geocode(city: str, street:str, number:str):
-    url = "https://nominatim.openstreetmap.org/search?city=" + city + "&street=" + street + "%20" + number + "&format=json"
+def geocode(city: str, street:str, number:int):
+    url = "https://nominatim.openstreetmap.org/search?city=" + city + "&street=" + street + "%20" + str(number) + "&format=json"
     return requests.get(url).json()[0]
 
 # Auxiliary functions

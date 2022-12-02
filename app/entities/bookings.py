@@ -37,6 +37,10 @@ def get():
 def create(booking : BookingPost):
     new_booking = dict()
 
+    # Verificar coste
+    if booking.cost is not None and booking.cost <= 0:
+        raise HTTPException(status_code=400, detail="Coste incorrecto.")
+
     # Casa
     try:
         house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))

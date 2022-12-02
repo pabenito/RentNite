@@ -112,10 +112,13 @@
                                 <img src="../static/img/noprofil.jpg"
                                     width=100 height=100 alt="">   
                                 {%- endif %}
+                                {% if perfil != identificador -%}
+                                {%- else -%}
                                 <div class=" round">
                                     <input name="file" id="file" type="file" accept="image/png, image/jpeg, image/jpg, image/gif">
                                     <i class="fa fa-camera" style="color: #fff;"></i>
                                 </div>
+                                {%- endif %}
                         </form>
                     </div>
                     {% if editable -%}
@@ -140,14 +143,15 @@
                     <p class="text-black-50 fs-5">{{ user.email }}</p>
                     <div class="row mt-3">
 
-
+                        {% if perfil != identificador -%}
+                        {%- else -%}
                         <div class="col">
                             <button class="btn btn-primary mx-2">
                                 <a class="h6" href="/profile/{{identificador}}/edit"
                                     style="color: white; text-decoration: none">Editar</a>
                             </button>
                         </div>
-
+                        {%- endif %}
 
                     </div>
                     {% endif %}

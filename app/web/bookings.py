@@ -52,14 +52,17 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
 @router.post("/{id}")
 def update_booking_state(request: Request, id: str, state: State = Form()):
     # Update a booking from a form
-    bookings_api.update(id=id, state=state)
+    booking_cons: BookingConstructor = BookingConstructor(state=state)
+    bookings_api.update(id=id, booking=booking_cons)
     return booking_details(request=request, id=id)
 
+'''
 @router.get("/{id}/chat")
 def goto_chat(request: Request, id: str):
     # TODO
     # This will send you to the chat page of the booking
     return None
+'''
 
 # Private methods
 def __chechUser():

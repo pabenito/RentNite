@@ -40,7 +40,7 @@
                 </tr>
                 <tr>
                     <td class="h3">Direcci&oacute;n de la casa:</td>
-                    <td class="h5">{{ booking.house_address }}</td>
+                    <td class="h5">Calle {{ booking.house_address.street }} nº {{ booking.house_address.number }}, {{ booking.house_address.city }}</td>
                 </tr>
                 <tr>
                     <td class="h3">Propietario de la casa:</td>
@@ -49,7 +49,7 @@
                 {% if booking.meeting_location != null %}
                 <tr>
                     <td class="h3">Lugar de reuni&oacute;n:</td>
-                    <td class="h5">{{ booking.meeting_location }}</td>
+                    <td class="h5">Calle {{ booking.meeting_location.street }} nº {{ booking.meeting_location.number }}, {{ booking.meeting_location.city }}</td>
                 </tr>
                 {% endif %}
             </table>

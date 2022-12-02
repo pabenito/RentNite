@@ -122,6 +122,18 @@ def update(id: str, booking : BookingConstructor):
 
     parameters = booking.exclude_unset()
 
+    # Verificar casa
+    if booking.house_id is not None:
+        try:
+            house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
+            house_address = {"city": house.address.city, "street": house.address.street, "number": house.address.number, 
+                                            "latitude": house.address.latitude, "longitude": house.address.longitude}
+            house_address = {k: v for k, v in house_address.items() if v is not None}
+            parameters["house_address"] = house_address
+        except:
+            raise HTTPException(
+                status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
+
     # Verificar fechas
     if booking.from_ is not None or booking.to is not None:
         # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
@@ -146,24 +158,13 @@ def update(id: str, booking : BookingConstructor):
                 status_code=400, detail="Fecha incorrecta.")
 
         # Comprobar si la casa ya esta reservada para esa fecha
-        bookings_list = search(house_id=booking_bd["house_id"])
+        if parameters.get("house_id") is None:
+            bookings_list = search(house_id=booking_bd["house_id"])
+        else:
+            bookings_list = search(house_id=parameters["house_id"])
         for b in bookings_list:
             if b["id"] != id and ((b["from_"] <= dto <= b["to"]) or (b["from_"] <= dfrom_ <= b["to"])):
                 raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
-        
-
-    # Verificar casa
-    if booking.house_id is not None:
-        # Casa
-        try:
-            house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
-            house_address = {"city": house.address.city, "street": house.address.street, "number": house.address.number, 
-                                            "latitude": house.address.latitude, "longitude": house.address.longitude}
-            house_address = {k: v for k, v in house_address.items() if v is not None}
-            parameters["house_address"] = house_address
-        except:
-            raise HTTPException(
-                status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
 
     # Verificar cliente
     if booking.guest_id is not None:

@@ -43,11 +43,13 @@ def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
     user = __chechUser()
 
     userClass = users_api.get_by_id(user)
+    
+    #Take photo's url and get name of file to delete
     name =  userClass["photo"].split("/")
     name =  name[7]
     size = len(name)
     name = name[:size-4]
-    
+
     #Delete photo from cloudinary
     cloudinary.uploader.destroy(name)
     #Upload photo to cloudinary

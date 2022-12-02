@@ -29,7 +29,7 @@
     {% include "navbar.html" %}
 
     {% block content %}
-    <h1 style="text-align: center; margin-top: 30px; margin-bottom: 30px;">Casas ofertadas</h1>
+    <h1 style="text-align: center; margin-top: 30px; margin-bottom: 30px;">Casas ofertadas - RentNite</h1>
     {% if houses | count > 0 %}
     <div class="row mx-3">
             {% for house in houses %}
@@ -42,7 +42,7 @@
                     <table class="table table-info" style="height: 330px">
                         <tr>
                             <td class="h4">Direcci&oacute;n:</td>
-                            <td>{{ house.address.street }} {{ house.address.number }}, {{ house.address.city }}</td>
+                            <td>Calle {{ house.address.street }} n.&deg; {{ house.address.number }}, {{ house.address.city }}</td>
                         </tr>
                         <tr>
                             <td class="h4">Capacidad:</td>

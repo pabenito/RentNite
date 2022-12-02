@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Cookie, Form, HTTPException
+from fastapi import APIRouter, Request, Cookie, Form, HTTPException, File, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
@@ -8,6 +8,7 @@ from ..entities import messages as messages_api
 from ..entities import ratings as ratings_api
 from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
+import cloudinary.uploader
 
 router = APIRouter()
 
@@ -16,24 +17,18 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     address: AddressPost = AddressPost(city = "", street = "", number = 1)
 
@@ -44,25 +39,27 @@ def create_house(request: Request):
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
-                 price: str = Form(), rooms: int = Form(), bathrooms: int = Form()):
+                 price: str = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
     
     try:
         price_float: float = float(price)
+
+        # Upload photo to Cloudinary
+        result = cloudinary.uploader.upload(file.file)
+        url = result.get("url")
 
         if id == "None":
             address = AddressPost(city = city, street = street, number = number)
 
             house = HousePost(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
-                              image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg")
+                              image = url)
             house = houses_api.create(house)
             id = house["id"]
         else:
             address = AddressConstructor(city = city, street = street, number = number)
 
-            house = HouseConstructor(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms)
+            house = HouseConstructor(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, image = url)
             houses_api.update(id, house)
 
         return my_houses(request)
@@ -72,8 +69,6 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
 
@@ -97,8 +92,6 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
 
@@ -107,8 +100,6 @@ def edit_house(request: Request, id: str, error: str = ""):
 @router.get("/{id}/delete")
 def delete_house(request: Request, id: str):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     houses_api.delete(id)
 
@@ -117,8 +108,6 @@ def delete_house(request: Request, id: str):
 @router.post("/{id}/addComment", response_class=HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
@@ -128,12 +117,10 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_rate(request: Request, id: str, estrellas: int = Form()):
     user_id = __chechUser()
-    if user_id == "None":
-        return RedirectResponse("/login")
 
     ratings_api.create(user_id, None, id, estrellas)
 
-    return house_details(request, id)
+    return house_details(request, id) 
 
 # Private methods
 

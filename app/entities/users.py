@@ -45,11 +45,15 @@ def create(username: str, email: str, password: str):
 
 @router.put("/{id}")
 def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
-    if len(password) < 20:
-        data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
+    if password is not None:
+
+        if len(password) < 20:
+            data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
+        else:
+            data = {"username": username, "email": email, "password_hash": password, "photo": photo}
     else:
         data = {"username": username, "email": email, "password_hash": password, "photo": photo}
-        
+
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:

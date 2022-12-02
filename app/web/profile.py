@@ -42,13 +42,13 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 
 
 @router.post("/{id}/uploadPhoto", response_class=HTMLResponse)
-def upload_photo(request: Request, id: str,password: str = Form(), file: UploadFile = File(...)):
+def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
     user = __chechUser()
 
     #Upload photo to cloudinary
     result = cloudinary.uploader.upload(file.file)
     url = result.get("url")
-    users_api.update(id=user,password=password,photo=url)
+    users_api.update(id=user,photo=url)
     
     return perfil_usuario(request)
 

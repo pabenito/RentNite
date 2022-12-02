@@ -18,27 +18,30 @@ users: Collection = db["users"]
 
 # API
 @router.get("/")
-def get(address: str | None = None, capacity: int | None = None, price: float | None = None, 
-        rooms: int | None = None,bathrooms: int | None = None, owner_id: str | None = None, 
-        owner_name: str | None = None, image: str | None = None,latitude: float | None = None, 
-        longitude: float | None = None, offset: int = 0, size: int = 0):
+def get(city: str | None = None, street: str | None = None, number: int | None = None, capacity: int | None = None, price: float | None = None, 
+        rooms: int | None = None, bathrooms: int | None = None, owner_id: str | None = None, owner_name: str | None = None, image: str | None = None, 
+        latitude: float | None = None, longitude: float | None = None, offset: int = 0, size: int = 0):
     if offset < 0 or size < 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid offset or size.")
 
     filter = {"capacity": capacity, "price": price, "rooms": rooms, "bathrooms": bathrooms,
               "owner_id": owner_id, "image": image, "latitude": latitude, "longitude": longitude}
     filter = {k: v for k, v in filter.items() if v is not None}
+    
+    if city is not None:
+        filter["address"]["city"] = {"$regex": re.compile(".*" + city + ".*", re.IGNORECASE)}
 
-    if address is not None:
-        filter["address"] = {"$regex": re.compile(
-            ".*" + address + ".*", re.IGNORECASE)}
+    if street is not None:
+        filter["address"]["street"] = {"$regex": re.compile(".*" + street + ".*", re.IGNORECASE)}
+
+    if number is not None:
+        filter["address"]["number"] = number
 
     if owner_name is not None:
-        filter["owner_name"] = {"$regex": re.compile(
-            ".*" + owner_name + ".*", re.IGNORECASE)}
+        filter["owner_name"] = {"$regex": re.compile(".*" + owner_name + ".*", re.IGNORECASE)}
 
     if size == 0:
-        result: list = list(houses.find(filter))
+        result: list = list(houses.find(filter, skip = offset))
     else:
         result: list = list(houses.find(filter, skip = offset, limit = size))
     
@@ -71,12 +74,14 @@ def create(house: HousePost):
     if owner is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No user was found with the given ID.")
 
-    location = osm.geocode("Málaga", "Bulevar Louis Pasteur", 35)
-
     parameters = jsonable_encoder(house)
-    parameters["latitude"] = location["lat"]
-    parameters["longitude"] = location["lon"]
     parameters["owner_name"] = owner["username"]
+
+    location = osm.geocode(house.address.city, house.address.street, house.address.number)
+
+    if location is not None:
+        parameters["address"]["latitude"] = float(location["lat"])
+        parameters["address"]["longitude"] = float(location["lon"])
 
     inserted_house: InsertOneResult = houses.insert_one(parameters)
     return House.parse_obj(houses.find_one({"_id": ObjectId(inserted_house.inserted_id)})).to_response()
@@ -88,6 +93,20 @@ def update(id: str, house: HouseConstructor):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
 
     parameters = house.exclude_unset()
+
+    if house.address is not None:
+        if house.address.city is not None:
+            parameters["address"]["city"] = house.address.city
+        if house.address.street is not None:
+            parameters["address"]["street"] = house.address.street
+        if house.address.number is not None:
+            parameters["address"]["number"] = house.address.number
+
+        location = osm.geocode(parameters["address"]["city"], parameters["address"]["street"], parameters["address"]["number"])
+
+        if location is not None:
+            parameters["address"]["latitude"] = location["lat"]
+            parameters["address"]["longitude"] = location["lon"]
 
     try:
         result = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": parameters})

@@ -81,10 +81,17 @@ def create(booking : BookingPost):
 
     # Lugar de reunion
     if booking.meeting_location is not None:
+        address: AddressConstructor = AddressConstructor()
+
         location = booking.meeting_location
 
-        new_booking.meeting_location = location
-        new_booking.latitude = geocode(location).latitude
+        address.street = location.street
+        address.city = location.city
+        address.number = location.number
+        address.latitude = geocode(location.street, location.city, location.number)["lat"]
+        address.longitude = geocode(location.street, location.city, location.number)["lon"]
+
+        new_booking.meeting_location = address
 
     new_booking.state = State.REQUESTED
 

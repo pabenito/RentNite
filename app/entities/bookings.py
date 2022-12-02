@@ -92,8 +92,6 @@ def create(booking : BookingPost):
     new_booking["cost"] = booking.cost
     new_booking["state"] = State.REQUESTED.value
 
-    print(new_booking)
-
     inserted_booking: InsertOneResult = bookings.insert_one(new_booking)
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 

@@ -144,8 +144,6 @@ class AddressConstructor(BaseModel):
     street: str | None = None
     number: int | None = None
     city: str | None = None
-    longitude: float | None = None
-    latitude: float | None = None
 
 class ChatConstructor(Simplifier):
     house_address: AddressBase | None
@@ -171,14 +169,12 @@ class UserConstructor(Simplifier):
     email: EmailStr | None  
     password_hash: str | None  
 
-
 class HouseConstructor(Simplifier):
     address: AddressConstructor | None = None
     capacity: int | None = None
     price: float | None = None
     rooms: int | None = None
     bathrooms: int | None = None
-    owner_name: str | None = None
     owner_id: str | None = None
     image: str | None = None
 
@@ -235,7 +231,6 @@ class HousePost(BaseModel):
     owner_id: str
     image: str
 
-    
 class UserPost(BaseModel):
     username: str 
     email: EmailStr 

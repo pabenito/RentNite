@@ -5,12 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, HTTPException, status
 from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
-
 from app.database import db
 from .models import *
-
 from ..entities import houses as houses_api
-#from ..entities import users as users_api
+from ..opendata.osm import geocode
 
 # Create router
 router = APIRouter()
@@ -39,6 +37,7 @@ def get():
 def create(booking : BookingPost):
     new_booking: BookingConstructor = BookingConstructor()
 
+    # Casa
     try:
         house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
         new_booking.house_id = str(house.id)
@@ -47,6 +46,7 @@ def create(booking : BookingPost):
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
 
+    # Cliente
     try:
         guest : User = User.parse_obj(users.find_one({"_id": ObjectId(booking.guest_id)}))
         new_booking.guest_id = str(guest.id)
@@ -54,6 +54,8 @@ def create(booking : BookingPost):
     except Exception:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
+
+    # Fechas
 
     from_ = datetime.combine(booking.from_, time.min)
     to = datetime.combine(booking.to, time.min)
@@ -77,8 +79,12 @@ def create(booking : BookingPost):
     new_booking.from_ = from_
     new_booking.to = to
 
+    # Lugar de reunion
     if booking.meeting_location is not None:
-        new_booking.meeting_location = booking.meeting_location
+        location = booking.meeting_location
+
+        new_booking.meeting_location = location
+        new_booking.latitude = geocode(location).latitude
 
     new_booking.state = State.REQUESTED
 

@@ -38,6 +38,13 @@ class Entity(Simplifier):
 
 # Base models
 
+class Address(BaseModel):
+    street: str
+    number: int
+    city: str
+    longitude: float
+    latitude: float
+
 class MessageBase(BaseModel):
     sender_id: str
     sender_username: str
@@ -63,7 +70,7 @@ class UserBase(BaseModel):
     password_hash: str  
 
 class HouseBase(BaseModel):
-    address: str 
+    address: Address
     capacity: int 
     price: float 
     rooms: int 
@@ -71,8 +78,6 @@ class HouseBase(BaseModel):
     owner_name: str
     owner_id: str
     image: str
-    longitude: float 
-    latitude: float 
 
 class BookingBase(BaseModel):
     state: State
@@ -83,9 +88,7 @@ class BookingBase(BaseModel):
     guest_name: str
     house_id: str
     house_address: str
-    meeting_location : str | None = None
-    latitude: float
-    longitude: float
+    meeting_location : Address | None = None
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -137,6 +140,13 @@ class RatingResponse(RatingBase, Plain):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
+class AddressConstructor(BaseModel):
+    street: str
+    number: int
+    city: str
+    longitude: float
+    latitude: float
+
 class ChatConstructor(Simplifier):
     house_address: str | None
     booking_from: datetime | None
@@ -163,7 +173,7 @@ class UserConstructor(Simplifier):
 
 
 class HouseConstructor(Simplifier):
-    address: str | None 
+    address: AddressConstructor | None 
     capacity: int | None 
     price: float | None 
     rooms: int | None 
@@ -171,8 +181,6 @@ class HouseConstructor(Simplifier):
     owner_name: str | None
     owner_id: str | None
     image: str | None
-    longitude: float | None 
-    latitude: float | None 
 
 class BookingConstructor(Simplifier):
     state: State | None
@@ -183,9 +191,7 @@ class BookingConstructor(Simplifier):
     guest_name: str | None
     house_id: str | None
     house_address: str | None
-    meeting_location : str | None
-    latitude: float | None
-    longitude: float | None
+    meeting_location : AddressConstructor | None
 
 class RatingConstructor(Simplifier):
     rater_id: str | None 
@@ -196,6 +202,11 @@ class RatingConstructor(Simplifier):
     rate: int | None 
 
 # Models for post
+
+class AddressPost(BaseModel):
+    street: str
+    number: int
+    city: str
 
 class ChatPost(BaseModel):
     booking_id : str
@@ -213,10 +224,10 @@ class BookingPost(BaseModel):
     cost: float
     guest_id: str
     house_id: str
-    meeting_location : str | None = None
+    meeting_location : AddressPost | None = None
 
 class HousePost(BaseModel):
-    address: str 
+    address: AddressPost 
     capacity: int 
     price: float 
     rooms: int 

@@ -69,7 +69,7 @@
     
     <div class="row">
         <div class="col-md-4 mx-3">
-            {% if not creating and not editing %}
+            {% if not creating and not editing and tiempo | count > 0 %}
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -91,42 +91,42 @@
                         <div class="col">
                             <p class="text text-center mt-2" >
                                 <label id="temperatura" class="fw-bold">{{temperatura.0["maxima"]}}º </label><br/>
-                                <label id="temperatura" >{{temperatura.0["minima"]}}º</label>
+                                <label id="temperatura">{{temperatura.0["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}º</label><br/>
-                                <label id="temperatura" >{{temperatura.1["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}º </label><br/>
+                                <label id="temperatura">{{temperatura.1["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}º</label> <br/>
+                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}º </label><br/>
                                 <label id="temperatura">{{temperatura.2["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}º</label> <br/>
+                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}º </label><br/>
                                 <label id="temperatura">{{temperatura.3["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}º</label> </br>
+                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}º </label><br/>
                                 <label id="temperatura">{{temperatura.4["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}º</label> <br/>
+                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}º </label><br/>
                                 <label id="temperatura">{{temperatura.5["minima"]}}º</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}º</label> <br/>
+                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}º </label><br/>
                                 <label id="temperatura">{{temperatura.6["minima"]}}º</label>
                             </p>
                         </div>
@@ -148,8 +148,18 @@
                     <input type="hidden" name="id" value="{{house.id}}" />
                     {% endif %}
                     <tr>
-                        <td class="h5">Direcci&oacute;n:</td>
-                        <td><input type="text" name="address" value="{{house.address}}" class="form-control" required />
+                        <td class="h5">Ciudad:</td>
+                        <td><input type="text" name="city" value="{{house.address.city}}" class="form-control" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Calle:</td>
+                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h5">N&uacute;mero:</td>
+                        <td><input type="number" name="number" value="{{house.address.number}}" class="form-control" required />
                         </td>
                     </tr>
                     <tr>
@@ -187,7 +197,7 @@
             <table class="table table-info my-4">
                 <tr>
                     <td class="h5">Direcci&oacute;n:</td>
-                    <td>{{ house.address }}</td>
+                    <td>{{ house.address.street }} {{house.address.number}}, {{house.address.city}}</td>
                 </tr>
                 <tr>
                     <td class="h5">Capacidad:</td>
@@ -211,7 +221,9 @@
                     </td>
                 </tr>
             </table>
-            <iframe src="/map/house?latitude={{house.latitude}}&longitude={{house.longitude}}&address={{house.address}}" width="100%" height="300px"></iframe>
+                {% if tiempo | count > 0 %}
+            <iframe src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}" width="100%" height="300px"></iframe>
+                {% endif %}
                 {% if user_id != house.owner_id %}
             <h2 class="text text-center my-4">Hacer una reserva</h2>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
@@ -248,8 +260,8 @@
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            {% if comments | count > 0 %}
             <h3 class="h3 my-4">Comentarios</h3>
+            {% if comments | count > 0 %}
             <table class="table-primary mx-5">
                 {% for comment in comments %}
                 <tr>

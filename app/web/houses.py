@@ -45,6 +45,17 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
     try:
         price_float: float = float(price)
 
+        house = houses_api.get_by_id(id)
+
+        #Take photo's url and get name of file to delete
+        name =  house["image"].split("/")
+        name =  name[7]
+        size = len(name)
+        name = name[:size-4]
+
+        #Delete photo from cloudinary
+        cloudinary.uploader.destroy(name)
+
         # Upload photo to Cloudinary
         result = cloudinary.uploader.upload(file.file)
         url = result.get("url")

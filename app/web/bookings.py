@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Request, Form, HTTPException, status
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from datetime import date
 from ..entities import bookings as bookings_api

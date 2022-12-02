@@ -35,7 +35,14 @@ async def get_map_all(map: dict = Depends(get_map)):
 
 def geocode(city: str, street:str, number:int):
     url = "https://nominatim.openstreetmap.org/search?city=" + city + "&street=" + street + "%20" + str(number) + "&format=json"
-    return requests.get(url).json()[0]
+
+    result_list = requests.get(url).json()
+    
+    if len(result_list) <= 0:
+        return None
+    else:
+        return result_list[0]
+
 
 # Auxiliary functions
 

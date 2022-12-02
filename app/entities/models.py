@@ -38,12 +38,12 @@ class Entity(Simplifier):
 
 # Base models
 
-class Address(BaseModel):
+class AddressBase(BaseModel):
     street: str
     number: int
     city: str
-    longitude: float
-    latitude: float
+    longitude: float | None = None
+    latitude: float | None = None
 
 class MessageBase(BaseModel):
     sender_id: str
@@ -70,7 +70,7 @@ class UserBase(BaseModel):
     password_hash: str  
 
 class HouseBase(BaseModel):
-    address: Address
+    address: AddressBase
     capacity: int 
     price: float 
     rooms: int 
@@ -87,8 +87,8 @@ class BookingBase(BaseModel):
     guest_id: str
     guest_name: str
     house_id: str
-    house_address: str
-    meeting_location : Address | None = None
+    house_address: AddressBase
+    meeting_location : AddressBase | None = None
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -141,11 +141,11 @@ class RatingResponse(RatingBase, Plain):
 # Constructors models (allows None in all field in order to add them one by one)
 
 class AddressConstructor(BaseModel):
-    street: str
-    number: int
-    city: str
-    longitude: float
-    latitude: float
+    street: str | None = None
+    number: int | None = None
+    city: str | None = None
+    longitude: float | None = None
+    latitude: float | None = None
 
 class ChatConstructor(Simplifier):
     house_address: str | None
@@ -173,25 +173,25 @@ class UserConstructor(Simplifier):
 
 
 class HouseConstructor(Simplifier):
-    address: AddressConstructor | None 
-    capacity: int | None 
-    price: float | None 
-    rooms: int | None 
-    bathrooms: int | None 
-    owner_name: str | None
-    owner_id: str | None
-    image: str | None
+    address: AddressConstructor | None = None
+    capacity: int | None = None
+    price: float | None = None
+    rooms: int | None = None
+    bathrooms: int | None = None
+    owner_name: str | None = None
+    owner_id: str | None = None
+    image: str | None = None
 
 class BookingConstructor(Simplifier):
-    state: State | None
-    from_: datetime | None
-    to: datetime | None 
-    cost: float | None 
-    guest_id: str | None
-    guest_name: str | None
-    house_id: str | None
-    house_address: str | None
-    meeting_location : AddressConstructor | None
+    state: State | None = None
+    from_: datetime | None = None
+    to: datetime | None = None
+    cost: float | None = None
+    guest_id: str | None = None
+    guest_name: str | None = None
+    house_id: str | None = None
+    house_address: AddressBase | None = None
+    meeting_location : AddressConstructor | None = None
 
 class RatingConstructor(Simplifier):
     rater_id: str | None 

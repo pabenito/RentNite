@@ -41,7 +41,7 @@ def create(booking : BookingPost):
     try:
         house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
         new_booking.house_id = str(house.id)
-        new_booking.house_address = str(house.address)
+        new_booking.house_address = house.address
     except:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
@@ -56,20 +56,16 @@ def create(booking : BookingPost):
             status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
 
     # Fechas
-
     from_ = datetime.combine(booking.from_, time.min)
     to = datetime.combine(booking.to, time.min)
 
     # Comprobar si las fechas son validas
-
-    if date.today() <= booking.from_ < booking.to:
-        new_booking.cost = booking.cost
-    else:
+    if not (date.today() <= booking.from_ < booking.to):
         raise HTTPException(
             status_code=400, detail="Fecha incorrecta.")
 
     # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=houses_api.get_by_id(new_booking.house_id)["id"])
+    bookings_list = search(house_id=new_booking.house_id)
 
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)
@@ -88,17 +84,22 @@ def create(booking : BookingPost):
         address.street = location.street
         address.city = location.city
         address.number = location.number
-        address.latitude = geocode(location.street, location.city, location.number)["lat"]
-        address.longitude = geocode(location.street, location.city, location.number)["lon"]
+
+        geocode_result = geocode(location.street, location.city, location.number)
+
+
+        if geocode_result is not None:
+            address.latitude = float(geocode_result["lat"])
+            address.longitude = float(geocode_result["lon"])
 
         new_booking.meeting_location = address
 
+    new_booking.cost = booking.cost
     new_booking.state = State.REQUESTED
 
     inserted_booking: InsertOneResult = bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
-#Este put no esta hecho con BaseModel
 @router.put("/{id}")
 def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
 
@@ -142,7 +143,7 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
             status_code=400, detail="La fecha de inicio no es anterior a la de fin.")
 
     # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=houses_api.get_by_id(booking["house_id"]))
+    bookings_list = search(house_id=booking["house_id"])
     
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)
@@ -236,19 +237,3 @@ def delete(id: str):
 
     if booking is None:
         raise HTTPException(status_code=404, detail=RNE)
-
-# Auxiliary methods
-
-def __check_overlapping_dates(house_id: str, to: datetime, from_: datetime, id: str | None = None):
-    bookings_list = search(house_id=get_by_id(house_id))
-
-    if id is not None:
-        for b in bookings_list:
-            booking_item = Booking.parse_obj(b)
-            if (id is not None and booking_item.id != id) and (booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to):
-                raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
-    else:
-        for b in bookings_list:
-            booking_item = Booking.parse_obj(b)
-            if booking_item.id != id and (booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to):
-                raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")

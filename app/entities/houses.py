@@ -71,7 +71,7 @@ def create(house: HousePost):
     if owner is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No user was found with the given ID.")
 
-    location = osm.geocode("Málaga", "Bulevar Louis Pasteur", "35")
+    location = osm.geocode("Málaga", "Bulevar Louis Pasteur", 35)
 
     parameters = jsonable_encoder(house)
     parameters["latitude"] = location["lat"]

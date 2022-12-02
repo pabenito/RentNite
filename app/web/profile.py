@@ -9,10 +9,7 @@ from app.web import login as login_api
 import cloudinary
 import cloudinary.uploader
 from passlib.hash import sha256_crypt
-from PIL import Image
-import requests
-from io import BytesIO
-import urllib.request
+
 
 
 router = APIRouter()
@@ -63,7 +60,7 @@ def edit(request: Request, id: str):
 def save(request: Request, password: str = Form(), username: str = Form(), email: str = Form()):
     user = __chechUser()
     users_api.update(id=user, username=username,
-                     email=email, password=salida)
+                     email=email, password=password)
 
     return perfil_usuario(request)
 

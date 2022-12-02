@@ -6,15 +6,18 @@ from ..entities import users as users_api
 from ..entities import ratings as ratings_api
 from app.entities import models
 from app.web import login as login_api
-#from flickrapi import FlickrAPI
+import cloudinary
+import cloudinary.uploader
+from passlib.hash import sha256_crypt
+from PIL import Image
+import requests
+from io import BytesIO
+import urllib.request
+
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
-
-api_secret = "d0009bb5d0d8f8f8"
-api_key = "b3b172dc37a0267d33cf70ee2d8303fc"
-#flickr = FlickrAPI(api_key=api_key,secret=api_secret)
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -39,12 +42,14 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 
 
 @router.post("/{id}/uploadPhoto", response_class=HTMLResponse)
-def upload_photo(request: Request, id: str, file: bytes = File()):
+def upload_photo(request: Request, id: str,password: str = Form(), file: UploadFile = File(...)):
     user = __chechUser()
 
-    # lickr.authenticate_via_browser
-    # flickr.upload("perfil",fileobj=file,title="RentNitePrueba",is_public=1)
-
+    #Upload photo to cloudinary
+    result = cloudinary.uploader.upload(file.file)
+    url = result.get("url")
+    users_api.update(id=user,password=password,photo=url)
+    
     return perfil_usuario(request)
 
 
@@ -57,9 +62,9 @@ def edit(request: Request, id: str):
 @router.post("/save", response_class=HTMLResponse)
 def save(request: Request, password: str = Form(), username: str = Form(), email: str = Form()):
     user = __chechUser()
-
+    salida = sha256_crypt.hash(password)
     users_api.update(id=user, username=username,
-                     email=email, password=password)
+                     email=email, password=salida)
 
     return perfil_usuario(request)
 

@@ -31,23 +31,25 @@ def create(username: str, email: str, password: str):
     users.insert_one(
         {"username": username, "email": email, "password_hash": salida})
     
-@router.post("/", status_code=status.HTTP_201_CREATED)
-def createPost(user: UserPost):
-    if user.email == None or user.password_hash == None or user.username == None:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
+#@router.post("/", status_code=status.HTTP_201_CREATED)
+#def createPost(user: UserPost):
+#    if user.email == None or user.password_hash == None or user.username == None:
+#        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
+#    parameters = jsonable_encoder(user)
 
-
-    parameters = jsonable_encoder(user)
-
-    inserted_user: InsertOneResult = users.insert_one(parameters)
-    return User.parse_obj(users.find_one({"_id": ObjectId(inserted_user.inserted_id)})).to_response()
+#    inserted_user: InsertOneResult = users.insert_one(parameters)
+#    return User.parse_obj(users.find_one({"_id": ObjectId(inserted_user.inserted_id)})).to_response()
 
 # Actualiza un usuario
 
 
 @router.put("/{id}")
 def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
-    data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
+    if len(password) < 20:
+        data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
+    else:
+        data = {"username": username, "email": email, "password_hash": password, "photo": photo}
+        
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:

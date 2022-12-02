@@ -70,7 +70,7 @@ def create(booking : BookingPost):
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)
         if booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to:
-            raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
+            raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
     new_booking.from_ = from_
     new_booking.to = to
@@ -101,7 +101,7 @@ def create(booking : BookingPost):
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
 @router.put("/{id}")
-def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: str | None = None):
+def update(id: str, state: State | None = None, from_: date | None = None, to: date | None = None, cost: float | None = None, meetingLocation: AddressBase | None = None):
 
     # Formatear las fechas correctamente si se han proporcionado
     if from_ is not None:
@@ -148,7 +148,7 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
     for b in bookings_list:
         booking_item = Booking.parse_obj(b)
         if booking_item.id != id and (booking_item.from_ <= dto <= booking_item.to or booking_item.from_ <= dfrom_ <= booking_item.to):
-            raise HTTPException(500, "La fecha no puede solaparse con otra reserva.")
+            raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
     booking = bookings.update_one(
         {"_id": ObjectId(id)}, {"$set": data})

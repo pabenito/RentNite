@@ -36,26 +36,23 @@ def create_house(request: Request):
         return RedirectResponse("/login")
 
     house: HousePost = HousePost(address = "", capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_id = user_id,
-                                 image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg", latitude = 0, longitude = 0)
+                                 image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg")
 
     return __loadHouseDetails(request, house, True, False, "", "", None, None, None, None, None, None, user_id)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), address: str = Form(), capacity: int = Form(), price: str = Form(), rooms: int = Form(), 
-                 bathrooms: int = Form(), latitude: str = Form(), longitude: str = Form()):
+                 bathrooms: int = Form()):
     user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
     
     try:
         price_float: float = float(price)
-        latitude_float: float = float(latitude)
-        longitude_float: float = float(longitude)
 
         if id == "None":
             house = HousePost(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
-                              image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg", longitude = longitude_float, 
-                              latitude = latitude_float)
+                              image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg")
             house = houses_api.create(house)
             id = house["id"]
         else:

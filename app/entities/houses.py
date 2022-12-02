@@ -6,6 +6,7 @@ from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
 from app.database import db
 from .models import *
+from ..opendata import osm
 
 # Create router
 router = APIRouter()
@@ -70,7 +71,11 @@ def create(house: HousePost):
     if owner is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No user was found with the given ID.")
 
+    location = osm.geocode("Málaga", "Bulevar Louis Pasteur", "35")
+
     parameters = jsonable_encoder(house)
+    parameters["latitude"] = location["lat"]
+    parameters["longitude"] = location["lon"]
     parameters["owner_name"] = owner["username"]
 
     inserted_house: InsertOneResult = houses.insert_one(parameters)

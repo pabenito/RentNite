@@ -1,6 +1,7 @@
 # Import libraries
 from osmapi import OsmApi
-from fastapi import Depends, APIRoute
+from fastapi import Depends, APIRouter
+import requests
 from geopy.geocoders import Nominatim
 
 # Create router
@@ -32,10 +33,9 @@ async def get_map_all(map: dict = Depends(get_map)):
 
 # Geocoding
 
-geolocator = Nominatim(user_agent="RentNite")
-
-def geocode(address: str):
-    return geolocator.geocode(address) 
+def geocode(city: str, street:str, number:str):
+    url = "https://nominatim.openstreetmap.org/search?city=" + city + "&street=" + street + "%20" + number + "&format=json"
+    return requests.get(url).json()[0]
 
 # Auxiliary functions
 

@@ -42,6 +42,14 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
     user = __chechUser()
 
+    userClass = users_api.get_by_id(user)
+    name =  userClass["photo"].split("/")
+    name =  name[7]
+    size = len(name)
+    name = name[:size-4]
+    
+    #Delete photo from cloudinary
+    cloudinary.uploader.destroy(name)
     #Upload photo to cloudinary
     result = cloudinary.uploader.upload(file.file)
     url = result.get("url")

@@ -62,7 +62,6 @@ def edit(request: Request, id: str):
 @router.post("/save", response_class=HTMLResponse)
 def save(request: Request, password: str = Form(), username: str = Form(), email: str = Form()):
     user = __chechUser()
-    salida = sha256_crypt.hash(password)
     users_api.update(id=user, username=username,
                      email=email, password=salida)
 

@@ -77,11 +77,11 @@
                         <div class="col">
                             <p class="text text-center mt-2" >
                                 {%- if  35.0 > itemValue["value"] -%}
-                                <img src=https://live.staticflickr.com/65535/52535108615_05923d4e96.jpg style="height: 75%; width: 75%; object-fit: contain">
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
                                 {%- elif itemValue["value"] > 35 and 65 > itemValue["value"] -%}
-                                <img src=https://live.staticflickr.com/65535/52534163427_0a218a400e.jpg style="height: 75%; width: 75%; object-fit: contain" >
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
                                 {%- else -%}
-                                <img src=https://live.staticflickr.com/65535/52535108060_d66d4ce09c.jpg style="height: 75%; width: 75%; object-fit: contain" >
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
                                 {%- endif -%}
                             </p>
                         </div>
@@ -90,44 +90,44 @@
                     <div class="row">
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.0["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.0["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.0["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.0["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.1["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.1["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.2["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.2["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.3["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.3["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.4["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.4["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.5["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.5["minima"]}}&deg;</label>
                             </p>
                         </div>
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}º </label><br/>
-                                <label id="temperatura">{{temperatura.6["minima"]}}º</label>
+                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{temperatura.6["minima"]}}&deg;</label>
                             </p>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="h5">N&uacute;mero:</td>
+                        <td class="h5">N&deg;:</td>
                         <td><input type="number" name="number" value="{{house.address.number}}" class="form-control" required />
                         </td>
                     </tr>
@@ -197,7 +197,7 @@
             <table class="table table-info my-4">
                 <tr>
                     <td class="h5">Direcci&oacute;n:</td>
-                    <td>{{ house.address.street }} {{house.address.number}}, {{house.address.city}}</td>
+                    <td>Calle {{ house.address.street }} n&deg; {{house.address.number}}, {{house.address.city}}</td>
                 </tr>
                 <tr>
                     <td class="h5">Capacidad:</td>

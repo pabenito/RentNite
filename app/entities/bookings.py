@@ -68,8 +68,7 @@ def create(booking : BookingPost):
     bookings_list = search(house_id=new_booking.house_id)
 
     for b in bookings_list:
-        booking_item = Booking.parse_obj(b)
-        if booking_item.from_ <= to <= booking_item.to or booking_item.from_ <= from_ <= booking_item.to:
+        if b["from_"] <= to <= b["to"] or b["from_"] <= from_ <= b["to"]:
             raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
     new_booking.from_ = from_
@@ -158,10 +157,8 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
     bookings_list = search(house_id=booking["house_id"])
     
     for b in bookings_list:
-        booking_item = Booking.parse_obj(b)
-        if booking_item.id != id and ((booking_item.from_ <= dto <= booking_item.to) or (booking_item.from_ <= dfrom_ <= booking_item.to)):
-            print("bruh")
-            # raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
+        if b["id"] != id and ((b["from_"] <= dto <= b["to"]) or (b["from_"] <= dfrom_ <= b["to"])):
+            raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
     booking = bookings.update_one(
         {"_id": ObjectId(id)}, {"$set": data})

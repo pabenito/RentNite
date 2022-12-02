@@ -1,6 +1,6 @@
 # Import libraries
 from osmapi import OsmApi
-from fastapi import Depends, APIRoute
+from fastapi import Depends, APIRouter
 from geopy.geocoders import Nominatim
 
 # Create router

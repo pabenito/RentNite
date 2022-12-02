@@ -81,7 +81,10 @@ def create(booking : BookingPost):
 
     # Lugar de reunion
     if booking.meeting_location is not None:
-        new_booking.meeting_location = booking.meeting_location
+        location = booking.meeting_location
+
+        new_booking.meeting_location = location
+        new_booking.latitude = geocode(location).latitude
 
     new_booking.state = State.REQUESTED
 

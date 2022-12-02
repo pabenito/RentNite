@@ -18,10 +18,9 @@ users: Collection = db["users"]
 
 # API
 @router.get("/")
-def get(address: str | None = None, capacity: int | None = None, price: float | None = None, 
-        rooms: int | None = None,bathrooms: int | None = None, owner_id: str | None = None, 
-        owner_name: str | None = None, image: str | None = None,latitude: float | None = None, 
-        longitude: float | None = None, offset: int = 0, size: int = 0):
+def get(city: str | None = None, street: str | None = None, number: int | None = None, capacity: int | None = None, price: float | None = None, 
+        rooms: int | None = None,bathrooms: int | None = None, owner_id: str | None = None, owner_name: str | None = None, image: str | None = None, 
+        latitude: float | None = None, longitude: float | None = None, offset: int = 0, size: int = 0):
     if offset < 0 or size < 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid offset or size.")
 
@@ -29,16 +28,22 @@ def get(address: str | None = None, capacity: int | None = None, price: float | 
               "owner_id": owner_id, "image": image, "latitude": latitude, "longitude": longitude}
     filter = {k: v for k, v in filter.items() if v is not None}
 
-    if address is not None:
-        filter["address"] = {"$regex": re.compile(
-            ".*" + address + ".*", re.IGNORECASE)}
+    address = dict()
+    
+    if city is not None:
+        address["city"] = {"$regex": re.compile(".*" + city + ".*", re.IGNORECASE)}
+
+    if street is not None:
+        address["street"] = {"$regex": re.compile(".*" + street + ".*", re.IGNORECASE)}
+
+    if number is not None:
+        address["number"] = number
 
     if owner_name is not None:
-        filter["owner_name"] = {"$regex": re.compile(
-            ".*" + owner_name + ".*", re.IGNORECASE)}
+        filter["owner_name"] = {"$regex": re.compile(".*" + owner_name + ".*", re.IGNORECASE)}
 
     if size == 0:
-        result: list = list(houses.find(filter))
+        result: list = list(houses.find(filter, skip = offset))
     else:
         result: list = list(houses.find(filter, skip = offset, limit = size))
     

@@ -35,13 +35,16 @@ def get():
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create(booking : BookingPost):
-    new_booking: BookingConstructor = BookingConstructor()
+    new_booking = dict()
 
     # Casa
     try:
         house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
-        new_booking.house_id = str(house.id)
-        new_booking.house_address = house.address
+        new_booking["house_id"] = str(house.id)
+        house_address = {"city": house.address.city, "street": house.address.street, "number": house.address.number, 
+                                        "latitude": house.address.latitude, "longitude": house.address.longitude}
+        house_address = {k: v for k, v in house_address.items() if v is not None}
+        new_booking["house_address"] = house_address
     except:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
@@ -49,15 +52,11 @@ def create(booking : BookingPost):
     # Cliente
     try:
         guest : User = User.parse_obj(users.find_one({"_id": ObjectId(booking.guest_id)}))
-        new_booking.guest_id = str(guest.id)
-        new_booking.guest_name = str(guest.username)
+        new_booking["guest_id"] = str(guest.id)
+        new_booking["guest_name"] = guest.username
     except Exception:
         raise HTTPException(
             status_code=400, detail="No se ha encontrado ningun usuario con el ID proporcionado.")
-
-    # Fechas
-    from_ = datetime.combine(booking.from_, time.min)
-    to = datetime.combine(booking.to, time.min)
 
     # Comprobar si las fechas son validas
     if not (date.today() <= booking.from_ < booking.to):
@@ -65,38 +64,37 @@ def create(booking : BookingPost):
             status_code=400, detail="Fecha incorrecta.")
 
     # Comprobar si la casa ya esta reservada para esa fecha
-    bookings_list = search(house_id=new_booking.house_id)
+    bookings_list = search(house_id=new_booking["house_id"])
+
+    from_ = datetime.combine(booking.from_, time.min)
+    to = datetime.combine(booking.to, time.min)
 
     for b in bookings_list:
         if b["from_"] <= to <= b["to"] or b["from_"] <= from_ <= b["to"]:
             raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
-    new_booking.from_ = from_
-    new_booking.to = to
+    new_booking["from_"] = from_
+    new_booking["to"] = to
 
     # Lugar de reunion
     if booking.meeting_location is not None:
-        address: AddressConstructor = AddressConstructor()
-
         location = booking.meeting_location
-
-        address.street = location.street
-        address.city = location.city
-        address.number = location.number
-
         geocode_result = geocode(location.street, location.city, location.number)
 
+        meeting_location = {"city": location.city, "street": location.street, "number": location.number}
 
         if geocode_result is not None:
-            address.latitude = float(geocode_result["lat"])
-            address.longitude = float(geocode_result["lon"])
+            meeting_location["latitude"] = float(geocode_result["lat"])
+            meeting_location["longitude"] = float(geocode_result["lon"])
 
-        new_booking.meeting_location = address
+        new_booking["meeting_location"] = meeting_location
 
-    new_booking.cost = booking.cost
-    new_booking.state = State.REQUESTED
+    new_booking["cost"] = booking.cost
+    new_booking["state"] = State.REQUESTED.value
 
-    inserted_booking: InsertOneResult = bookings.insert_one(jsonable_encoder(new_booking.exclude_unset()))
+    print(new_booking)
+
+    inserted_booking: InsertOneResult = bookings.insert_one(new_booking)
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
 @router.put("/{id}")
@@ -117,13 +115,13 @@ def update(id: str, state: State | None = None, from_: date | None = None, to: d
 
     # Formatear la direccion correctamente si se ha proporcionado
     if meeting_location is not None:
-        final_address: AddressBase = AddressBase(street=meeting_location.street, number=meeting_location.number, city=meeting_location.city)
+        final_address: dict = {"city": meeting_location.city, "street": meeting_location.street, "number": meeting_location.number}
         
         geocode_result = geocode(meeting_location.city, meeting_location.street, meeting_location.number)
 
         if geocode_result is not None:
-            final_address.latitude = float(geocode_result["lat"])
-            final_address.longitude = float(geocode_result["lon"])
+            final_address["latitude"] = float(geocode_result["lat"]) # type: ignore
+            final_address["longitude"] = float(geocode_result["lon"]) # type: ignore
         
         data["meeting_location"] = final_address
 

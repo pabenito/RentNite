@@ -55,7 +55,7 @@ class MessageBase(BaseModel):
     chat_id: str | None = None
 
 class ChatBase(BaseModel):
-    house_address: str 
+    house_address: AddressBase 
     booking_from: datetime
     booking_to: datetime
     booking_id : str 
@@ -82,7 +82,7 @@ class HouseBase(BaseModel):
 class BookingBase(BaseModel):
     state: State
     from_: datetime
-    to: datetime 
+    to: datetime
     cost: float 
     guest_id: str
     guest_name: str
@@ -148,7 +148,7 @@ class AddressConstructor(BaseModel):
     latitude: float | None = None
 
 class ChatConstructor(Simplifier):
-    house_address: str | None
+    house_address: AddressBase | None
     booking_from: datetime | None
     booking_to: datetime | None
     booking_id : str | None 

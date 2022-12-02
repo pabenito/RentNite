@@ -35,7 +35,7 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 
     ratings_api.create(user, id, None, estrellas)
 
-    return perfil_usuario(request)
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id})
 
 
 @router.post("/{id}/uploadPhoto", response_class=HTMLResponse)

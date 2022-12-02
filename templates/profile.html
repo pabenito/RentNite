@@ -105,8 +105,13 @@
                         <h1>Perfil</h1>
                         <form method="post" id="fImagen" action="/profile/{{identificador}}/uploadPhoto" enctype="multipart/form-data">
                             <div class="upload">
+                                {% if user.photo != "" -%}
                                 <img src={{user.photo}}
                                     width=100 height=100 alt="">
+                                {%- else -%}
+                                <img src="../static/img/noprofil.jpg"
+                                    width=100 height=100 alt="">   
+                                {%- endif %}
                                 <div class=" round">
                                     <input name="file" id="file" type="file" accept="image/png, image/jpeg, image/jpg, image/gif">
                                     <i class="fa fa-camera" style="color: #fff;"></i>

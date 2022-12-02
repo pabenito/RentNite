@@ -313,16 +313,14 @@
                             <th>
                                 <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
                                 {{rate.date.strftime('%d/%m/%Y')}}
+
+                                {% for i in range(rate.rate) %}
+                                ★
+                                {% endfor %}
+
                             </th>
                         </tr>
                     </table>
-                    <div class="text-center my-4">
-                        <table class="table">
-                            <tr>
-                                <td>{{rate.rate}}</td>
-                            </tr>
-                        </table>
-                    </div>
                 </tr>
                 {% endfor %}
             </table>

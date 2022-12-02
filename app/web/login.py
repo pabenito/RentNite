@@ -42,7 +42,7 @@ async def authenticate_user(email: str, password: str):
     return user["id"]
 
 def verify_password(user:users_api.User, password:str):
-    return sha256_crypt.verify(password, user["password_hash"])
+    return sha256_crypt.verify(password, user.password_hash)
     #return (password == user.pop("password_hash"))
 
 

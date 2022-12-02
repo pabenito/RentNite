@@ -35,13 +35,23 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 
     ratings_api.create(user, id, None, estrellas)
 
-    return perfil_usuario(request)
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id})
 
 
 @router.post("/{id}/uploadPhoto", response_class=HTMLResponse)
 def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
     user = __chechUser()
 
+    userClass = users_api.get_by_id(user)
+    
+    #Take photo's url and get name of file to delete
+    name =  userClass["photo"].split("/")
+    name =  name[7]
+    size = len(name)
+    name = name[:size-4]
+
+    #Delete photo from cloudinary
+    cloudinary.uploader.destroy(name)
     #Upload photo to cloudinary
     result = cloudinary.uploader.upload(file.file)
     url = result.get("url")

@@ -29,7 +29,7 @@ bookings = db["bookings"]
 def create(username: str, email: str, password: str):
     salida = sha256_crypt.hash(password)
     users.insert_one(
-        {"username": username, "email": email, "password_hash": salida})
+        {"username": username, "email": email, "password_hash": salida,"photo":""})
     
 #@router.post("/", status_code=status.HTTP_201_CREATED)
 #def createPost(user: UserPost):

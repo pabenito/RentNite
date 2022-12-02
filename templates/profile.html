@@ -16,7 +16,7 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Profile - RentNite</title>
+    <title>Perfil - RentNite</title>
     <style>
         #form {
             width: 250px;
@@ -105,12 +105,20 @@
                         <h1>Perfil</h1>
                         <form method="post" id="fImagen" action="/profile/{{identificador}}/uploadPhoto" enctype="multipart/form-data">
                             <div class="upload">
+                                {% if user.photo != "" -%}
                                 <img src={{user.photo}}
                                     width=100 height=100 alt="">
+                                {%- else -%}
+                                <img src="../static/img/noprofil.jpg"
+                                    width=100 height=100 alt="">   
+                                {%- endif %}
+                                {% if perfil != identificador -%}
+                                {%- else -%}
                                 <div class=" round">
-                                    <input name="file" id="file" type="file" accept="image/png, image/jpeg, image/jpg">
+                                    <input name="file" id="file" type="file" accept="image/png, image/jpeg, image/jpg, image/gif">
                                     <i class="fa fa-camera" style="color: #fff;"></i>
                                 </div>
+                                {%- endif %}
                         </form>
                     </div>
                     {% if editable -%}
@@ -135,14 +143,15 @@
                     <p class="text-black-50 fs-5">{{ user.email }}</p>
                     <div class="row mt-3">
 
-
+                        {% if perfil != identificador -%}
+                        {%- else -%}
                         <div class="col">
                             <button class="btn btn-primary mx-2">
                                 <a class="h6" href="/profile/{{identificador}}/edit"
                                     style="color: white; text-decoration: none">Editar</a>
                             </button>
                         </div>
-
+                        {%- endif %}
 
                     </div>
                     {% endif %}
@@ -177,19 +186,7 @@
                             </th>
                         </tr>
                     </table>
-                    <div class="text-center my-4">
-                        <table class="table">
-                            <tr>
-                                <td>
-                                    <p>
-                                        {% for i in range(rate.rate) %}
-                                        ★
-                                        {% endfor %}
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                    
                 </tr>
                 {% endfor %}
             </table>
@@ -201,7 +198,7 @@
 
 
             <div class="d-flex flex-column align-items-center text-center">
-                <form method="post" action="/profile/{{ user.id }}/addRate" title="puntuar">
+                <form method="post" action="/profile/{{ perfil }}/addRate" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
                         <!--

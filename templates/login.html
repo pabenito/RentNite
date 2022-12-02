@@ -19,17 +19,15 @@
 </head>
 
 <body>
-
-
     <div>
         <div class="row pt-5">
             <div class="col-md-5"></div>
             <div class="col-md-2">
                 <div >
                     <div class="text-center mb-3">
-                        <img src="../static/img/image.png" height="50%" width="50%" >
+                        <img src="../static/img/logo.png" height="200em" width="200em" >
                     </div>
-                    <div class="card text-center "  >
+                    <div class="card text-center">
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
@@ -39,9 +37,9 @@
                                     {% endif %}
                                     <!-- Login Form -->
                                     <form method="post" action="/token">
-                                        <input class="mb-3 mt-2" title="username" type="text" id="username" class="fadeIn second" name="username"
+                                        <input class="mb-3 mt-2" title="Usuario" type="text" id="username" class="fadeIn second" name="username"
                                             placeholder="Correo" name="username"> <br>
-                                        <input class="mb-3" title="password" type="password" id="password" class="fadeIn second"
+                                        <input class="mb-3" title="Contraseña" type="password" id="password" class="fadeIn second"
                                             placeholder="Contraseña" name="password"><br>
                                         <input class="btn btn-outline-success" type="submit" value="Entrar">
                                     </form>
@@ -54,13 +52,13 @@
                                 <li class="list-group-item">
                                     <h1>Registro</h1>
                                     <form method="post" action="login/register">
-                                        <input class="mb-3 mt-2" title="username" type="text" id="username" class="fadeIn second" 
-                                            placeholder="Nombre usuario" name="username" required> <br>
-                                        <input class="mb-3 " title="correo" type="text" id="correo" class="fadeIn second"
+                                        <input class="mb-3 mt-2" title="Usuario" type="text" id="username" class="fadeIn second" 
+                                            placeholder="Nombre de usuario" name="username" required> <br>
+                                        <input class="mb-3 " title="Correo" type="text" id="correo" class="fadeIn second"
                                             placeholder="Correo" name="correo" required> <br>
-                                        <input class="mb-3" title="password" type="password" id="password" class="fadeIn second"
+                                        <input class="mb-3" title="Contraseña" type="password" id="password" class="fadeIn second"
                                             placeholder="Contraseña" name="password" required><br>
-                                        <input class="btn btn-outline-danger" type="submit" value="Registrar">
+                                        <input class="btn btn-warning" type="submit" value="Registrarse">
                                     </form>
                                 </li>
                             </ul>

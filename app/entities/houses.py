@@ -105,8 +105,8 @@ def update(id: str, house: HouseConstructor):
         location = osm.geocode(parameters["address"]["city"], parameters["address"]["street"], parameters["address"]["number"])
 
         if location is not None:
-            parameters["address"]["latitude"] = location["lat"]
-            parameters["address"]["longitude"] = location["lon"]
+            parameters["address"]["latitude"] = float(location["lat"])
+            parameters["address"]["longitude"] = float(location["lon"])
 
     try:
         result = houses.find_one_and_update({"_id": ObjectId(id)}, {"$set": parameters})

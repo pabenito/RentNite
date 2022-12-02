@@ -35,14 +35,16 @@ def create_house(request: Request):
     if user_id == "None":
         return RedirectResponse("/login")
 
-    house: HousePost = HousePost(address = "", capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_id = user_id,
+    address: AddressPost = AddressPost(city = "", street = "", number = 1)
+
+    house: HousePost = HousePost(address = address, capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_id = user_id,
                                  image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg")
 
     return __loadHouseDetails(request, house, True, False, "", "", None, None, None, None, None, None, user_id)
 
 @router.post("/save", response_class = HTMLResponse)
-def update_house(request: Request, id: str = Form(), address: str = Form(), capacity: int = Form(), price: str = Form(), rooms: int = Form(), 
-                 bathrooms: int = Form()):
+def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
+                 price: str = Form(), rooms: int = Form(), bathrooms: int = Form()):
     user_id = __chechUser()
     if user_id == "None":
         return RedirectResponse("/login")
@@ -51,13 +53,16 @@ def update_house(request: Request, id: str = Form(), address: str = Form(), capa
         price_float: float = float(price)
 
         if id == "None":
+            address = AddressPost(city = city, street = street, number = number)
+
             house = HousePost(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
                               image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg")
             house = houses_api.create(house)
             id = house["id"]
         else:
-            house = HouseConstructor(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, 
-                                     latitude = latitude_float, longitude = longitude_float)
+            address = AddressConstructor(city = city, street = street, number = number)
+
+            house = HouseConstructor(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms)
             houses_api.update(id, house)
 
         return my_houses(request)
@@ -71,11 +76,19 @@ def house_details(request: Request, id: str, booking_error: str = ""):
         return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
+
+    latitude = house["address"].get("latitude")
+    longitude = house["address"].get("longitude")
+
+    if latitude is None:
+        tiempo: dict = dict()
+        temperatura: dict = dict()
+    else:
+        tiempo: dict = aemet_api.get_forecast_precipitation_daily(latitude = latitude, longitude = longitude)
+        temperatura: dict = aemet_api.get_forecast_temperature_daily(latitude = latitude, longitude = longitude)
+
     comments: list = messages_api.get(None, id, None, None, None)
     ratings: list = ratings_api.get(None,None,None,id,None,None,None)
-
-    tiempo: dict = aemet_api.get_forecast_precipitation_daily(latitude = house["latitude"], longitude = house["longitude"])
-    temperatura: dict = aemet_api.get_forecast_temperature_daily(latitude = house["latitude"], longitude = house["longitude"])
     today: date = date.today()
     tomorrow: date = today + timedelta(1)
 
@@ -122,6 +135,7 @@ def add_rate(request: Request, id: str, estrellas: int = Form()):
 
     return house_details(request, id)
 
+# Private methods
 
 def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool, editing: bool, error: str, booking_error: str, comments: list | None, 
                        ratings: list | None, today_date: date | None, tomorrow_date: date | None, tiempo: dict | None, temperatura: dict | None, 
@@ -130,8 +144,7 @@ def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool
                                                             "error": error, "booking_error": booking_error, "comments": comments, "ratings": ratings, 
                                                             "today_date": today_date, "tomorrow_date": tomorrow_date, "tiempo": tiempo, 
                                                             "temperatura": temperatura, "user_id": user_id})
-    
-# Private methods
+
 def __chechUser():
     session = login_api.Singleton()
     if session.user is None:

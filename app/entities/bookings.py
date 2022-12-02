@@ -120,12 +120,26 @@ def update(id: str, booking : BookingConstructor):
     if booking_bd is None:
         raise HTTPException(status_code=404, detail=RNE)
 
+    parameters = booking.exclude_unset()
+
     # Verificar fechas
     if booking.from_ is not None or booking.to is not None:
         # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
         # independientemente de si se ha introducido en el PUT o no
-        dfrom_ = booking.from_ or booking_bd["from_"]
-        dto = booking.to or booking_bd["to"]
+        if booking.from_ is not None:
+            from_datetime = datetime.combine(booking.from_, time.min)
+            parameters["from_"] = from_datetime
+        else:
+            from_datetime = None
+
+        if booking.to is not None:
+            to_datetime = datetime.combine(booking.to, time.min)
+            parameters["to"] = to_datetime
+        else:
+            to_datetime = None
+        
+        dfrom_ = from_datetime or booking_bd["from_"]
+        dto = to_datetime or booking_bd["to"]
 
         if not (datetime.combine(date.today(), time.min) <= dfrom_ < dto):
             raise HTTPException(
@@ -136,15 +150,17 @@ def update(id: str, booking : BookingConstructor):
         for b in bookings_list:
             if b["id"] != id and ((b["from_"] <= dto <= b["to"]) or (b["from_"] <= dfrom_ <= b["to"])):
                 raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
-
-    parameters = booking.exclude_unset()
+        
 
     # Verificar casa
     if booking.house_id is not None:
         # Casa
         try:
             house : House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
-            parameters["house_address"] = house.address
+            house_address = {"city": house.address.city, "street": house.address.street, "number": house.address.number, 
+                                            "latitude": house.address.latitude, "longitude": house.address.longitude}
+            house_address = {k: v for k, v in house_address.items() if v is not None}
+            parameters["house_address"] = house_address
         except:
             raise HTTPException(
                 status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
@@ -167,6 +183,10 @@ def update(id: str, booking : BookingConstructor):
             parameters["meeting_location"]["city"] = booking.meeting_location.city
         if booking.meeting_location.number is not None:
             parameters["meeting_location"]["number"] = booking.meeting_location.number
+
+    # Poner estado
+    if booking.state is not None:
+        parameters["state"] = booking.state.value
 
     bookings.update_one(
         {"_id": ObjectId(id)}, {"$set": parameters})

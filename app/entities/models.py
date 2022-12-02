@@ -180,8 +180,8 @@ class HouseConstructor(Simplifier):
 
 class BookingConstructor(Simplifier):
     state: State | None = None
-    from_: datetime | None = None
-    to: datetime | None = None
+    from_: date | None = None
+    to: date | None = None
     cost: float | None = None
     guest_id: str | None = None
     house_id: str | None = None

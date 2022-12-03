@@ -5,7 +5,7 @@ from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
 from datetime import datetime, date, time
 from pytz import timezone
-from app.database import db as db
+from app.database import db
 from .models import *
 
 #Create router
@@ -96,7 +96,7 @@ def get(
         result = []
         for rated in rate_list:
             rated : Rating  
-            if rated.date.timestamp() <=datetime.combine(from_, time.min).timestamp():
+            if rated.date.timestamp() <= datetime.combine(to, time.min).timestamp():
                 result.append(rated)
         rate_list = result
 

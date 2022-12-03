@@ -188,12 +188,12 @@ class BookingConstructor(Simplifier):
     meeting_location : AddressConstructor | None = None
 
 class RatingConstructor(Simplifier):
-    rater_id: str | None 
-    date: datetime | None 
+    rater_id: str | None = None
+    date: datetime | None = None
     rated_user_id: str | None = None
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
-    rate: int | None 
+    rate: int | None = None
 
 # Models for post
 

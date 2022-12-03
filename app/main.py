@@ -57,7 +57,7 @@ async def root():
 async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
     user = await login.authenticate_user(form_data.username, form_data.password)
     if not user:
-        return login.login(request,"Usario o contraseña no validos")
+        return login.login(request,"Usuario o contraseña no validos")
 
     singleton = login.Singleton()
     singleton.user = user

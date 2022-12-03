@@ -135,7 +135,7 @@ def update(id: str, booking : BookingConstructor):
                 status_code=400, detail="No se ha encontrado ninguna casa con el ID proporcionado.")
 
     # Verificar fechas
-    if booking.from_ is not None or booking.to is not None:
+    if booking.from_ is not None or booking.to is not None or booking.house_id is not None:
         # Usamos dos variables auxiliares para comprobar si "from_" es anterior a "to",
         # independientemente de si se ha introducido en el PUT o no
         if booking.from_ is not None:

@@ -103,7 +103,7 @@
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center text-center">
                         <h1>Perfil</h1>
-                        <form method="post" id="fImagen" action="/profile/{{identificador}}/uploadPhoto" enctype="multipart/form-data">
+                        <form method="post" id="fImagen" action="/profile/uploadPhoto" enctype="multipart/form-data">
                             <div class="upload">
                                 {% if user.photo != "" -%}
                                 <img src={{user.photo}}
@@ -147,7 +147,7 @@
                         {%- else -%}
                         <div class="col">
                             <button class="btn btn-primary mx-2">
-                                <a class="h6" href="/profile/{{identificador}}/edit"
+                                <a class="h6" href="/profile/edit"
                                     style="color: white; text-decoration: none">Editar</a>
                             </button>
                         </div>

@@ -38,8 +38,8 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id})
 
 
-@router.post("/{id}/uploadPhoto", response_class=HTMLResponse)
-def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
+@router.post("/uploadPhoto", response_class=HTMLResponse)
+def upload_photo(request: Request, file: UploadFile = File(...)):
     user = __chechUser()
 
     userClass = users_api.get_by_id(user)
@@ -60,8 +60,8 @@ def upload_photo(request: Request, id: str, file: UploadFile = File(...)):
     return perfil_usuario(request)
 
 
-@router.get("/{id}/edit", response_class=HTMLResponse)
-def edit(request: Request, id: str):
+@router.get("/edit", response_class=HTMLResponse)
+def edit(request: Request):
     user = __chechUser()
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True})
 

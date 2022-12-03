@@ -41,6 +41,13 @@ def add_Rate(request: Request, id: str, estrellas: int = Form()):
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id})
 
+@router.get("/{id}/deleteRate/{rate_id}", response_class = HTMLResponse)
+def delete_rating(request: Request, id: str, rate_id: str):
+    __chechUser()
+
+    ratings_api.delete(rate_id)
+
+    return perfil_usuario_distinto(request, id)
 
 @router.post("/uploadPhoto", response_class=HTMLResponse)
 def upload_photo(request: Request, file: UploadFile = File(...)):

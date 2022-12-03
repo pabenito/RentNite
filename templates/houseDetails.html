@@ -359,21 +359,28 @@
             {% if ratings | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
             <table class="table-primary">
-                {% for rate in ratings %}
+                {% for rating in ratings %}
                 <tr>
                     <table class="table">
                         <tr class="table-primary">
-                            <th class="row">
-                                <div class="col-md-5">
-                                    <a class="ms-3" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
-                                </div>
-                                <div class="col md-5">
-                                    {{rate.date.strftime('%d/%m/%Y')}}
-                                </div>
-                                <div class="col md-2">
-                                    {% for i in range(rate.rate) %}
-                                    ★
-                                    {% endfor %}
+                            <th>
+                                <div class="row" style="height: 40px">
+                                    <div class="col mt-2">
+                                        <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name }}</a>
+                                    </div>
+                                    <div class="col mx-5 mt-2">
+                                        {{rating.date.strftime('%d/%m/%Y')}}
+                                    </div>
+                                    <div class="col ms-5 mt-2">
+                                        {% for i in range(rating.rate) %}
+                                        ★
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col me-3" style="text-align: right">
+                                        {% if rating.rater_id == user_id %}
+                                        <a class="btn btn-danger" href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i class="fa fa-trash-o"></i></a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </th>
                         </tr>
@@ -386,7 +393,7 @@
             {% endif %}
             {% if user_id != house.owner_id %}
             <div class="text-center my-4">
-                <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar">
+                <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
                         <label for="radio1">★</label>

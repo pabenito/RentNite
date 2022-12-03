@@ -163,8 +163,8 @@
     </div>
 
     <div class="row mt-5">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
 
             {% if rating | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
@@ -173,17 +173,24 @@
                 <tr>
                     <table class="table">
                         <tr class="table-primary">
-                            <th class="row">
-                                <div class="col-md-5">
-                                    <a class="ms-3" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
-                                </div>
-                                <div class="col-md-5">
-                                    {{rate.date.strftime('%d/%m/%Y')}}
-                                </div>
-                                <div class="col-md-2">
-                                    {% for i in range(rate.rate) %}
-                                    ★
-                                    {% endfor %}
+                            <th>
+                                <div class="row" style="height: 40px">
+                                    <div class="col mt-2">
+                                        <a class="ms-3" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
+                                    </div>
+                                    <div class="col mx-3 mt-2">
+                                        {{rate.date.strftime('%d/%m/%Y')}}
+                                    </div>
+                                    <div class="col ms-3 mt-2">
+                                        {% for i in range(rate.rate) %}
+                                        ★
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col me-3" style="text-align: right">
+                                        {% if rate.rater_id == identificador %}
+                                        <a class="btn btn-danger" href="/profile/{{perfil}}/deleteRate/{{rate.id}}"><i class="fa fa-trash-o"></i></a>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </th>
                         </tr>
@@ -220,7 +227,9 @@
             </div>
             {% endif %}
             {% endblock content %}
-
+        </div>
+        <div class="col-md-3"></div>
+    </div>
 </body>
 
 <script>

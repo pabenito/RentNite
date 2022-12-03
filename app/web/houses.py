@@ -18,7 +18,7 @@ DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/am
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
-    user_id = __check_user()
+    __check_user()
 
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "default_image": DEFAULT_IMAGE})
 
@@ -109,7 +109,7 @@ def edit_house(request: Request, id: str, error: str = ""):
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str):
-    user_id = __check_user()
+    __check_user()
 
     house: dict = houses_api.delete(id)
 
@@ -129,17 +129,27 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
 
 @router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
 def delete_comment(request: Request, id: str, comment_id: str):
+    __check_user()
+
     messages_api.delete(comment_id)
 
     return house_details(request, id)
     
-@router.post("/{id}/addRate", response_class=HTMLResponse)
-def add_rate(request: Request, id: str, estrellas: int = Form()):
+@router.post("/{id}/addRating", response_class=HTMLResponse)
+def add_rating(request: Request, id: str, estrellas: int = Form()):
     user_id = __check_user()
 
     ratings_api.create(user_id, None, id, estrellas)
 
     return house_details(request, id) 
+
+@router.get("/{id}/deleteRating/{rate_id}", response_class = HTMLResponse)
+def delete_rating(request: Request, id: str, rate_id: str):
+    __check_user()
+
+    ratings_api.delete(rate_id)
+
+    return house_details(request, id)
 
 # Private methods
 

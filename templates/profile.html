@@ -129,10 +129,10 @@
                         <input type="hidden" name="id" value={{identificador}}>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
-                                    name="username" value="{{user.username}}"></li>
+                                    name="username" value="{{user.username}}" required></li>
                             <li class="list-group-item">Email: <input type="text" placeholder="{{user.email}}"
-                                    name="email" value="{{user.email}}"></li>
-                            <li class="list-group-item">Contraseña: <input type="password" name="password" maxlength="15"></li>
+                                    name="email" value="{{user.email}}" required></li>
+                            <li class="list-group-item">Contraseña: <input type="password" name="password" maxlength="15" required></li>
                         </ul>
                         {{ error }}
                         <div class="row mt-3">

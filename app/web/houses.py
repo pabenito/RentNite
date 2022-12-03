@@ -20,7 +20,7 @@ DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/am
 def read_item(request: Request):
     user_id = __check_user()
 
-    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
+    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "default_image": DEFAULT_IMAGE})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):

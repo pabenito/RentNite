@@ -156,11 +156,8 @@
             {% if creating or editing %}
             <form method="post" action="/houses/save" enctype="multipart/form-data">
                 <div class="upload my-5">
-                    {% if house.image == "" %}
-                    <img src={{ default_image }} alt="Casa ofertada" id="image" style="height: 100%; width: 100%; object-fit: contain">
-                    {% else %}
-                    <img src={{ house.image }} alt="Casa ofertada" id="image" style="height: 100%; width: 100%; object-fit: contain">
-                    {% endif %}
+                    <img src={{ house.image if house.image != "" else default_image }} alt="Casa ofertada" id="image" 
+                         style="height: 100%; width: 100%; object-fit: contain">
                     <div class="round">
                         <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif" onchange="onImageChanged(event)"/>
                         <i class="fa fa-camera fa-lg" style="color: #000;"></i>
@@ -243,11 +240,8 @@
             </form>
             {% else %}
             <p class="text text-center">
-                {% if house.image == "" %}
-                <img src={{ default_image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
-                {% else %}
-                <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
-                {% endif %}
+                <img src={{ house.image if house.image != "" else default_image }} alt="Casa ofertada" 
+                     style="height: 100%; width: 100%; object-fit: contain">
             </p>
             <table class="table table-info my-4">
                 <tr>

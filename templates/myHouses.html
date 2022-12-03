@@ -14,7 +14,7 @@
 
         {% block content %}
         <h1 class="text-center my-4">Mis casas</h1>
-        <a class="btn btn-primary mx-3 mb-4" href="/houses/create">Nuevo anuncio</a>
+        <a class="btn btn-primary mx-3 mb-4" href="/houses/create"><span class="h4">Nuevo anuncio</span></a>
         <div class="row mx-3">
             {% for house in houses %}
             <div class="col-md-4">
@@ -32,7 +32,7 @@
                     </tr>
                     <tr>
                         <td class="h4">Precio:</td>
-                        <td>{{ house.price }} &euro;</td>
+                        <td>{{ '%0.2f' % house.price }} &euro;</td>
                     </tr>
                     <tr>
                         <td class="h4">Habitaciones:</td>
@@ -44,8 +44,8 @@
                     </tr>
                 </table>
                 <div class="text-center mt-3 mb-5">
-                    <a class="btn btn-primary mx-2" href="/houses/{{house.id}}">Ver detalles</a>
-                    <a class="btn btn-primary mx-2" href="/houses/{{house.id}}/edit">Editar</a>
+                    <a class="btn btn-primary mx-2" href="/houses/{{house.id}}"><span class="h5">Ver detalles</span></a>
+                    <a class="btn btn-primary mx-2" href="/houses/{{house.id}}/edit"><span class="h5">Editar</span></a>
                 </div>
             </div>
             {% endfor %}

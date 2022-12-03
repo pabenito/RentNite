@@ -171,32 +171,58 @@
                     </tr>
                     <tr>
                         <td class="h5">Calle:</td>
-                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control" required />
-                        </td>
+                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control" required /></td>
                     </tr>
                     <tr>
                         <td class="h5">N&deg;:</td>
-                        <td><input type="number" name="number" value="{{house.address.number}}" class="form-control" required />
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="number" value="{{house.address.number}}" class="form-control" min="1" max="99" required />
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class="h5">Capacidad:</td>
-                        <td><input type="number" name="capacity" value={{house.capacity}} class="form-control"
-                                required /></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="capacity" value={{house.capacity}} class="form-control" min="1" max="99" required />
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
-                        <td><input type="text" name="price" value={{house.price}} class="form-control" required /></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}} class="form-control" min="0" required />
+                                </div>
+                                <div class="col mt-2">&euro;</div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Habitaciones:</td>
-                        <td><input type="number" name="rooms" value={{house.rooms}} class="form-control" required />
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1" max="99" required />
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class="h5">Cuartos de ba&ntilde;o:</td>
-                        <td><input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
-                                required /></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control" min="1" max="99" required />
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </table>
                 <h5 class="text text-center text-danger">{{error}}</h5>
@@ -225,7 +251,7 @@
                 </tr>
                 <tr>
                     <td class="h5">Precio:</td>
-                    <td>{{ house.price }} &euro;</td>
+                    <td>{{ '%0.2f' % house.price }} &euro;</td>
                 </tr>
                 <tr>
                     <td class="h5">Habitaciones:</td>
@@ -263,7 +289,7 @@
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
-                        <td><input type="text" id="cost_display" value="{{house.price}} &euro;" class="form-control" disabled /></td>
+                        <td><input type="text" id="cost_display" value="{{'%0.2f' % house.price}} &euro;" class="form-control" disabled /></td>
                     </tr>
                 </table>
                 <h5 class="text text-center text-danger">{{booking_error}}</h5>
@@ -288,11 +314,19 @@
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4" href="/profile/{{comment.sender_id}}" style="text-decoration: none">{{comment.sender_username}}</a>
-                                {{comment.date.strftime('%d/%m/%Y')}}
-                                {% if comment.sender_id == user_id %}
-                                <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i class="fa fa-trash-o"></i></a>
-                                {% endif %}
+                                <div class="row" style="height: 40px">
+                                    <div class="col ms-3 mt-2">
+                                        <a href="/profile/{{comment.sender_id}}" style="text-decoration: none">{{comment.sender_username}}</a>
+                                    </div>
+                                    <div class="col text-center mt-2">
+                                        {{comment.date.strftime('%d/%m/%Y')}}
+                                    </div>
+                                    <div class="col me-3" style="text-align: right">
+                                        {% if comment.sender_id == user_id %}
+                                        <a class="btn btn-danger" href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i class="fa fa-trash-o"></i></a>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </th>
                         </tr>
                         <tr>
@@ -308,8 +342,8 @@
             <form method="post" action="/houses/{{house.id}}/addComment" title="coment">
                 <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
                 <div class="text-center my-4">
-                    <button class="btn btn-primary"><span class="h3">Comentar</label></button>
-                    </p>
+                    <button class="btn btn-primary"><span class="h3">Comentar</span></button>
+                </div>
             </form>
         </div>
         <div class="col-md-3"></div>
@@ -327,13 +361,19 @@
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
-                                {{rate.date.strftime('%d/%m/%Y')}}
-
-                                {% for i in range(rate.rate) %}
-                                ★
-                                {% endfor %}
-
+                                <div class="row">
+                                    <div class="col">
+                                        <a class="ms-3" href="/profile/{{rate.rater_id}}" style="text-decoration: none">{{ rate.rated_user_Name }}</a>
+                                    </div>
+                                    <div class="col text-center">
+                                        {{rate.date.strftime('%d/%m/%Y')}}
+                                    </div>
+                                    <div class="col me-3" style="text-align: right">
+                                        {% for i in range(rate.rate) %}
+                                        ★
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </th>
                         </tr>
                     </table>

@@ -39,7 +39,7 @@
                     <td>{{ booking.state.value }}</td>
                     <td>{{ booking.from_.strftime('%d-%m-%Y') }}</td>
                     <td>{{ booking.to.strftime('%d-%m-%Y') }}</td>
-                    <td>{{ booking.cost }} €</td>
+                    <td>{{ '%0.2f' % booking.cost }} €</td>
                     <td>{{ booking.guest_name }}</td>
                     <td><a class="btn btn-warning" href="/bookings/{{ booking.id }}">Detalles</a></td>
                 </tr>

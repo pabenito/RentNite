@@ -19,19 +19,8 @@ base_url = "http://127.0.0.1:8000"
 # Create app
 app = FastAPI()
 
-# cors
-origins = [
-    "http://i.imgur.com",
-    "https://i.imgur.com",
-    "http://127.0.0.1:8000",
-    "http://127.0.0.1:8000/houses/#loaded"
-    "https://127.0.0.1:8000",
-    "https://127.0.0.1:8000/houses/#loaded"
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,10 +54,9 @@ app.include_router(
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
-@app.get("/")
-async def root(token: str = Depends(oauth2_scheme)):
-    return {"the_token": token}
-
+@app.get("/", response_class=RedirectResponse)
+async def root():
+    return "/login"
 
 @app.post('/token')
 async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):

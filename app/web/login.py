@@ -34,9 +34,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 async def authenticate_user(email: str, password: str):
     userl = users_api.general_get(None,email)
-    user = userl[0]
-    if not user:
+    if len(userl) == 0:
         return False 
+
+    user = userl[0]
     if not verify_password(user , password):
         return False
     return user["id"]
@@ -63,13 +64,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 def login(request: Request,err = Cookie(default=None)):
     return templates.TemplateResponse("login.html", {"request": request, "err":err})
 
-@router.post("/login/register", response_class=HTMLResponse)
+@router.post("/register", response_class=HTMLResponse)
 def create_user(request: Request, username: str = Form(), correo: str = Form(), password: str = Form()):
     try:
        users_api.create(username,correo,password)
         # user: UserPost = UserPost(username=username,email=email,password_hash=password)
-    except HTTPException :
-        return login(request,"Los datos son incorrectos")
+    except HTTPException as e:
+        return login(request, e.detail)
 
     return login(request,"Usuario registrado con exito")
 

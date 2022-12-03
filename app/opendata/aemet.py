@@ -1,6 +1,8 @@
 # Import libraries
 from fastapi import Depends, APIRouter
 from aemet_opendata.interface import AEMET
+from datetime import datetime
+import locale
 
 # Create router
 router = APIRouter()
@@ -51,6 +53,8 @@ def get_forecast_precipitation_hourly(town: dict = Depends(aemet.get_town_by_coo
     
 # Auxiliary functions
 
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
+locale.setlocale(locale.LC_TIME, "es_ES")
 
 def get_temp_daily_from_map(map: dict):
     days : dict 
@@ -58,6 +62,7 @@ def get_temp_daily_from_map(map: dict):
     Aux : dict = {}
     for x in range(0,7):
         Aux[x]=days[x]["temperatura"]
+        Aux[x]["dia"] = datetime.strptime(days[x]["fecha"], DATE_FORMAT).strftime("%a").capitalize()
         del Aux[x]["dato"]
     return Aux
 

@@ -102,67 +102,47 @@
     <h1 class="text text-center my-4">Detalles de la casa</h1>
     <div class="row">
         <div class="col-md-4 mx-3">
-            {% if not creating and not editing and tiempo | count > 0 %}
+            {% if not creating and not editing and weather | count > 0 %}
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        {% for itemKey,itemValue in tiempo.items() -%}
+                    <div class="row text-center mb-2">
+                        {% for item in temperature.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                {%- if  35.0 > itemValue["value"] -%}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
-                                {%- elif itemValue["value"] > 35 and 65 > itemValue["value"] -%}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
-                                {%- else -%}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
-                                {%- endif -%}
-                            </p>
+                            <label class="fw-bold">{{item["dia"]}}</label>
                         </div>
-                        {%- endfor %}
+                        {% endfor %}
                     </div>
                     <div class="row">
+                        {% for item in weather.values() %}
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.0["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.0["minima"]}}&deg;</label>
+                                {% if  35.0 > item["value"] %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
+                                {% elif item["value"] > 35 and 65 > item["value"] %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
+                                {% else %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
+                                {% endif %}
                             </p>
                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        {% for item in temperature.values() %}
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.1["minima"]}}&deg;</label>
+                                <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br/>
+                                <label id="temperatura">{{item["minima"]}}&deg;</label>
                             </p>
                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row text-center mt-2">
+                        {% for item in weather.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.2["minima"]}}&deg;</label>
-                            </p>
+                            <label class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</label>
                         </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.3["minima"]}}&deg;</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.4["minima"]}}&deg;</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.5["minima"]}}&deg;</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{temperatura.6["minima"]}}&deg;</label>
-                            </p>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -261,7 +241,7 @@
                     </td>
                 </tr>
             </table>
-                {% if tiempo | count > 0 %}
+                {% if weather | count > 0 %}
             <iframe src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}" width="100%" height="300px"></iframe>
                 {% endif %}
                 {% if user_id != house.owner_id %}
@@ -308,8 +288,11 @@
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4" href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
+                                <a class="ms-3 me-4" href="/profile/{{comment.sender_id}}" style="text-decoration: none">{{comment.sender_username}}</a>
                                 {{comment.date.strftime('%d/%m/%Y')}}
+                                {% if comment.sender_id == user_id %}
+                                <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i class="fa fa-trash-o"></i></a>
+                                {% endif %}
                             </th>
                         </tr>
                         <tr>
@@ -365,24 +348,15 @@
                 <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar">
                     <p class="clasificacion">
                         <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
-                        <!--
-                      --><label for="radio1">★</label>
-                        <!--
-                      --><input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
-                        <!--
-                      --><label for="radio2">★</label>
-                        <!--
-                      --><input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
-                        <!--
-                      --><label for="radio3">★</label>
-                        <!--
-                      --><input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
-                        <!--
-                      --><label for="radio4">★</label>
-                        <!--
-                      --><input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
-                        <!--
-                      --><label for="radio5">★</label>
+                        <label for="radio1">★</label>
+                        <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
+                        <label for="radio2">★</label>
+                        <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
+                        <label for="radio3">★</label>
+                        <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
+                        <label for="radio4">★</label>
+                        <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
+                        <label for="radio5">★</label>
                     </p>
                     <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
                 </form>

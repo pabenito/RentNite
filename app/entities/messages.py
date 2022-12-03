@@ -187,7 +187,7 @@ async def get_by_id(id: str):
             detail=f"There is no message with that id: {id}.")
 
 @router.delete("/{id}")
-async def delete(id: str):
+def delete(id: str):
     try:
         message : Message = Message.parse_obj(messages.find_one_and_delete({"_id": ObjectId(id)}))
     except:

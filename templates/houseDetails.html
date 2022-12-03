@@ -156,7 +156,11 @@
             {% if creating or editing %}
             <form method="post" action="/houses/save" enctype="multipart/form-data">
                 <div class="upload my-5">
+                    {% if house.image == "" %}
+                    <img src={{ default_image }} alt="Casa ofertada" id="image" style="height: 100%; width: 100%; object-fit: contain">
+                    {% else %}
                     <img src={{ house.image }} alt="Casa ofertada" id="image" style="height: 100%; width: 100%; object-fit: contain">
+                    {% endif %}
                     <div class="round">
                         <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif" onchange="onImageChanged(event)"/>
                         <i class="fa fa-camera fa-lg" style="color: #000;"></i>
@@ -202,7 +206,7 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}} class="form-control" min="0" required />
+                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}} class="form-control" min="0.01" required />
                                 </div>
                                 <div class="col mt-2">&euro;</div>
                             </div>
@@ -239,7 +243,11 @@
             </form>
             {% else %}
             <p class="text text-center">
+                {% if house.image == "" %}
+                <img src={{ default_image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
+                {% else %}
                 <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
+                {% endif %}
             </p>
             <table class="table table-info my-4">
                 <tr>
@@ -356,19 +364,19 @@
         <div class="col-md-6">
             {% if ratings | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
-            <table class="table-primary mx-5">
+            <table class="table-primary">
                 {% for rate in ratings %}
                 <tr>
                     <table class="table">
                         <tr class="table-primary">
                             <th class="row">
-                                <div class="col">
+                                <div class="col-md-5">
                                     <a class="ms-3" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
                                 </div>
-                                <div class="col text-center">
+                                <div class="col md-5">
                                     {{rate.date.strftime('%d/%m/%Y')}}
                                 </div>
-                                <div class="col me-3" style="text-align: right">
+                                <div class="col md-2">
                                     {% for i in range(rate.rate) %}
                                     ★
                                     {% endfor %}

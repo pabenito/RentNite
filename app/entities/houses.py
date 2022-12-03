@@ -63,7 +63,7 @@ def get_by_id(id: str):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create(house: HousePost):
-    if house.capacity <= 0 or house.price < 0 or house.rooms <= 0 or house.bathrooms <= 0:
+    if house.capacity <= 0 or house.price <= 0 or house.rooms <= 0 or house.bathrooms <= 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
 
     try:
@@ -89,7 +89,7 @@ def create(house: HousePost):
 
 @router.put("/{id}")
 def update(id: str, house: HouseConstructor):
-    if house.capacity is not None and house.capacity <= 0 or house.price is not None and house.price < 0 or house.rooms is not None and house.rooms <= 0 or house.bathrooms is not None and house.bathrooms <= 0:
+    if house.capacity is not None and house.capacity <= 0 or house.price is not None and house.price <= 0 or house.rooms is not None and house.rooms <= 0 or house.bathrooms is not None and house.bathrooms <= 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
 
     parameters = house.exclude_unset()
@@ -126,6 +126,8 @@ def delete(id: str):
 
     if house is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "House not found.")
+
+    return house
 
 
 @router.get("/owner/{owner_name}/guests")

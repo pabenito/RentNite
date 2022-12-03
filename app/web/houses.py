@@ -18,75 +18,67 @@ DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/am
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
-    user_id = __chechUser()
+    user_id = __check_user()
 
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "default_image": DEFAULT_IMAGE})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     address: AddressPost = AddressPost(city = "", street = "", number = 1)
 
     
 
-    house: HousePost = HousePost(address = address, capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_id = user_id,
+    house: HousePost = HousePost(address = address, capacity = 1, price = 0.01, rooms = 1, bathrooms = 1, owner_id = user_id,
                                  image = DEFAULT_IMAGE)
 
     return __loadHouseDetails(request, house, True, False, "", "", None, None, None, None, None, None, user_id)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
-                 price: str = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
-    user_id = __chechUser()
+                 price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
+    user_id = __check_user()
     
-    try:
-        price_float: float = float(price)
+    if file.filename != "":
+        # Upload photo to Cloudinary
+        result = cloudinary.uploader.upload(file.file)
+        url = result.get("url")
+
+    if id == "None":
+        if file.filename == "":
+            url = ""
+
+        address = AddressPost(city = city, street = street, number = number)
+
+        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
+                            image = url)
+        house = houses_api.create(house)
+        id = house["id"]
+    else:
+        house = houses_api.get_by_id(id)
 
         if file.filename == "":
-            url = DEFAULT_IMAGE
-        else:
-            # Upload photo to Cloudinary
-            result = cloudinary.uploader.upload(file.file)
-            url = result.get("url")
+            url = house["image"]
+        elif house["image"] != "":
+            __delete_image(house["image"])
 
-        if id == "None":
-            address = AddressPost(city = city, street = street, number = number)
+        address = AddressConstructor(city = city, street = street, number = number)
 
-            house = HousePost(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
-                              image = url)
-            house = houses_api.create(house)
-            id = house["id"]
-        else:
-            house = houses_api.get_by_id(id)
+        house = HouseConstructor(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, image = url)
+        houses_api.update(id, house)
 
-            # Take photo's URL and get name of file to delete
-            name =  house["image"].split("/")
-            name =  name[7]
-            size = len(name)
-            name = name[:size-4]
-
-            # Delete photo from Cloudinary
-            cloudinary.uploader.destroy(name)
-
-            address = AddressConstructor(city = city, street = street, number = number)
-
-            house = HouseConstructor(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, image = url)
-            houses_api.update(id, house)
-
-        return my_houses(request)
-    except:
-        return edit_house(request, id, "Los valores introducidos no son validos")
+    return my_houses(request)
 
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -109,7 +101,7 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -117,15 +109,18 @@ def edit_house(request: Request, id: str, error: str = ""):
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str):
-    user_id = __chechUser()
+    user_id = __check_user()
 
-    houses_api.delete(id)
+    house: dict = houses_api.delete(id)
+
+    if house["image"] != "":
+        __delete_image(house["image"])
 
     return my_houses(request)
 
 @router.post("/{id}/addComment", response_class = HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
@@ -140,7 +135,7 @@ def delete_comment(request: Request, id: str, comment_id: str):
     
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_rate(request: Request, id: str, estrellas: int = Form()):
-    user_id = __chechUser()
+    user_id = __check_user()
 
     ratings_api.create(user_id, None, id, estrellas)
 
@@ -148,17 +143,27 @@ def add_rate(request: Request, id: str, estrellas: int = Form()):
 
 # Private methods
 
+def __check_user():
+    session = login_api.Singleton()
+    if session.user is None:
+        raise HTTPException(
+            status_code=401, detail="No se ha iniciado sesión.")
+    return session.user
+
 def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool, editing: bool, error: str, booking_error: str, comments: list | None, 
                        ratings: list | None, today_date: date | None, tomorrow_date: date | None, weather: dict | None, temperature: dict | None, 
                        user_id: str):
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "creating": creating, "editing": editing, 
                                                             "error": error, "booking_error": booking_error, "comments": comments, "ratings": ratings, 
                                                             "today_date": today_date, "tomorrow_date": tomorrow_date, "weather": weather, 
-                                                            "temperature": temperature, "user_id": user_id})
+                                                            "temperature": temperature, "default_image": DEFAULT_IMAGE, "user_id": user_id})
 
-def __chechUser():
-    session = login_api.Singleton()
-    if session.user is None:
-        raise HTTPException(
-            status_code=401, detail="No se ha iniciado sesión.")
-    return session.user
+def __delete_image(url: str):
+    # Take photo's URL and get name of file to delete
+    name =  url.split("/")
+    name =  name[7]
+    size = len(name)
+    name = name[:size-4]
+
+    # Delete photo from Cloudinary
+    cloudinary.uploader.destroy(name)

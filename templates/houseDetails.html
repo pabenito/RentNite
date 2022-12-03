@@ -236,7 +236,7 @@
                 <h5 class="text text-center text-danger">{{error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
-                    {% if house.address != "" %}
+                    {% if editing %}
                         <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span class="h3">Eliminar</span></a>
                     {% endif %}
                 </div>

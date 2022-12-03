@@ -91,6 +91,10 @@
         input[type=file]::-webkit-file-upload-button {
             cursor: pointer;
         }
+
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -108,7 +112,7 @@
                     <div class="row text-center mb-2">
                         {% for item in temperature.values() %}
                         <div class="col">
-                            <label class="fw-bold">{{item["dia"]}}</label>
+                            <span class="fw-bold">{{item["dia"]}}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -118,7 +122,7 @@
                             <p class="text text-center mt-2" >
                                 {% if  35.0 > item["value"] %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
-                                {% elif item["value"] > 35 and 65 > item["value"] %}
+                                {% elif item["value"] > 35 and 80 > item["value"] %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
                                 {% else %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
@@ -229,10 +233,7 @@
                 <div class="text-center my-4">
                     <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
                     {% if house.address != "" %}
-                    <div class="btn btn-danger mx-3">
-                        <a class="h3" href="/houses/{{house.id}}/delete"
-                            style="color: white; text-decoration: none">Eliminar</a>
-                    </div>
+                        <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span class="h3">Eliminar</span></a>
                     {% endif %}
                 </div>
             </form>
@@ -263,7 +264,7 @@
                 </tr>
                 <tr>
                     <td class="h5">Propietario:</td>
-                    <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a>
+                    <td><a href="/profile/{{house.owner_id}}">{{ house.owner_name }}</a>
                     </td>
                 </tr>
             </table>
@@ -316,7 +317,7 @@
                             <th>
                                 <div class="row" style="height: 40px">
                                     <div class="col ms-3 mt-2">
-                                        <a href="/profile/{{comment.sender_id}}" style="text-decoration: none">{{comment.sender_username}}</a>
+                                        <a href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
                                     </div>
                                     <div class="col text-center mt-2">
                                         {{comment.date.strftime('%d/%m/%Y')}}
@@ -360,19 +361,17 @@
                 <tr>
                     <table class="table">
                         <tr class="table-primary">
-                            <th>
-                                <div class="row">
-                                    <div class="col">
-                                        <a class="ms-3" href="/profile/{{rate.rater_id}}" style="text-decoration: none">{{ rate.rated_user_Name }}</a>
-                                    </div>
-                                    <div class="col text-center">
-                                        {{rate.date.strftime('%d/%m/%Y')}}
-                                    </div>
-                                    <div class="col me-3" style="text-align: right">
-                                        {% for i in range(rate.rate) %}
-                                        ★
-                                        {% endfor %}
-                                    </div>
+                            <th class="row">
+                                <div class="col">
+                                    <a class="ms-3" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
+                                </div>
+                                <div class="col text-center">
+                                    {{rate.date.strftime('%d/%m/%Y')}}
+                                </div>
+                                <div class="col me-3" style="text-align: right">
+                                    {% for i in range(rate.rate) %}
+                                    ★
+                                    {% endfor %}
                                 </div>
                             </th>
                         </tr>

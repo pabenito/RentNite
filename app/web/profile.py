@@ -20,8 +20,12 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/", response_class=HTMLResponse)
 def perfil_usuario(request: Request):
     user = __chechUser()
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "perfil": user})
 
+@router.get("/edit", response_class=HTMLResponse)
+def edit(request: Request):
+    user = __chechUser()
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def perfil_usuario_distinto(request: Request, id: str):
@@ -58,13 +62,6 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
     users_api.update(id=user,photo=url)
     
     return perfil_usuario(request)
-
-
-@router.get("/edit", response_class=HTMLResponse)
-def edit(request: Request):
-    user = __chechUser()
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True})
-
 
 @router.post("/save", response_class=HTMLResponse)
 def save(request: Request, password: str = Form(), username: str = Form(), email: str = Form()):

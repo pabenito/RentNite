@@ -66,8 +66,7 @@
                         </tr>
                     </table>
                     <div class="text-center mt-3 mb-5">
-                        <button class="btn btn-primary mx-2" onclick="Reservar('{{ house.id }}');">
-                            Reservar </button>
+                        <button class="btn btn-primary mx-2" onclick="detalles('{{ house.id }}');">Detalles</button>
                     </div>
                 </div>
             </div>
@@ -95,7 +94,7 @@
                 window.location = ("http://127.0.0.1:8000/profile/" + OwnerId);
             }
 
-            function Reservar(houseId) {
+            function detalles(houseId) {
                 window.location = ("http://127.0.0.1:8000/houses/" + houseId);
             }
         </script>

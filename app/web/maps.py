@@ -41,8 +41,8 @@ def create_marker_house(
 ):
     return create_marker(latitude, longitude, color, icon, address, popup_show)
 
-def plot(map: Map, width: int = 600, height: int = 400):
-    figure = Figure(width=width, height=height)
+def plot(map: Map):
+    figure = Figure()
     figure.add_child(map)
     return figure.render()
 

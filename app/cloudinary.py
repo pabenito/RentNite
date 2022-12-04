@@ -22,7 +22,11 @@ def getPhotoId(url:str):
 def deletePhoto(name:str):
     cloudinary.uploader.destroy(name)
 
-def uploadPhoto(user:str,file : UploadFile):
+def uploadPhotoUser(user:str,file : UploadFile):
     result = cloudinary.uploader.upload(file.file)
     url = result.get("url")
     users_api.update(id=user,photo=url)
+
+def uploadPhotoHouse(file:UploadFile):
+    result = cloudinary.uploader.upload(file.file)
+    return result.get("url")

@@ -1,4 +1,2 @@
-py -m pip install -r requirements.txt
-cd src
+py -m pip install -r requirements.txt --upgrade
 uvicorn app.main:app --reload
-

@@ -6,8 +6,6 @@ from ..entities import users as users_api
 from ..entities import ratings as ratings_api
 from app.entities import models
 from app.web import login
-import cloudinary
-import cloudinary.uploader
 from passlib.hash import sha256_crypt
 from .. import cloudinary as cloud
 
@@ -69,7 +67,7 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
 
     
     #Upload photo to cloudinary
-    cloud.uploadPhoto(user=user,file=file)
+    cloud.uploadPhotoUser(user=user,file=file)
     
     return perfil_usuario(request)
 

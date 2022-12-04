@@ -9,7 +9,7 @@ from ..entities import messages as messages_api
 from ..entities import ratings as ratings_api
 from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
-import cloudinary.uploader
+from .. import cloudinary as cloud
 
 router = APIRouter()
 
@@ -44,8 +44,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
     
     if file.filename != "":
         # Upload photo to Cloudinary
-        result = cloudinary.uploader.upload(file.file)
-        url = result.get("url")
+        url = cloud.uploadPhotoHouse(file=file)
 
     if id == "None":
         if file.filename == "":
@@ -63,7 +62,8 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
         if file.filename == "":
             url = house["image"]
         elif house["image"] != "":
-            __delete_image(house["image"])
+            name_photo = cloud.getPhotoId(url=house["image"])
+            cloud.deletePhoto(name=name_photo)
 
         address = AddressConstructor(city = city, street = street, number = number)
 
@@ -111,7 +111,8 @@ def delete_house(request: Request, id: str):
     house: dict = houses_api.delete(id)
 
     if house["image"] != "":
-        __delete_image(house["image"])
+        name_photo = cloud.getPhotoId(url=house["image"])
+        cloud.deletePhoto(name=name_photo)
 
     return my_houses(request)
 
@@ -165,15 +166,6 @@ def __load_house_details(request: Request, house: dict, user_id: str, creating: 
                                                             "weather": weather, "temperature": temperature, "default_image": DEFAULT_IMAGE, 
                                                             "today_date": today, "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
 
-def __delete_image(url: str):
-    # Take photo's URL and get name of file to delete
-    name =  url.split("/")
-    name =  name[7]
-    size = len(name)
-    name = name[:size-4]
-
-    # Delete photo from Cloudinary
-    cloudinary.uploader.destroy(name)
 
 def __user_can_rate(user_id: str, house: dict):
     user_can_rate = False

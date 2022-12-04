@@ -52,13 +52,3 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 @app.get("/")
 async def root():
     return RedirectResponse("/login")
-
-@app.post('/token')
-async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await login.authenticate_user(form_data.username, form_data.password)
-    if not user:
-        return login.login(request,"Usuario o contraseña no validos")
-
-    singleton = login.Singleton()
-    singleton.user = user
-    return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)

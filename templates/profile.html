@@ -203,7 +203,7 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
-            {% if perfil and perfil != identificador %}
+            {% if perfil and perfil != identificador and user_can_rate %}
 
 
             <div class="d-flex flex-column align-items-center text-center">

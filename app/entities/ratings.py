@@ -19,12 +19,12 @@ houses: Collection = db["houses"]
 #API
 @router.get("/")
 def get(
-    rater_id: str | None = Query(default=None, alias="rater-id"),
-    rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
-    rated_user_Name: str | None = Query(default=None, alias="rated-user-name"),
-    rated_house_id: str | None = Query(default=None, alias="rated-house-id"),
-    rate: int | None = Query(default=None, alias="rate"),
-    from_: date | None = Query(default=None, alias="from"),
+    rater_id: str | None = None,
+    rated_user_id: str | None = None,
+    rated_user_Name: str | None = None,
+    rated_house_id: str | None = None,
+    rate: int | None = None,
+    from_: date | None = None,
     to: date | None = None
 ):
 

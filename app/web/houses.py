@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from ..entities.models import *
 from . import login as login_api
 from ..entities import houses as houses_api
+from ..entities import bookings as bookings_api
 from ..entities import messages as messages_api
 from ..entities import ratings as ratings_api
 from datetime import date, datetime, timedelta
@@ -32,14 +33,9 @@ def my_houses(request: Request):
 def create_house(request: Request):
     user_id = __check_user()
 
-    address: AddressPost = AddressPost(city = "", street = "", number = 1)
-
-    
-
-    house: HousePost = HousePost(address = address, capacity = 1, price = 0.01, rooms = 1, bathrooms = 1, owner_id = user_id,
-                                 image = DEFAULT_IMAGE)
-
-    return __loadHouseDetails(request, house, True, False, "", "", None, None, None, None, None, None, user_id)
+    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id, 
+                   "image": DEFAULT_IMAGE}
+    return __load_house_details(request, house, user_id, creating = True)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
@@ -92,12 +88,13 @@ def house_details(request: Request, id: str, booking_error: str = ""):
         weather: dict = dict()
         temperature: dict = dict()
 
-    comments: list = messages_api.get(None, id, None, None, None)
-    ratings: list = ratings_api.get(None,None,None,id,None,None,None)
+    comments: list = messages_api.get(house_id = id)
+    ratings: list = ratings_api.get(rated_house_id = id)
     today: date = date.today()
     tomorrow: date = today + timedelta(1)
 
-    return __loadHouseDetails(request, house, False, False, "", booking_error, comments, ratings, today, tomorrow, weather, temperature, user_id)
+    return __load_house_details(request, house, user_id, error = booking_error, comments = comments, ratings = ratings, weather = weather, 
+                                temperature = temperature)
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
@@ -105,7 +102,7 @@ def edit_house(request: Request, id: str, error: str = ""):
 
     house: dict = houses_api.get_by_id(id)
 
-    return __loadHouseDetails(request, house, False, True, error, "", None, None, None, None, None, None, user_id)
+    return __load_house_details(request, house, user_id, editing = True, error = error)
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str):
@@ -160,13 +157,20 @@ def __check_user():
             status_code=401, detail="No se ha iniciado sesión.")
     return session.user
 
-def __loadHouseDetails(request: Request, house: HousePost | dict, creating: bool, editing: bool, error: str, booking_error: str, comments: list | None, 
-                       ratings: list | None, today_date: date | None, tomorrow_date: date | None, weather: dict | None, temperature: dict | None, 
-                       user_id: str):
-    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "creating": creating, "editing": editing, 
-                                                            "error": error, "booking_error": booking_error, "comments": comments, "ratings": ratings, 
-                                                            "today_date": today_date, "tomorrow_date": tomorrow_date, "weather": weather, 
-                                                            "temperature": temperature, "default_image": DEFAULT_IMAGE, "user_id": user_id})
+def __load_house_details(request: Request, house: dict, user_id: str, creating: bool = False, editing: bool = False, error: str = "", 
+                         comments: list | None = None, ratings: list | None = None, weather: dict | None = None, temperature: dict | None = None):
+    if creating or editing:
+        today = tomorrow = None
+        user_can_rate = False
+    else:
+        today = date.today()
+        tomorrow = today + timedelta(1)
+        user_can_rate = __user_can_rate(user_id, house)
+    
+    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "user_id": user_id, "creating": creating, 
+                                                            "editing": editing, "error": error, "comments": comments, "ratings": ratings, 
+                                                            "weather": weather, "temperature": temperature, "default_image": DEFAULT_IMAGE, 
+                                                            "today_date": today, "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
 
 def __delete_image(url: str):
     # Take photo's URL and get name of file to delete
@@ -177,3 +181,15 @@ def __delete_image(url: str):
 
     # Delete photo from Cloudinary
     cloudinary.uploader.destroy(name)
+
+def __user_can_rate(user_id: str, house: dict):
+    user_can_rate = False
+
+    if user_id != house["owner_id"]:
+            user_bookings = bookings_api.search(guest_id = user_id, house_id = house["id"])
+            if len(user_bookings) > 0:
+                user_ratings = ratings_api.get(rater_id = user_id, rated_house_id = house["id"])
+                if len(user_ratings) == 0:
+                    user_can_rate = True
+    
+    return user_can_rate

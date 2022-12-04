@@ -281,7 +281,7 @@
                 <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
                 <table class="table table-info">
                     <tr>
-                        <td class="h5">Fecha de inicio:</td>
+                        <td class="h5">Fecha de comienzo:</td>
                         <td><input type="date" id="from_" name="from_" value={{today_date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
@@ -295,7 +295,7 @@
                         <td><input type="text" id="cost_display" value="{{'%0.2f' % house.price}} &euro;" class="form-control" disabled /></td>
                     </tr>
                 </table>
-                <h5 class="text text-center text-danger">{{booking_error}}</h5>
+                <h5 class="text text-center text-danger">{{error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>
@@ -391,7 +391,7 @@
             {% else %}
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
             {% endif %}
-            {% if user_id != house.owner_id %}
+            {% if user_can_rate %}
             <div class="text-center my-4">
                 <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
                     <p class="clasificacion">

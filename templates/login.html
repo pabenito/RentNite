@@ -23,7 +23,7 @@
         <div class="row pt-5">
             <div class="col-md-5"></div>
             <div class="col-md-2">
-                <div >
+                <div>
                     <div class="text-center mb-3">
                         <img src="../static/img/logo.png" height="200em" width="200em" >
                     </div>
@@ -32,9 +32,7 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <h1>Inicie sesión</h1>
-                                    {% if err %}
-                                    <label> {{ err }} </label>
-                                    {% endif %}
+                                    <label class="text text-center text-danger"> {{ login_error }} </label>
                                     <!-- Login Form -->
                                     <form method="post" action="/login/token">
                                         <input class="mb-3 mt-2" title="Usuario" type="text" id="username" class="fadeIn second" name="username"
@@ -51,6 +49,8 @@
                                 </li>
                                 <li class="list-group-item">
                                     <h1>Registro</h1>
+                                    <label class="text text-center text-danger">{{ registration_error }}</label>
+                                    <label class="text text-center text-success">{{ registration_success_message }}</label>
                                     <form method="post" action="/login/register">
                                         <input class="mb-3 mt-2" title="Usuario" type="text" id="username" class="fadeIn second" 
                                             placeholder="Nombre de usuario" name="username" required> <br>

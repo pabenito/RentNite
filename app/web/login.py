@@ -56,13 +56,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail='Invalid username or password'
         )
     finally:
-        login(Request,None)
+        login(Request)
 
     return await users_api.get_by_id(user)
 
 @router.get("/", response_class=HTMLResponse)
-def login(request: Request,err = Cookie(default=None)):
-    return templates.TemplateResponse("login.html", {"request": request, "err":err})
+def login(request: Request, login_error: str = "", registration_error: str = "", registration_success_message: str = ""):
+    return templates.TemplateResponse("login.html", {"request": request, "login_error": login_error, "registration_error": registration_error, 
+                                                     "registration_success_message": registration_success_message})
 
 @router.post("/register", response_class=HTMLResponse)
 def create_user(request: Request, username: str = Form(), correo: str = Form(), password: str = Form()):
@@ -70,21 +71,21 @@ def create_user(request: Request, username: str = Form(), correo: str = Form(), 
        users_api.create(username,correo,password)
         # user: UserPost = UserPost(username=username,email=email,password_hash=password)
     except HTTPException as e:
-        return login(request, e.detail)
+        return login(request, registration_error = e.detail)
 
-    return login(request,"Usuario registrado con exito")
+    return login(request, registration_success_message = "Usuario registrado con exito")
 
 @router.get("/logout", response_class=HTMLResponse)
-def logout(request: Request,err = Cookie(default=None)):
+def logout(request: Request):
     salida = Singleton()
     salida.user=None
-    return templates.TemplateResponse("login.html", {"request": request, "err":err})
+    return RedirectResponse("/")
 
 @router.post('/token')
 async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
-        return login(request,"Usuario o contraseña no validos")
+        return login(request, "Usuario o contraseña no validos")
 
     singleton = Singleton()
     singleton.user = user

@@ -89,3 +89,9 @@ async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm =
     singleton = Singleton()
     singleton.user = user
     return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)
+
+def check_user():
+    session = Singleton()
+    if session.user is None:
+        raise HTTPException(status_code=401, detail="No se ha iniciado sesión.")
+    return session.user

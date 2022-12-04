@@ -46,7 +46,11 @@
                         </tr>
                         <tr>
                             <td class="h4">Capacidad:</td>
-                            <td>{{ house.capacity }}</td>
+                            <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="h4">Coste por noche:</td>
+                            <td>{{ '%0.2f' % house.price }} &euro;</td>
                         </tr>
                         <tr>
                             <td class="h4">Habitaciones:</td>
@@ -55,10 +59,6 @@
                         <tr>
                             <td class="h4">Cuartos de ba&ntilde;o:</td>
                             <td>{{ house.bathrooms }}</td>
-                        </tr>
-                        <tr>
-                            <td class="h4">Precio:</td>
-                            <td>{{ '%0.2f' % house.price }} &euro;</td>
                         </tr>
                         <tr>
                             <td class="h4">Propietario:</td>

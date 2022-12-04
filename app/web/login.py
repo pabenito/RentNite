@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Cookie, Depends, Form, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
@@ -80,5 +80,12 @@ def logout(request: Request,err = Cookie(default=None)):
     salida.user=None
     return templates.TemplateResponse("login.html", {"request": request, "err":err})
 
+@router.post('/token')
+async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        return login(request,"Usuario o contraseña no validos")
 
-
+    singleton = Singleton()
+    singleton.user = user
+    return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)

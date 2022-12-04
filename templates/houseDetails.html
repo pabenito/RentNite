@@ -195,11 +195,12 @@
                                 <div class="col-md-5">
                                     <input type="number" name="capacity" value={{house.capacity}} class="form-control" min="1" max="99" required />
                                 </div>
+                                <div class="col-md-2 mt-1">personas</div>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="h5">Precio:</td>
+                        <td class="h5">Coste por noche:</td>
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
@@ -253,7 +254,7 @@
                     <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
                 </tr>
                 <tr>
-                    <td class="h5">Precio:</td>
+                    <td class="h5">Coste por noche:</td>
                     <td>{{ '%0.2f' % house.price }} &euro;</td>
                 </tr>
                 <tr>

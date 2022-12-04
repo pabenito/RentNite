@@ -141,11 +141,11 @@ def add_rating(request: Request, id: str, estrellas: int = Form()):
 
     return house_details(request, id) 
 
-@router.get("/{id}/deleteRating/{rate_id}", response_class = HTMLResponse)
-def delete_rating(request: Request, id: str, rate_id: str):
+@router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
+def delete_rating(request: Request, id: str, rating_id: str):
     login.check_user()
 
-    ratings_api.delete(rate_id)
+    ratings_api.delete(rating_id)
 
     return house_details(request, id)
 

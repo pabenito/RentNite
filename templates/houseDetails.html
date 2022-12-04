@@ -120,9 +120,9 @@
                         {% for item in weather.values() %}
                         <div class="col">
                             <p class="text text-center mt-2" >
-                                {% if  35.0 > item["value"] %}
+                                {% if  35 > item["value"] %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
-                                {% elif item["value"] > 35 and 80 > item["value"] %}
+                                {% elif item["value"] >= 35 and 80 > item["value"] %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
                                 {% else %}
                                 <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
@@ -144,7 +144,7 @@
                     <div class="row text-center mt-2">
                         {% for item in weather.values() %}
                         <div class="col">
-                            <label class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</label>
+                            <span class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</span>
                         </div>
                         {% endfor %}
                     </div>

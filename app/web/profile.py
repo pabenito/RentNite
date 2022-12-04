@@ -9,7 +9,7 @@ from app.web import login as login_api
 import cloudinary
 import cloudinary.uploader
 from passlib.hash import sha256_crypt
-
+from .. import cloudinary as cloud
 
 
 router = APIRouter()
@@ -61,18 +61,15 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
 
     if user_class["photo"] != "":
         #Take photo's url and get name of file to delete
-        name =  user_class["photo"].split("/")
-        name =  name[7]
-        size = len(name)
-        name = name[:size-4]
+        name = cloud.getPhotoId(url=user_class["photo"])
 
         #Delete photo from cloudinary
-        cloudinary.uploader.destroy(name)
+        cloud.deletePhoto(name=name)
+        
+
     
     #Upload photo to cloudinary
-    result = cloudinary.uploader.upload(file.file)
-    url = result.get("url")
-    users_api.update(id=user,photo=url)
+    cloud.uploadPhoto(user=user,file=file)
     
     return perfil_usuario(request)
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Cookie, Form, HTTPException, File, Uploa
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
-from . import login as login_api
+from . import login
 from ..entities import houses as houses_api
 from ..entities import bookings as bookings_api
 from ..entities import messages as messages_api
@@ -19,19 +19,19 @@ DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/am
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
-    __check_user()
+    login.check_user()
 
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "default_image": DEFAULT_IMAGE})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "default_image": DEFAULT_IMAGE})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id, 
                    "image": DEFAULT_IMAGE}
@@ -40,7 +40,7 @@ def create_house(request: Request):
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
                  price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
-    user_id = __check_user()
+    user_id = login.check_user()
     
     if file.filename != "":
         # Upload photo to Cloudinary
@@ -74,7 +74,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
 
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -98,7 +98,7 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -106,7 +106,7 @@ def edit_house(request: Request, id: str, error: str = ""):
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str):
-    __check_user()
+    login.check_user()
 
     house: dict = houses_api.delete(id)
 
@@ -117,7 +117,7 @@ def delete_house(request: Request, id: str):
 
 @router.post("/{id}/addComment", response_class = HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
@@ -126,7 +126,7 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
 
 @router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
 def delete_comment(request: Request, id: str, comment_id: str):
-    __check_user()
+    login.check_user()
 
     messages_api.delete(comment_id)
 
@@ -134,7 +134,7 @@ def delete_comment(request: Request, id: str, comment_id: str):
     
 @router.post("/{id}/addRating", response_class=HTMLResponse)
 def add_rating(request: Request, id: str, estrellas: int = Form()):
-    user_id = __check_user()
+    user_id = login.check_user()
 
     ratings_api.create(user_id, None, id, estrellas)
 
@@ -142,20 +142,13 @@ def add_rating(request: Request, id: str, estrellas: int = Form()):
 
 @router.get("/{id}/deleteRating/{rate_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rate_id: str):
-    __check_user()
+    login.check_user()
 
     ratings_api.delete(rate_id)
 
     return house_details(request, id)
 
 # Private methods
-
-def __check_user():
-    session = login_api.Singleton()
-    if session.user is None:
-        raise HTTPException(
-            status_code=401, detail="No se ha iniciado sesión.")
-    return session.user
 
 def __load_house_details(request: Request, house: dict, user_id: str, creating: bool = False, editing: bool = False, error: str = "", 
                          comments: list | None = None, ratings: list | None = None, weather: dict | None = None, temperature: dict | None = None):

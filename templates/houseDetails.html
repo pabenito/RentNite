@@ -250,7 +250,7 @@
                 </tr>
                 <tr>
                     <td class="h5">Capacidad:</td>
-                    <td>{{ house.capacity }}</td>
+                    <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
                 </tr>
                 <tr>
                     <td class="h5">Precio:</td>

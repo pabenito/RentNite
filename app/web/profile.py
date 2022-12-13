@@ -72,11 +72,14 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
     return perfil_usuario(request)
 
 @router.post("/save", response_class=HTMLResponse)
-def save(request: Request, password: str = Form(), username: str = Form(), email: str = Form()):
+def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form()):
     user = login.check_user()
+    user_object : users_api.User = users_api.get_by_id(user)
     try:
-        users_api.update(id=user, username=username,
-                        email=email, password=password)
+        if login.verify_password(user=user_object,password=password):
+            users_api.update(id=user, username=username,
+                        email=email, password=newpassword)
+
         return perfil_usuario(request)
     except HTTPException as e:
         return edit(request, e.detail)

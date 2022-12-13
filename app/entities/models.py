@@ -97,6 +97,7 @@ class RatingBase(BaseModel):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int
+    comment: str
 
 # Entities models
 
@@ -194,6 +195,8 @@ class RatingConstructor(Simplifier):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int | None = None
+    comment: str | None = None
+
 
 # Models for post
 

@@ -24,6 +24,7 @@ def get(
     rated_user_Name: str | None = None,
     rated_house_id: str | None = None,
     rate: int | None = None,
+    comment: str | None = None,
     from_: date | None = None,
     to: date | None = None
 ):
@@ -82,7 +83,15 @@ def get(
             rated: Rating  
             if rated.rate == rate:
                 result.append(rated)
-        rate_list = result    
+        rate_list = result
+        
+    if comment:
+        result = []
+        for rated in rate_list:
+            rated: Rating  
+            if rated.comment == comment:
+                result.append(rated)
+        rate_list = result        
 
     if from_:
         result = []
@@ -114,7 +123,8 @@ def create(
     rater_id: str | None = Query(default=None, alias="rater-id"),
     rated_user_id: str | None = Query(default=None, alias="rated-user-id"),
     rated_house_id: str | None = Query(default=None, alias="rated-house-id"),
-    rate: int | None = Query(default=None, alias="rate")
+    rate: int | None = Query(default=None, alias="rate"),
+    comment: str | None = Query(default=None, alias="comment")
     ):
     
     if not rated_user_id and not rated_house_id:
@@ -154,6 +164,14 @@ def create(
             detail=f"Sorry, no numbers below zero (0) or above five (5): {rate}.")
         else:
             new_rate.rate = rate
+            
+    if comment:
+        if(not comment):
+            raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"Sorry, ratings must have a comment {comment}.")
+        else:
+            new_rate.comment = comment
     
     new_rate.date = datetime.now(timezone("Europe/Madrid"))
     new_rate.rater_id=rater_id
@@ -175,6 +193,30 @@ def get_by_id(id: str):
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no rating with that id: {id}.")
     
+
+@router.put("/{id}")
+def update(id: str, rate: int | None = None, comment: str | None = None):
+    
+    if rate < 0 or rate > 5:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "La calificacion debe ser entre [0, 5]")
+
+    if comment is None:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "La calificacion debe contener un mensaje")
+    
+    
+    data = {"rate": rate, "comment": comment}
+
+    data = {k: v for k, v in data.items() if v is not None}
+
+    if len(data) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Datos no introducidos.")
+
+    try:
+        ratings.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
+    except:
+        None
 
 
 @router.delete("/{id}")

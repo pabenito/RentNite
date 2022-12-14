@@ -8,6 +8,9 @@ from app.entities import models
 from app.web import login
 from passlib.hash import sha256_crypt
 from .. import cloudinary as cloud
+from datetime import datetime, date, time
+from pytz import timezone
+
 
 
 router = APIRouter()
@@ -36,10 +39,14 @@ def perfil_usuario_distinto(request: Request, id: str):
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)
-def add_Rate(request: Request, id: str, estrellas: int = Form()):
+def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()):
     user = login.check_user()
-
-    ratings_api.create(user, id, None, estrellas)
+    
+    cm: models.CommentPost = models.CommentPost(comment=comment)
+    date = datetime.now(timezone("Europe/Madrid"))
+    rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
+                                               ratd_user_Name=None,rated_house_id=None,rate=estrellas,comment=cm)
+    ratings_api.create(rt)
 
     return perfil_usuario_distinto(request, id)
 

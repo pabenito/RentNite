@@ -221,7 +221,7 @@ class RatingPost(BaseModel):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int 
-    comment: AddressPost 
+    comment: CommentPost 
 
 class ChatPost(BaseModel):
     booking_id : str

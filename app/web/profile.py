@@ -42,10 +42,9 @@ def perfil_usuario_distinto(request: Request, id: str):
 def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()):
     user = login.check_user()
     
-    cm: models.CommentPost = models.CommentPost(comment=comment)
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
-                                               ratd_user_Name=None,rated_house_id=None,rate=estrellas,comment=cm)
+                                               ratd_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
     return perfil_usuario_distinto(request, id)

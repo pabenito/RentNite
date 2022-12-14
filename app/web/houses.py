@@ -10,6 +10,9 @@ from ..entities import ratings as ratings_api
 from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
 from .. import cloudinary as cloud
+from app.entities import models
+from pytz import timezone
+
 
 router = APIRouter()
 
@@ -134,10 +137,13 @@ def delete_comment(request: Request, id: str, comment_id: str):
     return house_details(request, id)
     
 @router.post("/{id}/addRating", response_class=HTMLResponse)
-def add_rating(request: Request, id: str, estrellas: int = Form()):
+def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form()):
     user_id = login.check_user()
 
-    ratings_api.create(user_id, None, id, estrellas)
+    date = datetime.now(timezone("Europe/Madrid"))
+    rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
+                                               ratd_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
+    ratings_api.create(rt)
 
     return house_details(request, id) 
 

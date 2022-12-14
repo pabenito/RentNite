@@ -325,55 +325,6 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <h3 class="h3 my-4">Comentarios</h3>
-            {% if comments | count > 0 %}
-            <table class="table-primary mx-5">
-                {% for comment in comments %}
-                <tr>
-                    <table class="table">
-                        <tr class="table-primary">
-                            <th>
-                                <div class="row" style="height: 40px">
-                                    <div class="col ms-3 mt-2">
-                                        <a href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
-                                    </div>
-                                    <div class="col text-center mt-2">
-                                        {{comment.date.strftime('%d/%m/%Y')}}
-                                    </div>
-                                    <div class="col me-3" style="text-align: right">
-                                        {% if comment.sender_id == user_id %}
-                                        <a class="btn btn-danger"
-                                            href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i
-                                                class="fa fa-trash-o"></i></a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <td>{{comment.message}}</td>
-                        </tr>
-                    </table>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <p class="text text-center h4 mt-3 mb-5">No hay comentarios</p>
-            {% endif %}
-            <form method="post" action="/houses/{{house.id}}/addComment" title="coment">
-                <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
-                <div class="text-center my-4">
-                    <button class="btn btn-primary"><span class="h3">Comentar</span></button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-3"></div>
-    </div>
-    {% endif %}
-    {% if not creating and not editing %}
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
             {% if ratings | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
             <table class="table-primary">
@@ -407,12 +358,11 @@
                         </tr>
                         <tr>
                             <td>
-                                {{ rating.comment.comment }}
+                                {{ rating.comment }}
                             </td>
                         </tr>
                     </table>
                 </tr>
-
                 {% endfor %}
             </table>
             {% else %}
@@ -421,19 +371,26 @@
             {% if user_can_rate %}
             <div class="text-center my-4">
                 <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
-                    <p class="clasificacion">
-                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
-                        <label for="radio1">★</label>
-                        <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
-                        <label for="radio2">★</label>
-                        <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
-                        <label for="radio3">★</label>
-                        <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
-                        <label for="radio4">★</label>
-                        <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
-                        <label for="radio5">★</label>
-                    </p>
-                    <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
+                    <div class="d-flex flex-column align-items-center text-center">
+
+                        <p class="clasificacion">
+                            <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
+                            <label for="radio1">★</label>
+                            <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
+                            <label for="radio2">★</label>
+                            <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
+                            <label for="radio3">★</label>
+                            <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
+                            <label for="radio4">★</label>
+                            <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
+                            <label for="radio5">★</label>
+                        </p>
+                    </div>
+    
+                    <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
+                    <div class="text-center my-4">
+                        <button class="btn btn-primary"><span class="h3">Enviar</span></button>
+                    </div>
                 </form>
             </div>
             {% endif %}

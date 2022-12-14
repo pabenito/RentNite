@@ -142,7 +142,7 @@ def create(rating: RatingPost):
      
     parameters = jsonable_encoder(rating)
     parameters["rate"] = rating.rate
-    parameters["comment"]["comment"] = rating.comment.comment
+    parameters["comment"] = rating.comment
     parameters["date"] = datetime.now(timezone("Europe/Madrid"))
     userA: User = User.parse_obj(users.find_one({"_id": ObjectId(rating.rater_id)}))
     parameters["rated_user_Name"] = userA.username
@@ -172,8 +172,8 @@ def update(id: str, rating: RatingConstructor):
     parameters = rating.exclude_unset()
     
     if rating.comment is not None:
-        if rating.comment.comment is not None:
-            parameters["comment"]["comment"] = rating.comment.comment
+        if rating.comment is not None:
+            parameters["comment"] = rating.comment
     
 
     try:

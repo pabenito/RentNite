@@ -45,6 +45,9 @@ class AddressBase(BaseModel):
     longitude: float | None = None
     latitude: float | None = None
 
+class CommentBase(BaseModel):
+    comment: str
+
 class MessageBase(BaseModel):
     sender_id: str
     sender_username: str
@@ -97,7 +100,7 @@ class RatingBase(BaseModel):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int
-    comment: str
+    comment: CommentBase
 
 # Entities models
 
@@ -145,6 +148,9 @@ class AddressConstructor(BaseModel):
     street: str | None = None
     number: int | None = None
     city: str | None = None
+    
+class CommentConstructor(BaseModel):
+    comment: str | None = None
 
 class ChatConstructor(Simplifier):
     house_address: AddressBase | None
@@ -195,7 +201,7 @@ class RatingConstructor(Simplifier):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int | None = None
-    comment: str | None = None
+    comment: CommentConstructor | None = None
 
 
 # Models for post
@@ -204,6 +210,18 @@ class AddressPost(BaseModel):
     street: str
     number: int
     city: str
+    
+class CommentPost(BaseModel):
+    comment: str
+    
+class RatingPost(BaseModel):
+    rater_id: str 
+    date: datetime 
+    rated_user_id: str | None = None
+    rated_user_Name: str | None = None
+    rated_house_id: str | None = None
+    rate: int 
+    comment: AddressPost 
 
 class ChatPost(BaseModel):
     booking_id : str

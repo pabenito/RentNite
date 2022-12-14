@@ -119,13 +119,16 @@
                     <div class="row">
                         {% for item in weather.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                {% if  35 > item["value"] %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png style="height: 75%; width: 75%; object-fit: contain">
+                            <p class="text text-center mt-2">
+                                {% if 35 > item["value"] %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
                                 {% elif item["value"] >= 35 and 80 > item["value"] %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png style="height: 75%; width: 75%; object-fit: contain" >
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
                                 {% else %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png style="height: 75%; width: 75%; object-fit: contain" >
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
                                 {% endif %}
                             </p>
                         </div>
@@ -134,8 +137,8 @@
                     <div class="row">
                         {% for item in temperature.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br/>
+                            <p class="text text-center mt-2">
+                                <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br />
                                 <label id="temperatura">{{item["minima"]}}&deg;</label>
                             </p>
                         </div>
@@ -156,10 +159,11 @@
             {% if creating or editing %}
             <form method="post" action="/houses/save" enctype="multipart/form-data">
                 <div class="upload my-5">
-                    <img src={{ house.image if house.image != "" else default_image }} alt="Casa ofertada" id="image" 
-                         style="height: 100%; width: 100%; object-fit: contain">
+                    <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada" id="image"
+                        style="height: 100%; width: 100%; object-fit: contain">
                     <div class="round">
-                        <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif" onchange="onImageChanged(event)"/>
+                        <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif"
+                            onchange="onImageChanged(event)" />
                         <i class="fa fa-camera fa-lg" style="color: #000;"></i>
                     </div>
                 </div>
@@ -171,19 +175,22 @@
                     {% endif %}
                     <tr>
                         <td class="h5">Ciudad:</td>
-                        <td><input type="text" name="city" value="{{house.address.city}}" class="form-control" required />
+                        <td><input type="text" name="city" value="{{house.address.city}}" class="form-control"
+                                required />
                         </td>
                     </tr>
                     <tr>
                         <td class="h5">Calle:</td>
-                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control" required /></td>
+                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control"
+                                required /></td>
                     </tr>
                     <tr>
                         <td class="h5">N&deg;:</td>
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="number" value="{{house.address.number}}" class="form-control" min="1" max="99" required />
+                                    <input type="number" name="number" value="{{house.address.number}}"
+                                        class="form-control" min="1" max="99" required />
                                 </div>
                             </div>
                         </td>
@@ -193,7 +200,8 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="capacity" value={{house.capacity}} class="form-control" min="1" max="99" required />
+                                    <input type="number" name="capacity" value={{house.capacity}} class="form-control"
+                                        min="1" max="99" required />
                                 </div>
                                 <div class="col-md-2 mt-1">personas</div>
                             </div>
@@ -204,7 +212,8 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}} class="form-control" min="0.01" required />
+                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}}
+                                        class="form-control" min="0.01" required />
                                 </div>
                                 <div class="col mt-2">&euro;</div>
                             </div>
@@ -215,7 +224,8 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1" max="99" required />
+                                    <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1"
+                                        max="99" required />
                                 </div>
                             </div>
                         </td>
@@ -225,7 +235,8 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-5">
-                                    <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control" min="1" max="99" required />
+                                    <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
+                                        min="1" max="99" required />
                                 </div>
                             </div>
                         </td>
@@ -235,14 +246,15 @@
                 <div class="text-center my-4">
                     <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
                     {% if editing %}
-                        <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span class="h3">Eliminar</span></a>
+                    <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span
+                            class="h3">Eliminar</span></a>
                     {% endif %}
                 </div>
             </form>
             {% else %}
             <p class="text text-center">
-                <img src={{ house.image if house.image != "" else default_image }} alt="Casa ofertada" 
-                     style="height: 100%; width: 100%; object-fit: contain">
+                <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada"
+                    style="height: 100%; width: 100%; object-fit: contain">
             </p>
             <table class="table table-info my-4">
                 <tr>
@@ -271,10 +283,12 @@
                     </td>
                 </tr>
             </table>
-                {% if weather | count > 0 %}
-            <iframe src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}" width="100%" height="300px"></iframe>
-                {% endif %}
-                {% if user_id != house.owner_id %}
+            {% if weather | count > 0 %}
+            <iframe
+                src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}"
+                width="100%" height="300px"></iframe>
+            {% endif %}
+            {% if user_id != house.owner_id %}
             <h2 class="text text-center my-4">Hacer una reserva</h2>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
                 <label id="house_price" style="display: none">{{house.price}}</label>
@@ -283,8 +297,8 @@
                 <table class="table table-info">
                     <tr>
                         <td class="h5">Fecha de comienzo:</td>
-                        <td><input type="date" id="from_" name="from_" value={{today_date}} class="form-control" required
-                                onchange="onDateChanged()" /></td>
+                        <td><input type="date" id="from_" name="from_" value={{today_date}} class="form-control"
+                                required onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td class="h5">Fecha de fin:</td>
@@ -293,7 +307,8 @@
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
-                        <td><input type="text" id="cost_display" value="{{'%0.2f' % house.price}} &euro;" class="form-control" disabled /></td>
+                        <td><input type="text" id="cost_display" value="{{'%0.2f' % house.price}} &euro;"
+                                class="form-control" disabled /></td>
                     </tr>
                 </table>
                 <h5 class="text text-center text-danger">{{error}}</h5>
@@ -301,7 +316,7 @@
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>
             </form>
-                {% endif %}
+            {% endif %}
             {% endif %}
         </div>
         <div class="col-md-4"></div>
@@ -327,7 +342,9 @@
                                     </div>
                                     <div class="col me-3" style="text-align: right">
                                         {% if comment.sender_id == user_id %}
-                                        <a class="btn btn-danger" href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i class="fa fa-trash-o"></i></a>
+                                        <a class="btn btn-danger"
+                                            href="/houses/{{house.id}}/deleteComment/{{comment.id}}"><i
+                                                class="fa fa-trash-o"></i></a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -367,7 +384,8 @@
                             <th>
                                 <div class="row" style="height: 40px">
                                     <div class="col mt-2">
-                                        <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name }}</a>
+                                        <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name
+                                            }}</a>
                                     </div>
                                     <div class="col mx-5 mt-2">
                                         {{rating.date.strftime('%d/%m/%Y')}}
@@ -379,14 +397,22 @@
                                     </div>
                                     <div class="col me-3" style="text-align: right">
                                         {% if rating.rater_id == user_id %}
-                                        <a class="btn btn-danger" href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i class="fa fa-trash-o"></i></a>
+                                        <a class="btn btn-danger"
+                                            href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i
+                                                class="fa fa-trash-o"></i></a>
                                         {% endif %}
                                     </div>
                                 </div>
                             </th>
                         </tr>
+                        <tr>
+                            <td>
+                                {{ rating.comment.comment }}
+                            </td>
+                        </tr>
                     </table>
                 </tr>
+
                 {% endfor %}
             </table>
             {% else %}

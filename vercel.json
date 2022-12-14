@@ -1,10 +1,10 @@
 {
 	"version": 2,
 	"public": false,
-	"builds": [{ "src": "app/main.py", "use": "@vercel/python" }],
+	"builds": [{ "src": "run.py", "use": "@vercel/python" }],
 	"routes": [
-		{ "src": "/", "dest": "app/main.py" },
-		{ "src": "/docs", "dest": "app/main.py" },
-		{ "src": "/openapi.json", "dest": "app/main.py" }
+		{ "src": "/", "dest": "run.py" },
+		{ "src": "/docs", "dest": "run.py" },
+		{ "src": "/openapi.json", "dest": "run.py" }
 	]
 }

@@ -79,7 +79,8 @@ def save(request: Request,newpassword: str = Form(), password: str = Form(), use
         if login.verify_password(user=user_object,password=password):
             users_api.update(id=user, username=username,
                         email=email, password=newpassword)
-
-        return perfil_usuario(request)
+            return perfil_usuario(request)
+        else:
+            return edit(request,"Contraseña antigua mal introducida")
     except HTTPException as e:
         return edit(request, e.detail)

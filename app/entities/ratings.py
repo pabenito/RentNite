@@ -195,28 +195,26 @@ def get_by_id(id: str):
     
 
 @router.put("/{id}")
-def update(id: str, rate: int | None = None, comment: str | None = None):
+def update(id: str, rating: RatingConstructor):
     
-    if rate < 0 or rate > 5:
+    if rating.rate < 0 or rating.rate > 5:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "La calificacion debe ser entre [0, 5]")
 
-    if comment is None:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "La calificacion debe contener un mensaje")
+    parameters = rating.exclude_unset()
     
+    if rating.comment is not None:
+        if rating.comment.comment is not None:
+            parameters["comment"]["comment"] = rating.comment.comment
     
-    data = {"rate": rate, "comment": comment}
-
-    data = {k: v for k, v in data.items() if v is not None}
-
-    if len(data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Datos no introducidos.")
 
     try:
-        ratings.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
+        result = ratings.find_one_and_update({"_id": ObjectId(id)}, {"$set": parameters})
     except:
-        None
+        result = None
+    
+    if result is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Rating not found.")
+
 
 
 @router.delete("/{id}")

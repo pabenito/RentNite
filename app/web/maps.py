@@ -1,5 +1,5 @@
 from branca.element import Figure
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
 from folium import Map, Marker, Popup, Icon
 from pydantic import BaseModel
@@ -8,28 +8,21 @@ import requests
 from app.entities.models import House
 from app.entities import houses as houses_api
 
-base_url = "http://127.0.0.1:8000"
-router = APIRouter()
 
-class POI(BaseModel):
-    latitude: float
-    longitude: float
-    color: str = "blue"
-    popup: str = None
-    icon: str = "circle"
+router = APIRouter()
 
 def create_map(latitude: float, longitude: float, zoom: int = 17):
     return Map(location=[latitude, longitude], zoom_start=zoom)
 
-def create_figure(width: int = 600, height: int = 400):
-    return Figure(width=width, height=height)
+#def create_figure(width: int = 600, height: int = 400):
+#    return Figure(width=f"{width}px", height=f"{height}px")
 
 def create_marker(
     latitude: float,
     longitude: float,
     color: str = "blue",
     icon: str = "circle",
-    popup: str = None,
+    popup: str = "",
     popup_show: bool = True
 ):
     return Marker(
@@ -48,6 +41,25 @@ def create_marker_house(
 ):
     return create_marker(latitude, longitude, color, icon, address, popup_show)
 
+def plot(map: Map):
+    figure = Figure()
+    figure.add_child(map)
+    return figure.render()
+
+@router.get("/house", response_class=HTMLResponse)
+def house(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_house)):
+    marker.add_to(map)
+    return plot(map)
+
+
+"""
+class POI(BaseModel):
+    latitude: float
+    longitude: float
+    color: str = "blue"
+    popup: str = None
+    icon: str = "circle"
+
 def create_marker_bus(
     latitude: float,
     longitude: float,
@@ -57,11 +69,6 @@ def create_marker_bus(
     popup_show: bool = True
 ):
     return create_marker(latitude, longitude, color, icon, f"{number}", popup_show)
-
-def plot(map: Map, width: int = 600, height: int = 400):
-    figure = Figure(width=width, height=height)
-    figure.add_child(map)
-    return figure.render()
 
 @router.post("/", response_class=HTMLResponse)
 def marker(markers: list[POI], map: Map = Depends(create_map)):
@@ -75,24 +82,25 @@ def marker(map: Map = Depends(create_map), marker: Marker = Depends(create_marke
     marker.add_to(map)
     return plot(map)
 
+
 @router.get("/bus", response_class=HTMLResponse)
 def bus(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_bus)):
-    marker.add_to(map)
-    return plot(map)
-
-@router.get("/house", response_class=HTMLResponse)
-def house(map: Map = Depends(create_map), marker: Marker = Depends(create_marker_house)):
     marker.add_to(map)
     return plot(map)
 
 @router.get("/poi", response_class=HTMLResponse)
 def poi(house_id: str):
     house: House = House.parse_obj(houses_api.get_by_id(house_id))
-    map: Map = create_map(house.latitude, house.longitude)
-    create_marker_house(house.latitude, house.longitude, house.address).add_to(map)
-    buses: dict = requests.get(base_url + "/opendata/osm/maps/poi", params={"latitude":f"{house.latitude}", "longitude":f"{house.longitude}", "search":"bus_stop"}).json()
-    for bus in buses.values():
-        bus: dict = bus
-        create_marker_bus(bus.get("lat"), bus.get("lon"), number=bus.get("tag").get("ref"), popup_show=False).add_to(map)
-    return plot(map)
+    if house.address.latitude is not None and house.address.longitude is not None:
+        map: Map = create_map(house.address.latitude, house.address.latitude)
+        create_marker_house(house.address.latitude, house.address.longitude, f"Calle {{ house.address.street }} nº{{ house.address.number }}, {{ house.address.city }}" ).add_to(map)
+        buses: dict = requests.get("http://127.0.0.1:8000/opendata/osm/maps/poi", params={"latitude":f"{house.address.latitude}", "longitude":f"{house.address.longitude}", "search":"bus_stop"}).json()
+        for bus in buses.values():
+            bus: dict = bus
+            create_marker_bus(bus.get("lat"), bus.get("lon"), number=bus.get("tag").get("ref"), popup_show=False).add_to(map)
+        return plot(map)
+    else:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "Se ha intentado obtener los puntos de interes del mapa de una casa que no tiene coordenadas" )
+
+"""
 

@@ -1,88 +1,186 @@
-from fastapi import APIRouter, Request, Cookie, Form
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Cookie, Form, HTTPException, File, UploadFile
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from ..entities.models import *
+from . import login
 from ..entities import houses as houses_api
+from ..entities import bookings as bookings_api
 from ..entities import messages as messages_api
 from ..entities import ratings as ratings_api
-from ..entities.models import MessagePost, HouseConstructor, HousePost
-from datetime import date
+from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
-from ..entities.models import *
+from .. import cloudinary as cloud
+from app.entities import models
+from pytz import timezone
+
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/", response_class=HTMLResponse)
+DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/amv2l4auluxikphjsc0w.png"
+
+@router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
-    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
+    login.check_user()
 
-@router.get("/myHouses", response_class=HTMLResponse)
-def my_houses(request: Request, user = Cookie(default=None)):
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id="636ad4aa5baf6bcddce08814")})
+    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "default_image": DEFAULT_IMAGE})
 
-@router.get("/create")
-def create_house(request: Request, user = Cookie(default=None)):
-    house: HouseConstructor = HouseConstructor(address = "", capacity = 1, price = 0, rooms = 1, bathrooms = 1, owner_name = None,
-                                               owner_id = "636ad4aa5baf6bcddce08814",
-                                               image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg",
-                                               longitude = 0, latitude = 0)
+@router.get("/myHouses", response_class = HTMLResponse)
+def my_houses(request: Request):
+    user_id = login.check_user()
 
-    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "creating": True, 
-                                                            "editing": False, "error": "", "user": user})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "default_image": DEFAULT_IMAGE})
 
-@router.post("/save", response_class=HTMLResponse)
-def update_house(request: Request, user = Cookie(default=None), id: str = Form(), address: str = Form(), capacity: int = Form(), price: str = Form(),
-               rooms: int = Form(), bathrooms: int = Form(), latitude: str = Form(), longitude: str = Form()):
-    try:
-        price_float: float = float(price)
-        latitude_float: float = float(latitude)
-        longitude_float: float = float(longitude)
+@router.get("/create", response_class = HTMLResponse)
+def create_house(request: Request):
+    user_id = login.check_user()
 
-        if id == "None":
-            house = HousePost(address = address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, 
-                                     owner_id = "636ad4aa5baf6bcddce08814", image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg", 
-                                     longitude = longitude_float, latitude = latitude_float)
-            house = houses_api.create(house)
-            id = house["id"]
-        else:
-            house = HouseConstructor(address=address, capacity = capacity, price = price_float, rooms = rooms, bathrooms = bathrooms, 
-                                                       owner_name = "Victor Lopez", owner_id = "636ad4aa5baf6bcddce08814", 
-                                                       image = "https://live.staticflickr.com/65535/52527243603_413f2bc2c3_n.jpg", 
-                                                       longitude = longitude_float, latitude=latitude_float)
-            houses_api.update(id, house)
+    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id, 
+                   "image": DEFAULT_IMAGE}
+    return __load_house_details(request, house, user_id, creating = True)
 
-        return my_houses(request, user)
-    except:
-        return edit_house(request, id, user, "Los valores introducidos no son validos.")
-
-@router.get("/{id}", response_class=HTMLResponse)
-def house_details(request: Request, id: str, user = Cookie(default=None), booking_error: str = ""):
-    house : House = houses_api.get_by_id(id)
-    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "creating": False, 
-                                                            "editing": False, "comments": messages_api.get(None, id, None, None, None),
-                                                            "ratings": ratings_api.get(None,None,None,id,None,None,None), 
-                                                            "date": date.today(), "booking_error": booking_error, "user": user,
-                                                            "tiempo": aemet_api.get_forecast_precipitation_daily(latitude=house["latitude"],longitude=house["longitude"]),
-                                                            "temperatura": aemet_api.get_forecast_temperature_daily(latitude=house["latitude"],longitude=house["longitude"]) })
-
-@router.get("/{id}/edit", response_class=HTMLResponse)
-def edit_house(request: Request, id: str, user = Cookie(default=None), error: str = ""):
-    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": houses_api.get_by_id(id), "creating": False,
-                                                            "editing": True, "error": error, "user": user})
-
-@router.get("/{id}/delete")
-def delete_house(request: Request, id: str, user = Cookie(default=None)):
-        houses_api.delete(id)
-        return my_houses(request, user)
-
-@router.post("/{id}/addComment", response_class=HTMLResponse)
-def add_comment(request: Request, id: str, user = Cookie(default=None), comment: str = Form(title="coment")):
-    message: MessagePost = MessagePost(sender_id="636ad4aa5baf6bcddce08814", message=comment, house_id=id)
-    messages_api.post(message)
-    return house_details(request, id, user)
+@router.post("/save", response_class = HTMLResponse)
+def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
+                 price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
+    user_id = login.check_user()
     
-@router.post("/{id}/addRate", response_class=HTMLResponse)
-def add_rate(request: Request, id: str, user = Cookie(default=None), estrellas:int = Form() ):
-    ratings_api.create("636ad4aa5baf6bcddce08814",None,id,estrellas)
-    return house_details(request, id, user)
+    if file.filename != "":
+        # Upload photo to Cloudinary
+        url = cloud.uploadPhotoHouse(file=file)
+
+    if id == "None":
+        if file.filename == "":
+            url = ""
+
+        address = AddressPost(city = city, street = street, number = number)
+
+        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
+                            image = url)
+        house = houses_api.create(house)
+        id = house["id"]
+    else:
+        house = houses_api.get_by_id(id)
+
+        if file.filename == "":
+            url = house["image"]
+        elif house["image"] != "":
+            name_photo = cloud.getPhotoId(url=house["image"])
+            cloud.deletePhoto(name=name_photo)
+
+        address = AddressConstructor(city = city, street = street, number = number)
+
+        house = HouseConstructor(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, image = url)
+        houses_api.update(id, house)
+
+    return my_houses(request)
+
+@router.get("/{id}", response_class = HTMLResponse)
+def house_details(request: Request, id: str, booking_error: str = ""):
+    user_id = login.check_user()
+
+    house: dict = houses_api.get_by_id(id)
+
+    latitude = house["address"].get("latitude")
+    longitude = house["address"].get("longitude")
+    
+    try:
+        weather: dict = aemet_api.get_forecast_precipitation_daily(latitude = latitude, longitude = longitude)
+        temperature: dict = aemet_api.get_forecast_temperature_daily(latitude = latitude, longitude = longitude)
+    except:
+        weather: dict = dict()
+        temperature: dict = dict()
+
+    comments: list = messages_api.get(house_id = id)
+    ratings: list = ratings_api.get(rated_house_id = id)
+    today: date = date.today()
+    tomorrow: date = today + timedelta(1)
+
+    return __load_house_details(request, house, user_id, error = booking_error, comments = comments, ratings = ratings, weather = weather, 
+                                temperature = temperature)
+
+@router.get("/{id}/edit", response_class = HTMLResponse)
+def edit_house(request: Request, id: str, error: str = ""):
+    user_id = login.check_user()
+
+    house: dict = houses_api.get_by_id(id)
+
+    return __load_house_details(request, house, user_id, editing = True, error = error)
+
+@router.get("/{id}/delete", response_class = HTMLResponse)
+def delete_house(request: Request, id: str):
+    login.check_user()
+
+    house: dict = houses_api.delete(id)
+
+    if house["image"] != "":
+        name_photo = cloud.getPhotoId(url=house["image"])
+        cloud.deletePhoto(name=name_photo)
+
+    return my_houses(request)
+
+@router.post("/{id}/addComment", response_class = HTMLResponse)
+def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
+    user_id = login.check_user()
+
+    message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
+    messages_api.post(message)
+
+    return house_details(request, id)
+
+@router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
+def delete_comment(request: Request, id: str, comment_id: str):
+    login.check_user()
+
+    messages_api.delete(comment_id)
+
+    return house_details(request, id)
+    
+@router.post("/{id}/addRating", response_class=HTMLResponse)
+def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form()):
+    user_id = login.check_user()
+
+    date = datetime.now(timezone("Europe/Madrid"))
+    rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
+                                               ratd_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
+    ratings_api.create(rt)
+
+    return house_details(request, id) 
+
+@router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
+def delete_rating(request: Request, id: str, rating_id: str):
+    login.check_user()
+
+    ratings_api.delete(rating_id)
+
+    return house_details(request, id)
+
+# Private methods
+
+def __load_house_details(request: Request, house: dict, user_id: str, creating: bool = False, editing: bool = False, error: str = "", 
+                         comments: list | None = None, ratings: list | None = None, weather: dict | None = None, temperature: dict | None = None):
+    if creating or editing:
+        today = tomorrow = None
+        user_can_rate = False
+    else:
+        today = date.today()
+        tomorrow = today + timedelta(1)
+        user_can_rate = __user_can_rate(user_id, house)
+    
+    return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "user_id": user_id, "creating": creating, 
+                                                            "editing": editing, "error": error, "comments": comments, "ratings": ratings, 
+                                                            "weather": weather, "temperature": temperature, "default_image": DEFAULT_IMAGE, 
+                                                            "today_date": today, "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
+
+
+def __user_can_rate(user_id: str, house: dict):
+    user_can_rate = False
+
+    if user_id != house["owner_id"]:
+            user_bookings = bookings_api.search(guest_id = user_id, house_id = house["id"])
+            if len(user_bookings) > 0:
+                user_ratings = ratings_api.get(rater_id = user_id, rated_house_id = house["id"])
+                if len(user_ratings) == 0:
+                    user_can_rate = True
+    
+    return user_can_rate

@@ -38,6 +38,14 @@ class Entity(Simplifier):
 
 # Base models
 
+class AddressBase(BaseModel):
+    street: str
+    number: int
+    city: str
+    longitude: float | None = None
+    latitude: float | None = None
+
+
 class MessageBase(BaseModel):
     sender_id: str
     sender_username: str
@@ -48,7 +56,7 @@ class MessageBase(BaseModel):
     chat_id: str | None = None
 
 class ChatBase(BaseModel):
-    house_address: str 
+    house_address: AddressBase 
     booking_from: datetime
     booking_to: datetime
     booking_id : str 
@@ -63,7 +71,7 @@ class UserBase(BaseModel):
     password_hash: str  
 
 class HouseBase(BaseModel):
-    address: str 
+    address: AddressBase
     capacity: int 
     price: float 
     rooms: int 
@@ -71,19 +79,17 @@ class HouseBase(BaseModel):
     owner_name: str
     owner_id: str
     image: str
-    longitude: float 
-    latitude: float 
 
 class BookingBase(BaseModel):
     state: State
     from_: datetime
-    to: datetime 
+    to: datetime
     cost: float 
     guest_id: str
     guest_name: str
     house_id: str
-    house_address: str
-    meeting_location : str | None = None
+    house_address: AddressBase
+    meeting_location : AddressBase | None = None
 
 class RatingBase(BaseModel):
     rater_id: str
@@ -92,6 +98,7 @@ class RatingBase(BaseModel):
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
     rate: int
+    comment: str
 
 # Entities models
 
@@ -135,8 +142,14 @@ class RatingResponse(RatingBase, Plain):
 
 # Constructors models (allows None in all field in order to add them one by one)
 
+class AddressConstructor(BaseModel):
+    street: str | None = None
+    number: int | None = None
+    city: str | None = None
+    
+
 class ChatConstructor(Simplifier):
-    house_address: str | None
+    house_address: AddressBase | None
     booking_from: datetime | None
     booking_to: datetime | None
     booking_id : str | None 
@@ -159,39 +172,50 @@ class UserConstructor(Simplifier):
     email: EmailStr | None  
     password_hash: str | None  
 
-
 class HouseConstructor(Simplifier):
-    address: str | None 
-    capacity: int | None 
-    price: float | None 
-    rooms: int | None 
-    bathrooms: int | None 
-    owner_name: str | None
-    owner_id: str | None
-    image: str | None
-    longitude: float | None 
-    latitude: float | None 
+    address: AddressConstructor | None = None
+    capacity: int | None = None
+    price: float | None = None
+    rooms: int | None = None
+    bathrooms: int | None = None
+    owner_id: str | None = None
+    image: str | None = None
 
 class BookingConstructor(Simplifier):
-    state: State | None
-    from_: datetime | None
-    to: datetime | None 
-    cost: float | None 
-    guest_id: str | None = Field(alias="guestId")
-    guest_name: str | None = Field(alias="guestName")
-    house_id: str | None = Field(alias="houseId")
-    house_address: str | None = Field(alias="houseAddress")
-    meeting_location : str | None = Field(alias="meetingLocation")
+    state: State | None = None
+    from_: date | None = None
+    to: date | None = None
+    cost: float | None = None
+    guest_id: str | None = None
+    house_id: str | None = None
+    meeting_location : AddressConstructor | None = None
 
 class RatingConstructor(Simplifier):
-    rater_id: str | None 
-    date: datetime | None 
+    rater_id: str | None = None
+    date: datetime | None = None
     rated_user_id: str | None = None
     rated_user_Name: str | None = None
     rated_house_id: str | None = None
-    rate: int | None 
+    rate: int | None = None
+    comment: str | None = None
+
 
 # Models for post
+
+class AddressPost(BaseModel):
+    street: str
+    number: int
+    city: str
+    
+    
+class RatingPost(BaseModel):
+    rater_id: str 
+    date: datetime 
+    rated_user_id: str | None = None
+    rated_user_Name: str | None = None
+    rated_house_id: str | None = None
+    rate: int 
+    comment: str 
 
 class ChatPost(BaseModel):
     booking_id : str
@@ -204,23 +228,23 @@ class MessagePost(BaseModel):
     chat_id: str | None = None
 
 class BookingPost(BaseModel):
-    state: None = None
     from_: date
     to: date
     cost: float
     guest_id: str
-    guest_name: None = None
     house_id: str
-    house_address: None = None
-    meeting_location : str | None = None
+    meeting_location : AddressPost | None = None
 
 class HousePost(BaseModel):
-    address: str 
+    address: AddressPost 
     capacity: int 
     price: float 
     rooms: int 
     bathrooms: int 
     owner_id: str
     image: str
-    longitude: float 
-    latitude: float 
+
+class UserPost(BaseModel):
+    username: str 
+    email: EmailStr 
+    password_hash: str

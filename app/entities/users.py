@@ -4,8 +4,11 @@ from app.database import db as db
 from bson.objectid import ObjectId
 from datetime import datetime, date, time
 import re
-from passlib.hash import bcrypt
+from passlib.hash import sha256_crypt
 from .models import *
+from fastapi.encoders import jsonable_encoder
+from pymongo.results import InsertOneResult
+
 
 
 # Create router
@@ -23,18 +26,45 @@ bookings = db["bookings"]
 
 
 @router.post("/")
-def create(response: Response, username: str, email: str, password: str):
-    # salida = bcrypt.hash(password)
+def create(username: str, email: str, password: str):
+    users_with_same_email = general_get(email = email)
+
+    if len(users_with_same_email) > 0:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
+
+    salida = sha256_crypt.hash(password)
     users.insert_one(
-        {"username": username, "email": email, "password_hash": password})
-    response.status_code = 201
+        {"username": username, "email": email, "password_hash": salida,"photo":""})
+    
+#@router.post("/", status_code=status.HTTP_201_CREATED)
+#def createPost(user: UserPost):
+#    if user.email == None or user.password_hash == None or user.username == None:
+#        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
+#    parameters = jsonable_encoder(user)
+
+#    inserted_user: InsertOneResult = users.insert_one(parameters)
+#    return User.parse_obj(users.find_one({"_id": ObjectId(inserted_user.inserted_id)})).to_response()
 
 # Actualiza un usuario
 
 
 @router.put("/{id}")
 def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
-    data = {"username": username, "email": email, "password": password, "photo": photo}
+    if email is not None:
+        users_with_same_email = general_get(email = email)
+        length = len(users_with_same_email)
+
+        if length > 1 or (length == 1 and users_with_same_email[0]["id"] != id):
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
+
+    if password is not None:
+        if len(password) < 20:
+            data = {"username": username, "email": email, "password_hash": sha256_crypt.hash(password), "photo": photo}
+        else:
+            data = {"username": username, "email": email, "password_hash": password, "photo": photo}
+    else:
+        data = {"username": username, "email": email, "password_hash": password, "photo": photo}
+
     data = {k: v for k, v in data.items() if v is not None}
 
     if len(data) == 0:
@@ -62,15 +92,15 @@ def get_by_id(id: str):
 
     if user is None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User doesnt exists.")
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.")
     else:
         return user
 
 
 @router.get("/")
-def general_get(username: str | None = Query(default=None, alias="username"),
-                email: str | None = Query(default=None, alias="email")):
+def general_get(username: str | None = None,
+                email: str | None = None):
 
     user_list: list = list(users.find())
     result: list = []
@@ -89,10 +119,12 @@ def general_get(username: str | None = Query(default=None, alias="username"),
         user_list = result
 
     if email:
+        email = email.lower()
+
         result = []
         for user in user_list:
             user: User
-            if user.email == email:
+            if user.email.lower() == email:
                 result.append(user)
         user_list = result
 

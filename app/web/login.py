@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Request, Cookie, Depends, Form, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
-from .profile import perfil_usuario
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.hash import bcrypt
+from passlib.hash import sha256_crypt
+from ..entities.models import *
+
 
 router = APIRouter()
 
@@ -33,16 +34,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 async def authenticate_user(email: str, password: str):
     userl = users_api.general_get(None,email)
-    user = userl[0]
-    if not user:
+    if len(userl) == 0:
         return False 
+
+    user = userl[0]
     if not verify_password(user , password):
         return False
-    return user.pop("id")
+    return user["id"]
 
 def verify_password(user:users_api.User, password:str):
-    #  return bcrypt.verify(password, user.password_hash)
-    return (password == user.pop("password_hash"))
+    return sha256_crypt.verify(password, user["password_hash"])
+    #return (password == user.pop("password_hash"))
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -54,11 +56,43 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail='Invalid username or password'
         )
     finally:
-        login(Request,None)
+        login(Request)
 
     return await users_api.get_by_id(user)
 
 @router.get("/", response_class=HTMLResponse)
-def login(request: Request,err = Cookie(default=None)):
-    return templates.TemplateResponse("login.html", {"request": request, "err":err})
+def login(request: Request, login_error: str = "", registration_error: str = "", registration_success_message: str = ""):
+    return templates.TemplateResponse("login.html", {"request": request, "login_error": login_error, "registration_error": registration_error, 
+                                                     "registration_success_message": registration_success_message})
 
+@router.post("/register", response_class=HTMLResponse)
+def create_user(request: Request, username: str = Form(), correo: str = Form(), password: str = Form()):
+    try:
+       users_api.create(username,correo,password)
+        # user: UserPost = UserPost(username=username,email=email,password_hash=password)
+    except HTTPException as e:
+        return login(request, registration_error = e.detail)
+
+    return login(request, registration_success_message = "Usuario registrado con exito")
+
+@router.get("/logout", response_class=HTMLResponse)
+def logout(request: Request):
+    salida = Singleton()
+    salida.user=None
+    return RedirectResponse("/")
+
+@router.post('/token')
+async def generate_token(request: Request,form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        return login(request, "Usuario o contraseña no validos")
+
+    singleton = Singleton()
+    singleton.user = user
+    return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)
+
+def check_user():
+    session = Singleton()
+    if session.user is None:
+        raise HTTPException(status_code=401, detail="No se ha iniciado sesión.")
+    return session.user

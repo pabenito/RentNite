@@ -12,4 +12,4 @@ folium
 branca
 python-multipart
 passlib[bcrypt]
-flickrapi
+cloudinary

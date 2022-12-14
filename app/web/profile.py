@@ -1,42 +1,92 @@
-from fastapi import APIRouter, Request, Cookie, Form, File, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Cookie, Form, File, UploadFile, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
 from ..entities import ratings as ratings_api
 from app.entities import models
 from app.web import login
-#from flickrapi import FlickrAPI
+from passlib.hash import sha256_crypt
+from .. import cloudinary as cloud
+from datetime import datetime, date, time
+from pytz import timezone
+
+
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
-api_secret="d0009bb5d0d8f8f8"
-api_key="b3b172dc37a0267d33cf70ee2d8303fc"
-#flickr = FlickrAPI(api_key=api_key,secret=api_secret)
-
 
 @router.get("/", response_class=HTMLResponse)
 def perfil_usuario(request: Request):
-    s = None
-    if login.get_current_user():
-        s = login.Singleton()
+    user = login.check_user()
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "perfil": user})
 
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(s.user), "rating": ratings_api.get(None, s.user, None, None, None, None, None), "identificador": s.user})
+@router.get("/edit", response_class=HTMLResponse)
+def edit(request: Request, error: str = ""):
+    user = login.check_user()
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True, "error": error})
+
+@router.get("/{id}", response_class=HTMLResponse)
+def perfil_usuario_distinto(request: Request, id: str):
+    user = login.check_user()
+
+    user_ratings = ratings_api.get(rater_id = user, rated_user_id = id)
+    user_can_rate = len(user_ratings) == 0
+
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id, "user_can_rate": user_can_rate})
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)
-def add_Rate(request: Request, id: str, estrellas: int = Form()):
-    s = login.Singleton()
-    ratings_api.create(s.user, id, None, estrellas)
+def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()):
+    user = login.check_user()
+    
+    date = datetime.now(timezone("Europe/Madrid"))
+    rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
+                                               ratd_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
+    ratings_api.create(rt)
 
+    return perfil_usuario_distinto(request, id)
+
+@router.get("/{id}/deleteRate/{rate_id}", response_class = HTMLResponse)
+def delete_rating(request: Request, id: str, rate_id: str):
+    login.check_user()
+
+    ratings_api.delete(rate_id)
+
+    return perfil_usuario_distinto(request, id)
+
+@router.post("/uploadPhoto", response_class=HTMLResponse)
+def upload_photo(request: Request, file: UploadFile = File(...)):
+    user = login.check_user()
+
+    user_class = users_api.get_by_id(user)
+
+    if user_class["photo"] != "":
+        #Take photo's url and get name of file to delete
+        name = cloud.getPhotoId(url=user_class["photo"])
+
+        #Delete photo from cloudinary
+        cloud.deletePhoto(name=name)
+        
+
+    
+    #Upload photo to cloudinary
+    cloud.uploadPhotoUser(user=user,file=file)
+    
     return perfil_usuario(request)
 
-@router.post("/{id}/uploadPhoto", response_class=HTMLResponse)
-def upload_photo(request: Request, id: str, file: bytes = File()):
-    s = login.Singleton()
-    #lickr.authenticate_via_browser
-    #flickr.upload("perfil",fileobj=file,title="RentNitePrueba",is_public=1)
-
-    return perfil_usuario(request)
+@router.post("/save", response_class=HTMLResponse)
+def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form()):
+    user = login.check_user()
+    user_object : users_api.User = users_api.get_by_id(user)
+    try:
+        if login.verify_password(user=user_object,password=password):
+            users_api.update(id=user, username=username,
+                        email=email, password=newpassword)
+            return perfil_usuario(request)
+        else:
+            return edit(request,"Contraseña antigua mal introducida")
+    except HTTPException as e:
+        return edit(request, e.detail)

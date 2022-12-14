@@ -2,8 +2,8 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Detalles de la casa</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -15,6 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Detalles de la casa - RentNite</title>
     <style>
         #form {
             width: 250px;
@@ -57,6 +59,42 @@
         input[type="radio"]:checked~label {
             color: orange;
         }
+
+        .upload {
+            position: relative;
+            margin: auto;
+        }
+
+        .upload img {
+            border: 6px solid #eaeaea;
+        }
+
+        .upload .round {
+            position: absolute;
+            bottom: 80%;
+            right: -25px;
+            background: #00B4FF;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            text-align: center;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .upload .round input[type="file"] {
+            position: absolute;
+            transform: scale(2);
+            opacity: 0;
+        }
+
+        input[type=file]::-webkit-file-upload-button {
+            cursor: pointer;
+        }
+
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -66,72 +104,69 @@
 
     {% block content %}
     <h1 class="text text-center my-4">Detalles de la casa</h1>
-    
     <div class="row">
         <div class="col-md-4 mx-3">
+            {% if not creating and not editing and weather | count > 0 %}
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        {% for itemKey,itemValue in tiempo.items() -%}
+                    <div class="row text-center mb-2">
+                        {% for item in temperature.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                {%- if  35.0 > itemValue["value"] -%}
-                                <img src=https://live.staticflickr.com/65535/52535108615_05923d4e96.jpg style="height: 75%; width: 75%; object-fit: contain">
-                                {%- elif itemValue["value"] > 35 and 65 > itemValue["value"] -%}
-                                <img src=https://live.staticflickr.com/65535/52534163427_0a218a400e.jpg style="height: 75%; width: 75%; object-fit: contain" >
-                                {%- else -%}
-                                <img src=https://live.staticflickr.com/65535/52535108060_d66d4ce09c.jpg style="height: 75%; width: 75%; object-fit: contain" >
-                                {%- endif -%}
-                            </p>
+                            <span class="fw-bold">{{item["dia"]}}</span>
                         </div>
-                        {%- endfor %}
+                        {% endfor %}
                     </div>
                     <div class="row">
+                        {% for item in weather.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.0["maxima"]}}º </label> <label id="temperatura" >{{temperatura.0["minima"]}}º</label>
+                            <p class="text text-center mt-2">
+                                {% if 35 > item["value"] %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
+                                {% elif item["value"] >= 35 and 80 > item["value"] %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
+                                {% else %}
+                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png
+                                    style="height: 75%; width: 75%; object-fit: contain">
+                                {% endif %}
                             </p>
                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        {% for item in temperature.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.1["maxima"]}}º</label> <label id="temperatura" >{{temperatura.0["minima"]}}º</label>
+                            <p class="text text-center mt-2">
+                                <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br />
+                                <label id="temperatura">{{item["minima"]}}&deg;</label>
                             </p>
                         </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row text-center mt-2">
+                        {% for item in weather.values() %}
                         <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.2["maxima"]}}º</label> <label id="temperatura">{{temperatura.1["minima"]}}º</label>
-                            </p>
+                            <span class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</span>
                         </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.3["maxima"]}}º</label> <label id="temperatura">{{temperatura.2["minima"]}}º</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.4["maxima"]}}º</label> <label id="temperatura">{{temperatura.3["minima"]}}º</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.5["maxima"]}}º</label> <label id="temperatura">{{temperatura.4["minima"]}}º</label>
-                            </p>
-                        </div>
-                        <div class="col">
-                            <p class="text text-center mt-2" >
-                                <label id="temperatura" class="fw-bold">{{temperatura.6["maxima"]}}º</label> <label id="temperatura">{{temperatura.5["minima"]}}º</label>
-                            </p>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="col-md-4">
-            <p class="text text-center mt-2" style="height: 300px">
-                <img src={{ house.image }} alt="Casa ofertada" style="height: 100%; width: 100%; object-fit: contain">
-            </p>
             {% if creating or editing %}
-            <form method="post" action="/houses/save">
+            <form method="post" action="/houses/save" enctype="multipart/form-data">
+                <div class="upload my-5">
+                    <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada" id="image"
+                        style="height: 100%; width: 100%; object-fit: contain">
+                    <div class="round">
+                        <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif"
+                            onchange="onImageChanged(event)" />
+                        <i class="fa fa-camera fa-lg" style="color: #000;"></i>
+                    </div>
+                </div>
                 <table class="table table-info">
                     {% if creating %}
                     <input type="hidden" name="id" value="None" />
@@ -139,64 +174,100 @@
                     <input type="hidden" name="id" value="{{house.id}}" />
                     {% endif %}
                     <tr>
-                        <td class="h5">Direcci&oacute;n:</td>
-                        <td><input type="text" name="address" value="{{house.address}}" class="form-control" required />
+                        <td class="h5">Ciudad:</td>
+                        <td><input type="text" name="city" value="{{house.address.city}}" class="form-control"
+                                required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Calle:</td>
+                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control"
+                                required /></td>
+                    </tr>
+                    <tr>
+                        <td class="h5">N&deg;:</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="number" value="{{house.address.number}}"
+                                        class="form-control" min="1" max="99" required />
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class="h5">Capacidad:</td>
-                        <td><input type="number" name="capacity" value={{house.capacity}} class="form-control"
-                                required /></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="capacity" value={{house.capacity}} class="form-control"
+                                        min="1" max="99" required />
+                                </div>
+                                <div class="col-md-2 mt-1">personas</div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td class="h5">Precio:</td>
-                        <td><input type="text" name="price" value={{house.price}} class="form-control" required /></td>
+                        <td class="h5">Coste por noche:</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}}
+                                        class="form-control" min="0.01" required />
+                                </div>
+                                <div class="col mt-2">&euro;</div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Habitaciones:</td>
-                        <td><input type="number" name="rooms" value={{house.rooms}} class="form-control" required />
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1"
+                                        max="99" required />
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td class="h5">Cuartos de ba&ntilde;o:</td>
-                        <td><input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
-                                required /></td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Latidud:</td>
-                        <td><input type="text" name="latitude" value={{house.latitude}} class="form-control" required />
+                        <td>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
+                                        min="1" max="99" required />
+                                </div>
+                            </div>
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Longitud:</td>
-                        <td><input type="text" name="longitude" value={{house.longitude}} class="form-control"
-                                required /></td>
                     </tr>
                 </table>
                 <h5 class="text text-center text-danger">{{error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
-                    {% if house.address != "" %}
-                    <div class="btn btn-danger mx-3">
-                        <a class="h3" href="/houses/{{house.id}}/delete"
-                            style="color: white; text-decoration: none">Eliminar</a>
-                    </div>
+                    {% if editing %}
+                    <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span
+                            class="h3">Eliminar</span></a>
                     {% endif %}
                 </div>
             </form>
             {% else %}
+            <p class="text text-center">
+                <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada"
+                    style="height: 100%; width: 100%; object-fit: contain">
+            </p>
             <table class="table table-info my-4">
                 <tr>
                     <td class="h5">Direcci&oacute;n:</td>
-                    <td>{{ house.address }}</td>
+                    <td>Calle {{ house.address.street }} n&deg; {{house.address.number}}, {{house.address.city}}</td>
                 </tr>
                 <tr>
                     <td class="h5">Capacidad:</td>
-                    <td>{{ house.capacity }}</td>
+                    <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
                 </tr>
                 <tr>
-                    <td class="h5">Precio:</td>
-                    <td>{{ house.price }} &euro;</td>
+                    <td class="h5">Coste por noche:</td>
+                    <td>{{ '%0.2f' % house.price }} &euro;</td>
                 </tr>
                 <tr>
                     <td class="h5">Habitaciones:</td>
@@ -208,145 +279,131 @@
                 </tr>
                 <tr>
                     <td class="h5">Propietario:</td>
-                    <td><a href="/profile/{{house.owner_id}}" style="text-decoration: none">{{ house.owner_name }}</a>
+                    <td><a href="/profile/{{house.owner_id}}">{{ house.owner_name }}</a>
                     </td>
                 </tr>
             </table>
-            <iframe src="/map/house?latitude={{house.latitude}}&longitude={{house.longitude}}&address={{house.address}}" width="100%" height="300px"></iframe>
+            {% if weather | count > 0 %}
+            <iframe
+                src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}"
+                width="100%" height="300px"></iframe>
+            {% endif %}
+            {% if user_id != house.owner_id %}
             <h2 class="text text-center my-4">Hacer una reserva</h2>
             <form method="post" action="/bookings/{{house.id}}/requestBooking">
                 <label id="house_price" style="display: none">{{house.price}}</label>
-                <input type="hidden" name="guest_id" value="636ad4aa5baf6bcddce08814" />
+                <input type="hidden" name="guest_id" value={{user_id}} />
                 <input type="hidden" id="cost" name="cost" value="{{house.price}}" />
                 <table class="table table-info">
                     <tr>
-                        <td class="h5">Fecha de inicio:</td>
-                        <td><input type="date" id="from_" name="from_" value={{date}} class="form-control" required
-                                onchange="onDateChanged()" /></td>
+                        <td class="h5">Fecha de comienzo:</td>
+                        <td><input type="date" id="from_" name="from_" value={{today_date}} class="form-control"
+                                required onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td class="h5">Fecha de fin:</td>
-                        <td><input type="date" id="to" name="to" value={{date}} class="form-control" required
+                        <td><input type="date" id="to" name="to" value={{tomorrow_date}} class="form-control" required
                                 onchange="onDateChanged()" /></td>
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
-                        <td><input type="text" id="cost_display" value="{{house.price}} &euro;" class="form-control" disabled /></td>
+                        <td><input type="text" id="cost_display" value="{{'%0.2f' % house.price}} &euro;"
+                                class="form-control" disabled /></td>
                     </tr>
                 </table>
-                <h5 class="text text-center text-danger">{{booking_error}}</h5>
+                <h5 class="text text-center text-danger">{{error}}</h5>
                 <div class="text-center my-4">
                     <button class="btn btn-primary"><span class="h3">Reservar</span></button>
                 </div>
             </form>
+            {% endif %}
             {% endif %}
         </div>
         <div class="col-md-4"></div>
     </div>
     {% if not creating and not editing %}
     <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
-            {% if comments | count > 0 %}
-            <h3 class="h3 my-4">Comentarios</h3>
-            <table class="table-primary mx-5">
-                {% for comment in comments %}
-                <tr>
-                    <table class="table">
-                        <tr class="table-primary">
-                            <th>
-                                <a class="ms-3 me-4"
-                                    href="/profile/{{comment.sender_id}}">{{comment.sender_username}}</a>
-                                {{comment.date.strftime('%d/%m/%Y')}}
-                            </th>
-                        </tr>
-                    </table>
-                    <table class="table">
-                        <tr>
-                            <td>{{comment.message}}</td>
-                        </tr>
-                    </table>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <p class="text text-center h4 mt-3 mb-5">No hay comentarios</p>
-            {% endif %}
-            <form method="post" action="/houses/{{house.id}}/addComment" title="coment">
-                <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
-                <div class="text-center my-4">
-                    <button class="btn btn-primary"><span class="h3">Comentar</label></button>
-                    </p>
-            </form>
-        </div>
-        <div class="col-md-2"></div>
-    </div>
-    {% endif %}
-
-
-
-    {% if not creating and not editing %}
-    <div class="row">
-        <div class="col-md-2"></div>
-        <div class="col-md-8">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
             {% if ratings | count > 0 %}
             <h3 class="h3 my-4">Ratings</h3>
-            <table class="table-primary mx-5">
-                {% for rate in ratings %}
+            <table class="table-primary">
+                {% for rating in ratings %}
                 <tr>
                     <table class="table">
                         <tr class="table-primary">
                             <th>
-                                <a class="ms-3 me-4" href="/profile/{{rate.rater_id}}">{{ rate.rated_user_Name }}</a>
-                                {{rate.date.strftime('%d/%m/%Y')}}
+                                <div class="row" style="height: 40px">
+                                    <div class="col mt-2">
+                                        <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name
+                                            }}</a>
+                                    </div>
+                                    <div class="col mx-5 mt-2">
+                                        {{rating.date.strftime('%d/%m/%Y')}}
+                                    </div>
+                                    <div class="col ms-5 mt-2">
+                                        {% for i in range(rating.rate) %}
+                                        ★
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col me-3" style="text-align: right">
+                                        {% if rating.rater_id == user_id %}
+                                        <a class="btn btn-danger"
+                                            href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i
+                                                class="fa fa-trash-o"></i></a>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </th>
                         </tr>
+                        <tr>
+                            <td>
+                                {{ rating.comment }}
+                            </td>
+                        </tr>
                     </table>
-                    <div class="text-center my-4">
-                        <table class="table">
-                            <tr>
-                                <td>{{rate.rate}}</td>
-                            </tr>
-                        </table>
-                    </div>
                 </tr>
                 {% endfor %}
             </table>
             {% else %}
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
             {% endif %}
+            {% if user_can_rate %}
             <div class="text-center my-4">
-                <form method="post" action="/houses/{{house.id}}/addRate" title="puntuar">
-                    <p class="clasificacion">
-                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
-                        <!--
-                      --><label for="radio1">★</label>
-                        <!--
-                      --><input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
-                        <!--
-                      --><label for="radio2">★</label>
-                        <!--
-                      --><input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
-                        <!--
-                      --><label for="radio3">★</label>
-                        <!--
-                      --><input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
-                        <!--
-                      --><label for="radio4">★</label>
-                        <!--
-                      --><input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
-                        <!--
-                      --><label for="radio5">★</label>
-                    </p>
-                    <button class="btn btn-primary"><span class="h3">Puntuar</label></button>
+                <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
+                    <div class="d-flex flex-column align-items-center text-center">
+
+                        <p class="clasificacion">
+                            <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5">
+                            <label for="radio1">★</label>
+                            <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4">
+                            <label for="radio2">★</label>
+                            <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3">
+                            <label for="radio3">★</label>
+                            <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2">
+                            <label for="radio4">★</label>
+                            <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1">
+                            <label for="radio5">★</label>
+                        </p>
+                    </div>
+    
+                    <textarea name="comment" class="form-control" style="resize: none" rows="5"></textarea>
+                    <div class="text-center my-4">
+                        <button class="btn btn-primary"><span class="h3">Enviar</span></button>
+                    </div>
                 </form>
             </div>
-            <div class="col-md-2"></div>
+            {% endif %}
+            <div class="col-md-3"></div>
         </div>
         {% endif %}
 
-
         <script type="text/javascript">
+            function onImageChanged(event) {
+                image = document.getElementById("image");
+                image.src = URL.createObjectURL(event.target.files[0]);
+            }
+
             function onDateChanged() {
                 from_ = new Date(document.getElementById("from_").value);
                 to = new Date(document.getElementById("to").value);
@@ -356,8 +413,8 @@
 
                 today = new Date().setHours(0, 0, 0, 0);
 
-                if (from_ >= today && from_ <= to) {
-                    var new_cost = ((to - from_) / 86400000 + 1) * house_price;
+                if (from_ >= today && from_ < to) {
+                    var new_cost = (to - from_) / 86400000 * house_price;
                     new_cost = (Math.round(new_cost * 100) / 100).toFixed(2);
                     cost.value = new_cost;
                     cost_display.style.color = "black";

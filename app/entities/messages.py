@@ -21,10 +21,10 @@ bookings: Collection = db["bookings"]
 # API
 @router.get("/")
 def get(
-    sender_id: str | None = Query(default=None, alias="sender-id"), 
-    house_id: str | None = Query(default=None, alias="house-id"), 
-    chat_id: str | None = Query(default=None, alias="chat-id"), 
-    from_: date | None = Query(default=None, alias="from"),
+    sender_id: str | None = None, 
+    house_id: str | None = None, 
+    chat_id: str | None = None, 
+    from_: date | None = None,
     to: date | None = None
 ):
     messages_list: list = list(messages.find())
@@ -187,7 +187,7 @@ async def get_by_id(id: str):
             detail=f"There is no message with that id: {id}.")
 
 @router.delete("/{id}")
-async def delete(id: str):
+def delete(id: str):
     try:
         message : Message = Message.parse_obj(messages.find_one_and_delete({"_id": ObjectId(id)}))
     except:

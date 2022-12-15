@@ -33,11 +33,10 @@ templates = Jinja2Templates(directory="templates")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 async def authenticate_user(email: str, password: str):
-    userl = users_api.general_get(None,email)
-    if len(userl) == 0:
+    user = users_api.general_get(None,email)
+    if user is None:
         return False 
 
-    user = userl[0]
     if not verify_password(user , password):
         return False
     return user["id"]

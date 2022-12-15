@@ -2,7 +2,7 @@ osmapi
 AEMET-OpenData
 fastapi
 uvicorn[standard]
-pymongo
+pymongo[srv]
 pytest
 requests
 email-validator
@@ -13,3 +13,5 @@ branca
 python-multipart
 passlib[bcrypt]
 cloudinary
+fastapi_sso
+authlib

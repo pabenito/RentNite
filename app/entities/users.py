@@ -40,7 +40,7 @@ def create(username: str, email: str, password: str):
 def createAUX(username: str, email: str, password: str):
     users_with_same_email = general_get(email = email)
 
-    if len(users_with_same_email) > 0:
+    if users_with_same_email is not None and len(users_with_same_email) > 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
 
     salida = sha256_crypt.hash(password)
@@ -148,7 +148,7 @@ def general_get(username: str | None = None,
         result.append(user.to_response())
     user_list = result
 
-    if(user_list is not None):
+    if user_list is not None and len(user_list) > 0:
         user : User = user_list[0]
         return user 
     

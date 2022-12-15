@@ -6,7 +6,7 @@ from ..entities import users as users_api
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import sha256_crypt
 from ..entities.models import *
-
+from fastapi_sso.sso.google import GoogleSSO
 
 router = APIRouter()
 
@@ -44,7 +44,14 @@ async def authenticate_user(email: str, password: str):
 
 def verify_password(user:users_api.User, password:str):
     return sha256_crypt.verify(password, user["password_hash"])
-    #return (password == user.pop("password_hash"))
+    
+def login_Google(email: str, username:str):
+    user = users_api.general_get(username,email)
+    if not user:
+        user = users_api.createAUX(username,email,"contraseña")  
+    singleton = Singleton()
+    singleton.user = user["id"]
+
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):

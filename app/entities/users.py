@@ -36,6 +36,20 @@ def create(username: str, email: str, password: str):
     users.insert_one(
         {"username": username, "email": email, "password_hash": salida,"photo":""})
     
+    
+def createAUX(username: str, email: str, password: str):
+    users_with_same_email = general_get(email = email)
+
+    if len(users_with_same_email) > 0:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
+
+    salida = sha256_crypt.hash(password)
+    users.insert_one(
+        {"username": username, "email": email, "password_hash": salida,"photo":""})
+    
+    userAux : User = general_get(username,email)
+    return userAux
+    
 #@router.post("/", status_code=status.HTTP_201_CREATED)
 #def createPost(user: UserPost):
 #    if user.email == None or user.password_hash == None or user.username == None:
@@ -134,7 +148,11 @@ def general_get(username: str | None = None,
         result.append(user.to_response())
     user_list = result
 
-    return user_list
+    if(user_list is not None):
+        user : User = user_list[0]
+        return user 
+    
+    return None
 
 
 # @router.get("/")

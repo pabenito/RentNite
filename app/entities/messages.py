@@ -21,11 +21,11 @@ bookings: Collection = db["bookings"]
 # API
 @router.get("/")
 def get(
-    sender_id: str | None = None, 
-    house_id: str | None = None, 
-    chat_id: str | None = None, 
-    from_: date | None = None,
-    to: date | None = None
+    sender_id: Union[str, None] = None, 
+    house_id: Union[str, None] = None, 
+    chat_id: Union[str, None] = None, 
+    from_: Union[date, None] = None,
+    to: Union[date, None] = None
 ):
     messages_list: list = list(messages.find())
     result : list = []

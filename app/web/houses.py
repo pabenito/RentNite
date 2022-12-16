@@ -1,3 +1,4 @@
+from typing import Union
 from fastapi import APIRouter, Request, Cookie, Form, HTTPException, File, UploadFile
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -158,7 +159,8 @@ def delete_rating(request: Request, id: str, rating_id: str):
 # Private methods
 
 def __load_house_details(request: Request, house: dict, user_id: str, creating: bool = False, editing: bool = False, error: str = "", 
-                         comments: list | None = None, ratings: list | None = None, weather: dict | None = None, temperature: dict | None = None):
+                         comments: Union[list, None] = None, ratings: Union[list, None] = None, weather: Union[dict, None] = None,
+                         temperature: Union[dict, None] = None):
     if creating or editing:
         today = tomorrow = None
         user_can_rate = False

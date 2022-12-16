@@ -63,7 +63,7 @@ def createAUX(username: str, email: str, password: str):
 
 
 @router.put("/{id}")
-def update(id: str, username: str | None = None, email: str | None = None,  password: str | None = None, photo: str | None = None):
+def update(id: str, username: Union[str, None] = None, email: Union[str, None] = None,  password: Union[str, None] = None, photo: Union[str, None] = None):
     if email is not None:
         users_with_same_email = general_get(email = email)
         length = len(users_with_same_email)
@@ -113,8 +113,8 @@ def get_by_id(id: str):
 
 
 @router.get("/")
-def general_get(username: str | None = None,
-                email: str | None = None):
+def general_get(username: Union[str, None] = None,
+                email: Union[str, None] = None):
 
     user_list: list = list(users.find())
     result: list = []
@@ -156,8 +156,8 @@ def general_get(username: str | None = None,
 
 
 # @router.get("/")
-# def login_get(username: str | None = Query(default=None, alias="username"),
-#                 email: str | None = Query(default=None, alias="email"),
+# def login_get(username: Union[str, None] = Query(default=None, alias="username"),
+#                 email: Union[str, None] = Query(default=None, alias="email"),
 #     ):
 
 #     filter = {"username": username, "email": email}

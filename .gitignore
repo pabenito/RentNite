@@ -2,6 +2,7 @@ __pycache__
 .vscode
 .pytest_cache
 .idea
+.deta
 config.py
 **/node_modules/*
 **/.firebase

@@ -20,14 +20,14 @@ bookings: Collection = db["bookings"]
 # API
 @router.get("/", response_model=list[ChatResponse])
 async def get(
-    house_address: str | None = Query(default=None, alias="house-address"),
-    booking_id: str | None = Query(default=None, alias="booking-id"), 
-    owner_id: str | None = Query(default=None, alias="owner-id"), 
-    guest_id: str | None = Query(default=None, alias="guest-id"), 
-    owner_username: str | None = Query(default=None, alias="owner-username"),
-    guest_username: str | None = Query(default=None, alias="guest-username"), 
-    from_: date | None = Query(default=None, alias="from"),
-    to: date | None = None
+    house_address: Union[str, None] = Query(default=None, alias="house-address"),
+    booking_id: Union[str, None] = Query(default=None, alias="booking-id"), 
+    owner_id: Union[str, None] = Query(default=None, alias="owner-id"), 
+    guest_id: Union[str, None] = Query(default=None, alias="guest-id"), 
+    owner_username: Union[str, None] = Query(default=None, alias="owner-username"),
+    guest_username: Union[str, None] = Query(default=None, alias="guest-username"), 
+    from_: Union[date, None] = Query(default=None, alias="from"),
+    to: Union[date, None] = None
 ):
     chats_list: list = list(chats.find())
     result : list = []

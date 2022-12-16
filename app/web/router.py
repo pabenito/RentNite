@@ -13,14 +13,12 @@ router.include_router(
     houses.router,
     prefix="/houses",
     tags=["houses"]
-    
 )
 
 router.include_router(
     profile.router,
     prefix="/profile",
     tags=["profile"]
-    
 )
 
 router.include_router(

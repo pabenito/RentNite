@@ -21,14 +21,14 @@ houses: Collection = db["houses"]
 
 @router.get("/")
 def get(
-    rater_id: str | None = None,
-    rated_user_id: str | None = None,
-    rated_user_Name: str | None = None,
-    rated_house_id: str | None = None,
-    rate: int | None = None,
-    comment: str | None = None,
-    from_: date | None = None,
-    to: date | None = None
+    rater_id: Union[str, None] = None,
+    rated_user_id: Union[str, None] = None,
+    rated_user_Name: Union[str, None] = None,
+    rated_house_id: Union[str, None] = None,
+    rate: Union[int, None] = None,
+    comment: Union[str, None] = None,
+    from_: Union[date, None] = None,
+    to: Union[date, None] = None
 ):
 
     rate_list: list = list(ratings.find())
@@ -112,9 +112,9 @@ def get(
         rate_list = result
 
     result = []
-    for rate in rate_list:
-        rate: Rating
-        result.append(rate.to_response())
+    for rating in rate_list:
+        rating: Rating
+        result.append(rating.to_response())
     rate_list = result
 
     return rate_list

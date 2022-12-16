@@ -18,9 +18,9 @@ users: Collection = db["users"]
 
 # API
 @router.get("/")
-def get(city: str | None = None, street: str | None = None, number: int | None = None, capacity: int | None = None, price: float | None = None, 
-        rooms: int | None = None, bathrooms: int | None = None, owner_id: str | None = None, owner_name: str | None = None, image: str | None = None, 
-        latitude: float | None = None, longitude: float | None = None, offset: int = 0, size: int = 0):
+def get(city: Union[str, None] = None, street: Union[str, None] = None, number: Union[int, None] = None, capacity: Union[int, None] = None, price: Union[float, None] = None, 
+        rooms: Union[int, None] = None, bathrooms: Union[int, None] = None, owner_id: Union[str, None] = None, owner_name: Union[str, None] = None, image: Union[str, None] = None, 
+        latitude: Union[float, None] = None, longitude: Union[float, None] = None, offset: int = 0, size: int = 0):
     if offset < 0 or size < 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid offset or size.")
 

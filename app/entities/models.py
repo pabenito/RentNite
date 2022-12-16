@@ -1,3 +1,4 @@
+from typing import Union
 from pydantic import Field, EmailStr, BaseModel
 from bson.objectid import ObjectId
 from datetime import datetime, date
@@ -42,8 +43,8 @@ class AddressBase(BaseModel):
     street: str
     number: int
     city: str
-    longitude: float | None = None
-    latitude: float | None = None
+    longitude: Union[float, None] = None
+    latitude: Union[float, None] = None
 
 
 class MessageBase(BaseModel):
@@ -51,9 +52,9 @@ class MessageBase(BaseModel):
     sender_username: str
     date: datetime
     message: str
-    response_to: str | None = None
-    house_id: str | None = None
-    chat_id: str | None = None
+    response_to: Union[str, None] = None
+    house_id: Union[str, None] = None
+    chat_id: Union[str, None] = None
 
 class ChatBase(BaseModel):
     house_address: AddressBase 
@@ -89,14 +90,14 @@ class BookingBase(BaseModel):
     guest_name: str
     house_id: str
     house_address: AddressBase
-    meeting_location : AddressBase | None = None
+    meeting_location : Union[AddressBase, None] = None
 
 class RatingBase(BaseModel):
     rater_id: str
     date: datetime  
-    rated_user_id: str | None = None
-    rated_user_Name: str | None = None
-    rated_house_id: str | None = None
+    rated_user_id: Union[str, None] = None
+    rated_user_Name: Union[str, None] = None
+    rated_house_id: Union[str, None] = None
     rate: int
     comment: str
 
@@ -143,61 +144,61 @@ class RatingResponse(RatingBase, Plain):
 # Constructors models (allows None in all field in order to add them one by one)
 
 class AddressConstructor(BaseModel):
-    street: str | None = None
-    number: int | None = None
-    city: str | None = None
+    street: Union[str, None] = None
+    number: Union[int, None] = None
+    city: Union[str, None] = None
     
 
 class ChatConstructor(Simplifier):
-    house_address: AddressBase | None
-    booking_from: datetime | None
-    booking_to: datetime | None
-    booking_id : str | None 
-    owner_id : str | None 
-    owner_username : str | None 
-    guest_id : str | None 
-    guest_username : str | None
+    house_address: Union[AddressBase, None] = None
+    booking_from: Union[datetime, None] = None
+    booking_to: Union[datetime, None] = None
+    booking_id : Union[str, None] = None 
+    owner_id : Union[str, None] = None 
+    owner_username : Union[str, None] = None 
+    guest_id : Union[str, None] = None 
+    guest_username : Union[str, None] = None
 
 class MessageConstructor(Simplifier):
-    sender_id: str | None
-    sender_username: str | None
-    date: datetime | None
-    message: str | None
-    response_to: str | None = None
-    house_id: str | None = None
-    chat_id: str | None = None
+    sender_id: Union[str, None] = None
+    sender_username: Union[str, None] = None
+    date: Union[datetime, None] = None
+    message: Union[str, None] = None
+    response_to: Union[str, None] = None
+    house_id: Union[str, None] = None
+    chat_id: Union[str, None] = None
 
 class UserConstructor(Simplifier):
-    username: str | None
-    email: EmailStr | None  
-    password_hash: str | None  
+    username: Union[str, None] = None
+    email: Union[EmailStr, None] = None  
+    password_hash: Union[str, None] = None
 
 class HouseConstructor(Simplifier):
-    address: AddressConstructor | None = None
-    capacity: int | None = None
-    price: float | None = None
-    rooms: int | None = None
-    bathrooms: int | None = None
-    owner_id: str | None = None
-    image: str | None = None
+    address: Union[AddressConstructor, None] = None
+    capacity: Union[int, None] = None
+    price: Union[float, None] = None
+    rooms: Union[int, None] = None
+    bathrooms: Union[int, None] = None
+    owner_id: Union[str, None] = None
+    image: Union[str, None] = None
 
 class BookingConstructor(Simplifier):
-    state: State | None = None
-    from_: date | None = None
-    to: date | None = None
-    cost: float | None = None
-    guest_id: str | None = None
-    house_id: str | None = None
-    meeting_location : AddressConstructor | None = None
+    state: Union[State, None] = None
+    from_: Union[date, None] = None
+    to: Union[date, None] = None
+    cost: Union[float, None] = None
+    guest_id: Union[str, None] = None
+    house_id: Union[str, None] = None
+    meeting_location : Union[AddressConstructor, None] = None
 
 class RatingConstructor(Simplifier):
-    rater_id: str | None = None
-    date: datetime | None = None
-    rated_user_id: str | None = None
-    rated_user_Name: str | None = None
-    rated_house_id: str | None = None
-    rate: int | None = None
-    comment: str | None = None
+    rater_id: Union[str, None] = None
+    date: Union[datetime, None] = None
+    rated_user_id: Union[str, None] = None
+    rated_user_Name: Union[str, None] = None
+    rated_house_id: Union[str, None] = None
+    rate: Union[int, None] = None
+    comment: Union[str, None] = None
 
 
 # Models for post
@@ -209,13 +210,13 @@ class AddressPost(BaseModel):
     
     
 class RatingPost(BaseModel):
-    rater_id: str 
-    date: datetime 
-    rated_user_id: str | None = None
-    rated_user_Name: str | None = None
-    rated_house_id: str | None = None
-    rate: int 
-    comment: str 
+    rater_id: str
+    date: datetime
+    rated_user_id: Union[str, None] = None
+    rated_user_Name: Union[str, None] = None
+    rated_house_id: Union[str, None] = None
+    rate: int
+    comment: str
 
 class ChatPost(BaseModel):
     booking_id : str
@@ -223,9 +224,9 @@ class ChatPost(BaseModel):
 class MessagePost(BaseModel):
     sender_id: str
     message: str
-    response_to: str | None = None
-    house_id: str | None = None
-    chat_id: str | None = None
+    response_to: Union[str, None] = None
+    house_id: Union[str, None] = None
+    chat_id: Union[str, None] = None
 
 class BookingPost(BaseModel):
     from_: date
@@ -233,18 +234,18 @@ class BookingPost(BaseModel):
     cost: float
     guest_id: str
     house_id: str
-    meeting_location : AddressPost | None = None
+    meeting_location : Union[AddressPost, None] = None
 
 class HousePost(BaseModel):
-    address: AddressPost 
-    capacity: int 
-    price: float 
-    rooms: int 
-    bathrooms: int 
+    address: AddressPost
+    capacity: int
+    price: float
+    rooms: int
+    bathrooms: int
     owner_id: str
     image: str
 
 class UserPost(BaseModel):
-    username: str 
-    email: EmailStr 
+    username: str
+    email: EmailStr
     password_hash: str

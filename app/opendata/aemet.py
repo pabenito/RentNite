@@ -1,14 +1,16 @@
 # Import libraries
+from typing import Union
 from fastapi import Depends, APIRouter
 from aemet_opendata.interface import AEMET
 from datetime import datetime
 import locale
+import config
 
 # Create router
 router = APIRouter()
 
 # Initialize AEMET API
-_api_key = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJyYXVsZG9mZUB1bWEuZXMiLCJqdGkiOiJjYmFiODMwMi1kMzg2LTQ1OGQtOGY1NS04NmFhMTcwOTBmYjgiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTY2NjcyMTA0OCwidXNlcklkIjoiY2JhYjgzMDItZDM4Ni00NThkLThmNTUtODZhYTE3MDkwZmI4Iiwicm9sZSI6IiJ9.rp2l5Z70ecrGMr0PiqVhfiXckkkaHlBkeCmuB487Y3c"
+_api_key = config.aemet_key
 aemet = AEMET(api_key=_api_key)
 aemet.api_debugging(True)
 
@@ -29,7 +31,7 @@ def get_forecast_temperature_daily_urlParameters(town: dict = Depends(aemet.get_
     return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
 @router.get("/forecast/temperature/daily")
-def get_forecast_temperature_daily(latitude :float | None = None,longitude:float | None = None):
+def get_forecast_temperature_daily(latitude: Union[float, None] = None,longitude: Union[float, None] = None):
     town: dict = aemet.get_town_by_coordinates(latitude=latitude,longitude=longitude)
     return get_temp_daily_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))    
 
@@ -38,7 +40,7 @@ def get_forecast_temperature_hourly(town: dict = Depends(aemet.get_town_by_coord
     return get_temp_hourly_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 
 @router.get("/forecast/precipitation/dailyPar")
-def get_forecast_precipitation_daily(latitude :float | None = None,longitude:float | None = None):
+def get_forecast_precipitation_daily(latitude: Union[float, None] = None, longitude: Union[float, None] = None):
     town: dict = aemet.get_town_by_coordinates(latitude=latitude,longitude=longitude)
     return get_Daily_precipitation_from_map(aemet.get_specific_forecast_town_daily(town.get("id")))
 

@@ -11,9 +11,9 @@ import config
 
 
 # Import modules
-from .entities import router as entities
-from .opendata import router as opendata
-from .web import router as web
+from app.entities import router as entities
+from app.opendata import router as opendata
+from app.web import router as web
 
 # Create app
 app = FastAPI()
@@ -28,7 +28,7 @@ from fastapi_sso.sso.google import GoogleSSO
 google_sso = GoogleSSO(
     config.GOOGLE_CLIENT_ID,
     config.GOOGLE_CLIENT_SECRET,
-    "http://127.0.0.1:8000/google/callback"
+    "https://rentnite.deta.dev/google/callback"
 )
 
 

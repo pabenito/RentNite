@@ -1,6 +1,7 @@
 # Import libraries
 import re
 from datetime import date, datetime, time
+from typing import Union
 from fastapi.encoders import jsonable_encoder
 from fastapi import APIRouter, HTTPException, status
 from pymongo.collection import Collection
@@ -206,10 +207,10 @@ def get_by_id(id: str):
 
 @router.get("/search/")
 def search(
-    guest_name: str | None = None,
-    guest_id: str | None = None,
-    house_id: str | None = None,
-    state: State | None = None
+    guest_name: Union[str, None] = None,
+    guest_id: Union[str, None] = None,
+    house_id: Union[str, None] = None,
+    state: Union[State, None] = None
 ):
     if guest_name is None and guest_id is None and house_id is None and state is None:
         raise HTTPException(

@@ -33,19 +33,19 @@ templates = Jinja2Templates(directory="templates")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 async def authenticate_user(email: str, password: str):
-    user = users_api.general_get(None,email)
+    user = users_api.general_get(email=email)
     if user is None:
-        return False 
+        return False
 
-    if not verify_password(user , password):
+    if not verify_password(user, password):
         return False
     return user["id"]
 
-def verify_password(user:users_api.User, password:str):
+def verify_password(user: User, password: str):
     return sha256_crypt.verify(password, user["password_hash"])
-    
+
 def login_Google(email: str, username:str):
-    user = users_api.general_get(username,email)
+    user = users_api.general_get(email=email)
     if not user:
         user = users_api.createAUX(username,email,"contraseña")  
     singleton = Singleton()

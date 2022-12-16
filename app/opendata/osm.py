@@ -1,8 +1,8 @@
 # Import libraries
+from typing import Union
 from osmapi import OsmApi
 from fastapi import Depends, APIRouter
 import requests
-from geopy.geocoders import Nominatim
 
 # Create router
 router = APIRouter()
@@ -11,7 +11,7 @@ router = APIRouter()
 def get_map(latitude: float, longitude: float, range: float=1, osm: OsmApi = Depends(OsmApi)):
     return __map_list_to_dict(osm.Map(*__coordinates_to_map_range(latitude, longitude, range)))
 
-def get_poi(search: str | None = None, map: dict = Depends(get_map)):
+def get_poi(search: Union[str, None] = None, map: dict = Depends(get_map)):
     return __get_nodes_from_map(map, search, only_with_tags=True)
 
 # API
@@ -55,7 +55,7 @@ def __map_list_to_dict(map: list):
         map_dict[id]=item.get("data")
     return map_dict
 
-def __get_nodes_from_map(map: dict, search: str | None = None, only_with_tags: bool = False):
+def __get_nodes_from_map(map: dict, search: Union[str, None] = None, only_with_tags: bool = False):
     for id in list(map.keys()):
         if map.get(id).get("type")!="node":
             map.pop(id)

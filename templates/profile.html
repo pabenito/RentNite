@@ -114,7 +114,7 @@
                                 {%- else -%}
                                 <img src="/static/img/noprofil.jpg" width=100 height=100 alt="">
                                 {%- endif %}
-                                {% if perfil == identificador -%}
+                                {% if perfil == user_id -%}
                                 <div class=" round">
                                     <input name="file" id="file" type="file"
                                         accept="image/png, image/jpeg, image/jpg, image/gif">
@@ -125,7 +125,7 @@
                     </div>
                     {% if editable -%}
                     <form method="post" action="/profile/save">
-                        <input type="hidden" name="id" value={{identificador}}>
+                        <input type="hidden" name="id" value={{user_id}}>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
                                     name="username" value="{{user.username}}" required></li>
@@ -146,7 +146,7 @@
                     <p class="text-black-50 fs-5">{{ user.email }}</p>
                     <div class="row mt-3">
 
-                        {% if perfil == identificador -%}
+                        {% if perfil == user_id -%}
                         <div class="col">
                             <a class="btn btn-primary mx-2" href="/profile/edit"><span class="h6">Editar</span></a>
                         </div>
@@ -187,7 +187,7 @@
                                         {% endfor %}
                                     </div>
                                     <div class="col me-3" style="text-align: right">
-                                        {% if rate.rater_id == identificador %}
+                                        {% if rate.rater_id == user_id %}
                                         <a class="btn btn-danger" href="/profile/{{perfil}}/deleteRate/{{rate.id}}"><i
                                                 class="fa fa-trash-o"></i></a>
                                         {% endif %}
@@ -209,7 +209,7 @@
             <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para este perfil</p>
             {% endif %}
 
-            {% if perfil and perfil != identificador and user_can_rate %}
+            {% if perfil and perfil != user_id and user_can_rate %}
 
 
             <form method="post" action="/profile/{{ perfil }}/addRate" title="puntuar">

@@ -24,7 +24,7 @@ def perfil_usuario(request: Request):
     if user is None:
         return login.redirect()
 
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "perfil": user})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "perfil": user})
 
 @router.get("/edit", response_class=HTMLResponse)
 def edit(request: Request, error: str = ""):
@@ -32,7 +32,7 @@ def edit(request: Request, error: str = ""):
     if user is None:
         return login.redirect()
 
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True, "error": error})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "editable": True, "error": error})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def perfil_usuario_distinto(request: Request, id: str):
@@ -44,7 +44,7 @@ def perfil_usuario_distinto(request: Request, id: str):
         user_ratings = ratings_api.get(rater_id = user, rated_user_id = id)
         user_can_rate = len(user_ratings) == 0
 
-    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id, "user_can_rate": user_can_rate})
+    return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "user_id": user, "perfil": id, "user_can_rate": user_can_rate})
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)

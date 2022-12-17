@@ -1,15 +1,15 @@
 import cloudinary
 import cloudinary.uploader
-import config
+from os import environ
 from fastapi import  File, UploadFile
 from .entities import users as users_api
 
 #Cloudinary configuration
 
 cloudinary.config(
-    cloud_name = config.cloud_name,
-    api_key = config.api_key,
-    api_secret = config.api_secret
+    cloud_name = environ["cloud_name"],
+    api_key = environ["api_key"],
+    api_secret = environ["api_secret"]
 )
 
 def get_photo_id(url:str):

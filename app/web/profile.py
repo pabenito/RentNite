@@ -20,28 +20,39 @@ templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class=HTMLResponse)
 def perfil_usuario(request: Request):
-    user = login.check_user()
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
+
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "perfil": user})
 
 @router.get("/edit", response_class=HTMLResponse)
 def edit(request: Request, error: str = ""):
-    user = login.check_user()
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
+
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "identificador": user, "editable": True, "error": error})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def perfil_usuario_distinto(request: Request, id: str):
-    user = login.check_user()
+    user = login.get_user()
 
-    user_ratings = ratings_api.get(rater_id = user, rated_user_id = id)
-    user_can_rate = len(user_ratings) == 0
+    if user is None:
+        user_can_rate = True
+    else:
+        user_ratings = ratings_api.get(rater_id = user, rated_user_id = id)
+        user_can_rate = len(user_ratings) == 0
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(id), "rating": ratings_api.get(None, id, None, None, None, None, None), "identificador": user, "perfil": id, "user_can_rate": user_can_rate})
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)
 def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()):
-    user = login.check_user()
-    
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
+
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
                                                rated_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
@@ -51,7 +62,9 @@ def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()
 
 @router.get("/{id}/deleteRate/{rate_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rate_id: str):
-    login.check_user()
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
 
     ratings_api.delete(rate_id)
 
@@ -59,7 +72,9 @@ def delete_rating(request: Request, id: str, rate_id: str):
 
 @router.post("/uploadPhoto", response_class=HTMLResponse)
 def upload_photo(request: Request, file: UploadFile = File(...)):
-    user = login.check_user()
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
 
     user_class = users_api.get_by_id(user)
 
@@ -79,7 +94,10 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
 
 @router.post("/save", response_class=HTMLResponse)
 def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form()):
-    user = login.check_user()
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
+
     user_object : users_api.User = users_api.get_by_id(user)
     try:
         if login.verify_password(user=user_object,password=password):

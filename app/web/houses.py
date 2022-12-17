@@ -24,13 +24,17 @@ def read_item(request: Request):
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id}
     return __load_house_details(request, house, user_id, creating = True)
@@ -38,7 +42,9 @@ def create_house(request: Request):
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
                  price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     if id == "None":
         address = AddressPost(city = city, street = street, number = number)
@@ -68,7 +74,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
 
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = ""):
-    user_id = login.check_user()
+    user_id = login.get_user()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -92,7 +98,9 @@ def house_details(request: Request, id: str, booking_error: str = ""):
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = ""):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     house: dict = houses_api.get_by_id(id)
 
@@ -100,7 +108,9 @@ def edit_house(request: Request, id: str, error: str = ""):
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str):
-    login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     house: dict = houses_api.delete(id)
 
@@ -112,7 +122,9 @@ def delete_house(request: Request, id: str):
 
 @router.post("/{id}/addComment", response_class = HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
@@ -121,7 +133,9 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
 
 @router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
 def delete_comment(request: Request, id: str, comment_id: str):
-    login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        login.redirect()
 
     messages_api.delete(comment_id)
 
@@ -129,7 +143,9 @@ def delete_comment(request: Request, id: str, comment_id: str):
     
 @router.post("/{id}/addRating", response_class=HTMLResponse)
 def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form()):
-    user_id = login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
@@ -140,7 +156,9 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
 
 @router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rating_id: str):
-    login.check_user()
+    user_id = login.get_user()
+    if user_id is None:
+        return login.redirect()
 
     ratings_api.delete(rating_id)
 
@@ -148,8 +166,8 @@ def delete_rating(request: Request, id: str, rating_id: str):
 
 # Private methods
 
-def __load_house_details(request: Request, house: dict, user_id: str, creating: bool = False, editing: bool = False, error: str = "", 
-                         comments: Union[list, None] = None, ratings: Union[list, None] = None, weather: Union[dict, None] = None,
+def __load_house_details(request: Request, house: dict, user_id: Union[str, None], creating: bool = False, editing: bool = False, 
+                         error: str = "", comments: Union[list, None] = None, ratings: Union[list, None] = None, weather: Union[dict, None] = None,
                          temperature: Union[dict, None] = None):
     if creating or editing:
         today = tomorrow = None
@@ -165,7 +183,10 @@ def __load_house_details(request: Request, house: dict, user_id: str, creating: 
                                                             "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
 
 
-def __user_can_rate(user_id: str, house: dict):
+def __user_can_rate(user_id: Union[str, None], house: dict):
+    if user_id is None:
+        return True
+
     user_can_rate = False
 
     if user_id != house["owner_id"]:

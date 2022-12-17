@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.web import login
 from fastapi.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
-import config
+from os import environ
 
 
 # Import modules
@@ -26,8 +26,8 @@ from fastapi_sso.sso.google import GoogleSSO
 
 
 google_sso = GoogleSSO(
-    config.GOOGLE_CLIENT_ID,
-    config.GOOGLE_CLIENT_SECRET,
+    environ["GOOGLE_CLIENT_ID"],
+    environ["GOOGLE_CLIENT_SECRET"],
     "https://rentnite.deta.dev/google/callback"
 )
 
@@ -81,4 +81,4 @@ app.include_router(
 
 @app.get("/")
 async def root():
-    return RedirectResponse("/login")
+    return RedirectResponse("/houses")

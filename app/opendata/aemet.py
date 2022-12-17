@@ -4,13 +4,13 @@ from fastapi import Depends, APIRouter
 from aemet_opendata.interface import AEMET
 from datetime import datetime
 import locale
-import config
+from os import environ
 
 # Create router
 router = APIRouter()
 
 # Initialize AEMET API
-_api_key = config.aemet_key
+_api_key = environ["aemet_key"]
 aemet = AEMET(api_key=_api_key)
 aemet.api_debugging(True)
 

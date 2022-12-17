@@ -79,7 +79,7 @@ class HouseBase(BaseModel):
     bathrooms: int 
     owner_name: str
     owner_id: str
-    image: str
+    image: Union[str, None] = None
 
 class BookingBase(BaseModel):
     state: State
@@ -243,7 +243,7 @@ class HousePost(BaseModel):
     rooms: int
     bathrooms: int
     owner_id: str
-    image: str
+    image: Union[str, None] = None
 
 class UserPost(BaseModel):
     username: str

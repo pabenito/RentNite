@@ -36,7 +36,7 @@
             <div class="col-md-4">
                 <div class="thumbnail">
                     <p class="text text-center mt-2" style="height: 300px">
-                        <img src={{ house.image if house.image != "" else default_image }} alt="Casa ofertada" 
+                        <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada" 
                              style="height: 100%; width: 100%; object-fit: contain">
                     </p>
                     <table class="table table-info" style="height: 330px">

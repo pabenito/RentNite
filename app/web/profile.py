@@ -44,7 +44,7 @@ def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()
     
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
-                                               ratd_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
+                                               rated_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
     return perfil_usuario_distinto(request, id)
@@ -65,15 +65,15 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
 
     if user_class["photo"] != "":
         #Take photo's url and get name of file to delete
-        name = cloud.getPhotoId(url=user_class["photo"])
+        name = cloud.get_photo_id(url=user_class["photo"])
 
         #Delete photo from cloudinary
-        cloud.deletePhoto(name=name)
+        cloud.delete_photo(name=name)
         
 
     
     #Upload photo to cloudinary
-    cloud.uploadPhotoUser(user=user,file=file)
+    cloud.upload_photo_user(user=user,file=file)
     
     return perfil_usuario(request)
 

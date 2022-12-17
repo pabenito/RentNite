@@ -1,6 +1,6 @@
 from typing import Union
-from fastapi import APIRouter, Request, Cookie, Form, HTTPException, File, UploadFile
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import APIRouter, Request, Form, File, UploadFile
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
 from . import login
@@ -14,64 +14,56 @@ from .. import cloudinary as cloud
 from app.entities import models
 from pytz import timezone
 
-
 router = APIRouter()
 
-templates = Jinja2Templates(directory="templates")
-
-DEFAULT_IMAGE = "http://res.cloudinary.com/dc4yqjivf/image/upload/v1670022360/amv2l4auluxikphjsc0w.png"
+templates = Jinja2Templates(directory = "templates")
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
     login.check_user()
 
-    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "default_image": DEFAULT_IMAGE})
+    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get()})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request):
     user_id = login.check_user()
 
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "default_image": DEFAULT_IMAGE})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):
     user_id = login.check_user()
 
-    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id, 
-                   "image": DEFAULT_IMAGE}
+    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id}
     return __load_house_details(request, house, user_id, creating = True)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
                  price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
     user_id = login.check_user()
-    
-    if file.filename != "":
-        # Upload photo to Cloudinary
-        url = cloud.uploadPhotoHouse(file=file)
 
     if id == "None":
-        if file.filename == "":
-            url = ""
-
         address = AddressPost(city = city, street = street, number = number)
+        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = user_id)
 
-        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = user_id, 
-                            image = url)
+        if file.filename != "":
+            house.image = cloud.upload_photo_house(file = file)
+
         house = houses_api.create(house)
         id = house["id"]
     else:
-        house = houses_api.get_by_id(id)
-
-        if file.filename == "":
-            url = house["image"]
-        elif house["image"] != "":
-            name_photo = cloud.getPhotoId(url=house["image"])
-            cloud.deletePhoto(name=name_photo)
+        house_db = houses_api.get_by_id(id)
 
         address = AddressConstructor(city = city, street = street, number = number)
+        house = HouseConstructor(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms)
 
-        house = HouseConstructor(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, image = url)
+        if file.filename != "":
+            house.image = cloud.upload_photo_house(file = file)
+
+            if house_db.get("image") is not None:
+                photo_id = cloud.get_photo_id(url = house_db["image"])
+                cloud.delete_photo(name = photo_id)
+
         houses_api.update(id, house)
 
     return my_houses(request)
@@ -114,9 +106,9 @@ def delete_house(request: Request, id: str):
 
     house: dict = houses_api.delete(id)
 
-    if house["image"] != "":
-        name_photo = cloud.getPhotoId(url=house["image"])
-        cloud.deletePhoto(name=name_photo)
+    if house.get("image") is not None:
+        photo_id = cloud.get_photo_id(url = house["image"])
+        cloud.delete_photo(name = photo_id)
 
     return my_houses(request)
 
@@ -143,7 +135,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
-                                               ratd_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
+                                               rated_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
     return house_details(request, id) 
@@ -171,8 +163,8 @@ def __load_house_details(request: Request, house: dict, user_id: str, creating: 
     
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "user_id": user_id, "creating": creating, 
                                                             "editing": editing, "error": error, "comments": comments, "ratings": ratings, 
-                                                            "weather": weather, "temperature": temperature, "default_image": DEFAULT_IMAGE, 
-                                                            "today_date": today, "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
+                                                            "weather": weather, "temperature": temperature, "today_date": today,
+                                                            "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
 
 
 def __user_can_rate(user_id: str, house: dict):

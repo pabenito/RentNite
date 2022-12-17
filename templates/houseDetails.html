@@ -159,7 +159,7 @@
             {% if creating or editing %}
             <form method="post" action="/houses/save" enctype="multipart/form-data">
                 <div class="upload my-5">
-                    <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada" id="image"
+                    <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada" id="image"
                         style="height: 100%; width: 100%; object-fit: contain">
                     <div class="round">
                         <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif"
@@ -253,7 +253,7 @@
             </form>
             {% else %}
             <p class="text text-center">
-                <img src={{ house.image if house.image !="" else default_image }} alt="Casa ofertada"
+                <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada"
                     style="height: 100%; width: 100%; object-fit: contain">
             </p>
             <table class="table table-info my-4">

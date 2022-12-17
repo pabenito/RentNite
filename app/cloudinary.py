@@ -12,21 +12,21 @@ cloudinary.config(
     api_secret = config.api_secret
 )
 
-def getPhotoId(url:str):
+def get_photo_id(url:str):
     name =  url.split("/")
     name =  name[7]
     size = len(name)
     name = name[:size-4]
     return name
 
-def deletePhoto(name:str):
+def delete_photo(name:str):
     cloudinary.uploader.destroy(name)
 
-def uploadPhotoUser(user:str,file : UploadFile):
+def upload_photo_user(user:str,file : UploadFile):
     result = cloudinary.uploader.upload(file.file)
     url = result.get("url")
     users_api.update(id=user,photo=url)
 
-def uploadPhotoHouse(file:UploadFile):
+def upload_photo_house(file:UploadFile):
     result = cloudinary.uploader.upload(file.file)
     return result.get("url")

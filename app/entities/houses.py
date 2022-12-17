@@ -74,7 +74,7 @@ def create(house: HousePost):
     if owner is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No user was found with the given ID.")
 
-    parameters = jsonable_encoder(house)
+    parameters = jsonable_encoder(house, exclude_unset = True)
     parameters["owner_name"] = owner["username"]
 
     location = osm.geocode(house.address.city, house.address.street, house.address.number)

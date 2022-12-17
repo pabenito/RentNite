@@ -30,7 +30,7 @@ def my_houses(request: Request):
     if user_id is None:
         return login.redirect()
 
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "user_id": user_id})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request):

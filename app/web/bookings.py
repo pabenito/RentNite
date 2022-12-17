@@ -21,8 +21,7 @@ def my_bookings(request: Request):
 
     return templates.TemplateResponse("bookings.html", {"request": request,
         "bookings": bookings_api.search(guest_id=user),
-        "title": "Mis reservas",
-        "user_id": user})
+        "title": "Mis reservas"})
 
 @router.get("/myHouses", response_class=HTMLResponse)
 def houses_booked(request: Request):
@@ -33,8 +32,7 @@ def houses_booked(request: Request):
 
     return templates.TemplateResponse("bookings.html", {"request": request,
         "bookings": bookings_api.get_by_house_owner_id(owner_id=user),
-        "title": "Reservas de mis casas",
-        "user_id": user})
+        "title": "Reservas de mis casas"})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def booking_details(request: Request, id: str):
@@ -44,7 +42,7 @@ def booking_details(request: Request, id: str):
         return login.redirect()
 
     booking = bookings_api.get_by_id(id)
-    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user_id": user, "State": State})
+    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user": user, "State": State})
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
 def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form()):

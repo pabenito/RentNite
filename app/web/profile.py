@@ -99,16 +99,23 @@ def save(request: Request,newpassword: str = Form(), password: str = Form(), use
         return login.redirect()
 
     user_object : models.User = users_api.get_by_id(user)
-    if(user_object.password_hash == ""):
-        try:
-            if login.verify_password(user=user_object,password=password):
-                users_api.update(id=user, username=username,
+    try:
+        if login.verify_password(user=user_object,password=password):
+            users_api.update(id=user, username=username,
                         email=email, password=newpassword)
-                return perfil_usuario(request)
-            else:
-                return edit(request,"Contraseña antigua mal introducida")
-        except HTTPException as e:
-            return edit(request, e.detail)
-    else:
-        users_api.update(username=username)
+            return perfil_usuario(request)
+        else:
+            return edit(request,"Contraseña antigua mal introducida")
+    except HTTPException as e:
+        return edit(request, e.detail)
+    
+@router.post("/saveGoogle", response_class=HTMLResponse)
+def save_Google(request: Request,username: str = Form()):
+    user = login.get_user()
+    if user is None:
+        return login.redirect()
+    try:
+        users_api.update(id=user, username=username)
         return perfil_usuario(request)
+    except HTTPException as e:
+        return edit(request, e.detail)

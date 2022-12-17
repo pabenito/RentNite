@@ -126,7 +126,7 @@
                     {% if editable -%}
 
                     {% if user.password_hash == "" %}
-                    <form method="post" action="/profile/save">
+                    <form method="post" action="/profile/saveGoogle">
                         <input type="hidden" name="id" value={{user_id}}>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"

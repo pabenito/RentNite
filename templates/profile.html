@@ -124,6 +124,23 @@
                         </form>
                     </div>
                     {% if editable -%}
+
+                    {% if user.password == "" %}
+                    <form method="post" action="/profile/save">
+                        <input type="hidden" name="id" value={{user_id}}>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
+                                    name="username" value="{{user.username}}" required></li>
+                        </ul>
+                        <label class="text text-center text-danger">{{ error }}</label>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary mx-2">Confirmar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    {%else %}
                     <form method="post" action="/profile/save">
                         <input type="hidden" name="id" value={{user_id}}>
                         <ul class="list-group list-group-flush">
@@ -141,6 +158,8 @@
                             </div>
                         </div>
                     </form>
+                    {% endif %}
+
                     {%- else -%}
                     <p class="font-weight-bold fs-3">{{ user.username }}</p>
                     <p class="text-black-50 fs-5">{{ user.email }}</p>

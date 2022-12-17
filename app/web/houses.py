@@ -150,7 +150,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
         return login.redirect()
 
     date = datetime.now(timezone("Europe/Madrid"))
-    rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
+    rt : RatingPost = RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
                                                rated_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 

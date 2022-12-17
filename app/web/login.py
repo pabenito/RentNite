@@ -47,7 +47,7 @@ def verify_password(user: User, password: str):
 def login_Google(email: str, username:str):
     user = users_api.general_get(email=email)
     if not user:
-        user = users_api.createAUX(username,email,"contraseña")  
+        user = users_api.createAUX(username,email)  
     singleton = Singleton()
     singleton.user = user["id"]
 

@@ -36,28 +36,19 @@ def create(username: str, email: str, password: str):
     users.insert_one(
         {"username": username, "email": email, "password_hash": salida,"photo":""})
     
-    
-def createAUX(username: str, email: str, password: str):
-    users_with_same_email = general_get(email = email)
+@router.post("/")   
+def createAUX(username: str, email: str):
+    users_with_same_email : User = general_get(email = email)
 
-    if users_with_same_email is not None and len(users_with_same_email) > 0:
+    if users_with_same_email is not None:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
 
-    salida = sha256_crypt.hash(password)
     users.insert_one(
-        {"username": username, "email": email, "password_hash": salida,"photo":""})
+        {"username": username, "email": email, "password_hash": "","photo":""})
     
-    userAux : User = general_get(username,email)
+    userAux : User = general_get(email=email)
     return userAux
     
-#@router.post("/", status_code=status.HTTP_201_CREATED)
-#def createPost(user: UserPost):
-#    if user.email == None or user.password_hash == None or user.username == None:
-#        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid parameters.")
-#    parameters = jsonable_encoder(user)
-
-#    inserted_user: InsertOneResult = users.insert_one(parameters)
-#    return User.parse_obj(users.find_one({"_id": ObjectId(inserted_user.inserted_id)})).to_response()
 
 # Actualiza un usuario
 

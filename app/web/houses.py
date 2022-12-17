@@ -11,6 +11,7 @@ from ..entities import ratings as ratings_api
 from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
 from .. import cloudinary as cloud
+from ..payments import get_token
 from app.entities import models
 from pytz import timezone
 
@@ -150,7 +151,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
         return login.redirect()
 
     date = datetime.now(timezone("Europe/Madrid"))
-    rt : models.RatingPost = models.RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
+    rt : RatingPost = RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
                                                rated_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
@@ -178,11 +179,14 @@ def __load_house_details(request: Request, house: dict, user_id: Union[str, None
         today = date.today()
         tomorrow = today + timedelta(1)
         user_can_rate = __user_can_rate(user_id, house)
+
+    payment_token = get_token(user_id)
     
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "user_id": user_id, "creating": creating, 
                                                             "editing": editing, "error": error, "comments": comments, "ratings": ratings, 
                                                             "weather": weather, "temperature": temperature, "today_date": today,
-                                                            "tomorrow_date": tomorrow, "user_can_rate": user_can_rate})
+                                                            "tomorrow_date": tomorrow, "user_can_rate": user_can_rate,
+                                                            "payment_token": payment_token})
 
 
 def __user_can_rate(user_id: Union[str, None], house: dict):

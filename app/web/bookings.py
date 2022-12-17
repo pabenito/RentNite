@@ -6,6 +6,7 @@ from ..entities import bookings as bookings_api
 from ..entities import houses as houses_api
 from ..web import login
 from ..entities.models import *
+from ..payments import pay
 from . import houses
 
 router = APIRouter()
@@ -47,7 +48,7 @@ def booking_details(request: Request, id: str):
     return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user_id": user, "State": State})
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
-def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form()):
+def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form(), nonce: str = Form()):
     # Create a new booking given a house id
     user = login.get_user()
     if user is None:
@@ -60,6 +61,8 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
         inserted_booking = bookings_api.create(booking)
     except HTTPException as e:
         return houses.house_details(request, id, booking_error=e.detail)
+
+    pay(cost, nonce)
 
     return booking_details(request, inserted_booking["id"])
 

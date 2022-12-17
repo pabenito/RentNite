@@ -15,3 +15,5 @@ passlib[bcrypt]
 cloudinary
 fastapi_sso
 authlib
+python-dotenv
+braintree

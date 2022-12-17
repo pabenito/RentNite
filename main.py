@@ -28,7 +28,7 @@ from fastapi_sso.sso.google import GoogleSSO
 google_sso = GoogleSSO(
     environ["GOOGLE_CLIENT_ID"],
     environ["GOOGLE_CLIENT_SECRET"],
-    "https://rentnite.deta.dev/google/callback"
+    environ["APP_URL"]
 )
 
 

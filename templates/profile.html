@@ -125,7 +125,7 @@
                     </div>
                     {% if editable -%}
 
-                    {% if user.password == "" %}
+                    {% if user.password_hash == "" %}
                     <form method="post" action="/profile/save">
                         <input type="hidden" name="id" value={{user_id}}>
                         <ul class="list-group list-group-flush">

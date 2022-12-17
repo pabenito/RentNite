@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/76f9b8ee34.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="columns is-centered">
+        <div class="column is-four-fifths">
+            {% for message in messages %}
+            <article class="media">
+                <figure class="media-left">
+                    <p class="image is-64x64">
+                        {% if message.photo %}
+                        <img class="is-rounded" src="{{ user.photo }}">
+                        {% else %}
+                        <img class="is-rounded" src="https://cdn.onlinewebfonts.com/svg/img_103581.png">
+                        {% endif %}
+                    </p>
+                </figure>
+                <div class="media-content">
+                    <div class="content">
+                        <p>
+                            <strong>{{ message.sender_username }}</strong>
+                            <br>
+                            {{ message.message }}
+                            <br>
+                        </p>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        
+            <article class="media">
+                <figure class="media-left">
+                    <p class="image is-64x64">
+                        <img src="https://bulma.io/images/placeholders/128x128.png">
+                    </p>
+                </figure>
+                <form action="/web/chat">
+                    <div class="media-content">
+                        <div class="field">
+                            <p class="control">
+                                <textarea class="textarea" placeholder="Add a comment..."></textarea>
+                            </p>
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                                <input class="button" type="submit" value="Enviar"/>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </article>
+        </div>
+    </div>
+</body>

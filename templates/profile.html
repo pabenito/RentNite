@@ -124,15 +124,13 @@
                         </form>
                     </div>
                     {% if editable -%}
-                    <form method="post" action="/profile/save">
+
+                    {% if user.password_hash == "" %}
+                    <form method="post" action="/profile/saveGoogle">
                         <input type="hidden" name="id" value={{user_id}}>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
                                     name="username" value="{{user.username}}" required></li>
-                            <li class="list-group-item">Email: <input type="text" placeholder="{{user.email}}"
-                                    name="email" value="{{user.email}}" required></li>
-                            <li class="list-group-item">Antigua contraseña: <input type="password" name="password" maxlength="15" required></li>
-                            <li class="list-group-item">Nueva contraseña: <input type="password" name="newpassword" maxlength="15" required></li>
                         </ul>
                         <label class="text text-center text-danger">{{ error }}</label>
                         <div class="row mt-3">
@@ -141,6 +139,29 @@
                             </div>
                         </div>
                     </form>
+
+                    {%else %}
+                    <form method="post" action="/profile/save">
+                        <input type="hidden" name="id" value={{user_id}}>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Nombre: <input type="text" placeholder="{{user.username}}"
+                                    name="username" value="{{user.username}}" required></li>
+                            <li class="list-group-item">Email: <input type="text" placeholder="{{user.email}}"
+                                    name="email" value="{{user.email}}" required></li>
+                            <li class="list-group-item">Antigua contraseña: <input type="password" name="password"
+                                    maxlength="15" required></li>
+                            <li class="list-group-item">Nueva contraseña: <input type="password" name="newpassword"
+                                    maxlength="15" required></li>
+                        </ul>
+                        <label class="text text-center text-danger">{{ error }}</label>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary mx-2">Confirmar</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+
                     {%- else -%}
                     <p class="font-weight-bold fs-3">{{ user.username }}</p>
                     <p class="text-black-50 fs-5">{{ user.email }}</p>
@@ -216,13 +237,13 @@
                 <div class="d-flex flex-column align-items-center text-center">
 
                     <p class="clasificacion">
-                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5"required>
+                        <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5" required>
                         <label for="radio1">★</label>
-                        <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4"required>
+                        <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4" required>
                         <label for="radio2">★</label>
-                        <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3"required>
+                        <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3" required>
                         <label for="radio3">★</label>
-                        <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2"required>
+                        <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2" required>
                         <label for="radio4">★</label>
                         <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1" required>
                         <label for="radio5">★</label>

@@ -16,6 +16,8 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script src="https://js.braintreegateway.com/web/dropin/1.33.7/js/dropin.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.88.4/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.88.4/js/paypal-checkout.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Detalles de la casa - RentNite</title>
     <style>
@@ -437,7 +439,14 @@
                     const nonce = document.getElementById("nonce");
 
                     braintree.dropin.create(
-                        {authorization: paymentToken, container: dropinContainer, locale: "es_ES"},
+                        {
+                            authorization: paymentToken,
+                            container: dropinContainer,
+                            paypal: {
+                                flow: "vault"
+                            },
+                            locale: "es_ES"
+                        },
                         (error, dropinInstance) => {
                             form.addEventListener("submit", event => {
                                 event.preventDefault();

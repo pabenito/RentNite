@@ -67,6 +67,9 @@
                     </table>
                     <div class="text-center mt-3 mb-5">
                         <button class="btn btn-primary mx-2" onclick="detalles('{{ house.id }}');">Detalles</button>
+                        {% if user_id == house.owner_id %}
+                        <button class="btn btn-primary mx-2" onclick="editar('{{ house.id }}');">Editar</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -96,6 +99,10 @@
 
             function detalles(houseId) {
                 window.location = ("/houses/" + houseId);
+            }
+
+            function editar(houseId) {
+                window.location = ("/houses/" + houseId + "/edit");
             }
         </script>
 

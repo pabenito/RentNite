@@ -127,6 +127,7 @@ def post(message : MessagePost = Body(examples =
         user: User = User.parse_obj(users.find_one({"_id": ObjectId(message.sender_id)}))
         new_message.sender_id = str(user.id)
         new_message.sender_username = user.username
+        new_message.photo = user.photo
     except: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 

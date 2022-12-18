@@ -46,7 +46,6 @@ class AddressBase(BaseModel):
     longitude: Union[float, None] = None
     latitude: Union[float, None] = None
 
-
 class MessageBase(BaseModel):
     sender_id: str
     sender_username: str
@@ -55,6 +54,7 @@ class MessageBase(BaseModel):
     response_to: Union[str, None] = None
     house_id: Union[str, None] = None
     chat_id: Union[str, None] = None
+    photo: Union[str, None] = None
 
 class ChatBase(BaseModel):
     house_address: str 
@@ -65,11 +65,14 @@ class ChatBase(BaseModel):
     owner_username : str 
     guest_id : str 
     guest_username : str
+    guest_photo: Union[str, None] = None
+    owner_photo: Union[str, None] = None
 
 class UserBase(BaseModel):
     username: str
     email: EmailStr
     password_hash: str  
+    photo: Union[str, None] = None
 
 class HouseBase(BaseModel):
     address: AddressBase
@@ -158,6 +161,8 @@ class ChatConstructor(Simplifier):
     owner_username : Union[str, None] = None 
     guest_id : Union[str, None] = None 
     guest_username : Union[str, None] = None
+    guest_photo: Union[str, None] = None
+    owner_photo: Union[str, None] = None
 
 class MessageConstructor(Simplifier):
     sender_id: Union[str, None] = None
@@ -167,11 +172,13 @@ class MessageConstructor(Simplifier):
     response_to: Union[str, None] = None
     house_id: Union[str, None] = None
     chat_id: Union[str, None] = None
+    photo: Union[str, None] = None
 
 class UserConstructor(Simplifier):
     username: Union[str, None] = None
     email: Union[EmailStr, None] = None  
     password_hash: Union[str, None] = None
+    photo: Union[str, None] = None
 
 class HouseConstructor(Simplifier):
     address: Union[AddressConstructor, None] = None
@@ -227,6 +234,7 @@ class MessagePost(BaseModel):
     chat_id: Union[str, None] = None
     response_to: Union[str, None] = None
     house_id: Union[str, None] = None
+    photo: Union[str, None] = None
 
 class BookingPost(BaseModel):
     from_: date
@@ -249,3 +257,4 @@ class UserPost(BaseModel):
     username: str
     email: EmailStr
     password_hash: str
+    photo: Union[str, None] = None

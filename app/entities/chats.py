@@ -158,10 +158,19 @@ def post(booking_id: str):
         owner: User = User.parse_obj(users.find_one({"username": house.owner_name}))
         new_chat.owner_id = str(owner.id) 
         new_chat.owner_username = owner.username
+        new_chat.owner_photo = owner.photo
     except: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no user with that username: {house.owner_name}.")
+
+    try:
+        guest: User = User.parse_obj(users.find_one({"_id": ObjectId(new_chat.guest_id)}))
+        new_chat.guest_photo = guest.photo
+    except: 
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"There is no user with that ID: {new_chat.guest_id}.")
 
     inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat.exclude_unset()))
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))

@@ -7,56 +7,63 @@
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <script src="https://kit.fontawesome.com/76f9b8ee34.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div class="columns is-centered">
-        <div class="column is-four-fifths">
-            {% for message in messages %}
-            <article class="media">
-                <figure class="media-left">
-                    <p class="image is-64x64">
-                        {% if message.photo %}
-                        <img class="is-rounded" src="{{ user.photo }}">
-                        {% else %}
-                        <img class="is-rounded" src="https://cdn.onlinewebfonts.com/svg/img_103581.png">
-                        {% endif %}
-                    </p>
-                </figure>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>{{ message.sender_username }}</strong>
-                            <br>
-                            {{ message.message }}
-                            <br>
-                        </p>
-                    </div>
-                </div>
-            </article>
-            {% endfor %}
-        
-            <article class="media">
-                <figure class="media-left">
-                    <p class="image is-64x64">
-                        <img src="https://bulma.io/images/placeholders/128x128.png">
-                    </p>
-                </figure>
-                <form action="/web/chat">
-                    <div class="media-content">
-                        <div class="field">
-                            <p class="control">
-                                <textarea class="textarea" placeholder="Add a comment..."></textarea>
-                            </p>
-                        </div>
-                        <div class="field">
-                            <p class="control">
-                                <input class="button" type="submit" value="Enviar"/>
-                            </p>
-                        </div>
-                    </div>
-                </form>
-            </article>
-        </div>
-    </div>
+    {% include "navbar.html" %}
+    <section class="hero">
+		<div class="hero-body">
+			<div class="container has-text-centered">
+				<div class="columns is-8 is-variable ">
+					<div class="column">
+						{% for message in messages %}
+                        <article class="media">
+                            <figure class="media-left">
+                                <p class="image is-64x64">
+                                    {% if message.photo %}
+                                    <img class="is-rounded" src="{{ user.photo }}">
+                                    {% else %}
+                                    <img class="is-rounded" src="https://cdn.onlinewebfonts.com/svg/img_103581.png">
+                                    {% endif %}
+                                </p>
+                            </figure>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <strong>{{ message.sender_username }}</strong>
+                                        <br>
+                                        {{ message.message }}
+                                        <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    
+                        <article class="media">
+                            <form action="/chats" method="post">
+                                <div class="media-content">
+                                    <input name="chat_id" value="{{ chat_id }}" hidden/>
+                                    <div class="field">
+                                        <p class="control">
+                                            <textarea name="message" class="textarea" placeholder="Add a comment..."></textarea>
+                                        </p>
+                                    </div>
+                                    <div class="field">
+                                        <p class="control">
+                                            <input class="button" type="submit" value="Enviar"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                        </article>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 </body>

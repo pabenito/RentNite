@@ -8,7 +8,7 @@ from pymongo.collection import Collection
 from pymongo.results import InsertOneResult
 from app.database import db
 from .models import *
-from ..entities import houses as houses_api
+from ..entities import houses as houses_api, chats as chats_api
 from ..opendata.osm import geocode
 
 # Create router
@@ -98,6 +98,11 @@ def create(booking : BookingPost):
     new_booking["state"] = State.REQUESTED.value
 
     inserted_booking: InsertOneResult = bookings.insert_one(new_booking)
+
+    # Crear chat
+    print("created_chat")
+    chats_api.post(inserted_booking.inserted_id)
+
     return Booking.parse_obj(bookings.find_one({"_id": ObjectId(inserted_booking.inserted_id)})).to_response()
 
 @router.put("/{id}")

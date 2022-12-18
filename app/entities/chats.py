@@ -20,7 +20,6 @@ bookings: Collection = db["bookings"]
 # API
 @router.get("/", response_model=list[ChatResponse])
 async def get(
-    house_address: Union[str, None] = Query(default=None, alias="house-address"),
     booking_id: Union[str, None] = Query(default=None, alias="booking-id"), 
     owner_id: Union[str, None] = Query(default=None, alias="owner-id"), 
     guest_id: Union[str, None] = Query(default=None, alias="guest-id"), 
@@ -37,14 +36,6 @@ async def get(
 
     chats_list = result
 
-    if house_address:
-        result = []
-        for chat in chats_list:
-            chat : Chat = chat 
-            if chat.house_address == house_address:
-                result.append(chat)
-        chats_list = result
-    
     if booking_id: 
         result = []
         for chat in chats_list:
@@ -109,10 +100,38 @@ async def get(
 
     return chats_list
 
+@router.get("/user/{user_id}", response_model=list[ChatResponse])
+def get_by_user_id(user_id: str):
+    chats_list: list = list(chats.find())
+    result : list = []
+
+    for chat_dict in chats_list:
+        result.append(Chat.parse_obj(chat_dict))
+    chats_list = result
+
+    result : list = []
+    for chat in chats_list:
+        chat : Chat = chat 
+        if chat.guest_id == user_id:
+            result.append(chat)
+    chats_list = result
+
+    for chat in chats_list:
+        chat : Chat = chat 
+        if chat.owner_id == user_id:
+            result.append(chat)
+    chats_list = result
+
+    result = []
+    for chat in chats_list:
+        chat: Chat = chat
+        result.append(chat.to_response())
+    chats_list = result
+
+    return chats_list
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ChatResponse)
-async def post(chat: ChatPost):    
-    booking_id : str = chat.booking_id
+def post(booking_id: str):    
     new_chat: ChatConstructor = ChatConstructor()
 
     try:
@@ -129,7 +148,7 @@ async def post(chat: ChatPost):
 
     try:
         house: House = House.parse_obj(houses.find_one({"_id": ObjectId(booking.house_id)}))
-        new_chat.house_address = house.address
+        new_chat.house_address = f"{house.address.street}, {house.address.number}, {house.address.city}"
     except: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 

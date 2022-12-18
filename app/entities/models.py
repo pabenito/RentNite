@@ -57,7 +57,7 @@ class MessageBase(BaseModel):
     chat_id: Union[str, None] = None
 
 class ChatBase(BaseModel):
-    house_address: AddressBase 
+    house_address: str 
     booking_from: datetime
     booking_to: datetime
     booking_id : str 
@@ -224,9 +224,9 @@ class ChatPost(BaseModel):
 class MessagePost(BaseModel):
     sender_id: str
     message: str
+    chat_id: Union[str, None] = None
     response_to: Union[str, None] = None
     house_id: Union[str, None] = None
-    chat_id: Union[str, None] = None
 
 class BookingPost(BaseModel):
     from_: date

@@ -63,14 +63,12 @@ templates = Jinja2Templates(directory="templates")
 # Include modules
 app.include_router(
     opendata.router,
-    prefix="/opendata",
-    tags=["opendata"]
+    prefix="/opendata"
 )
 
 app.include_router(
     entities.router,
-    prefix="/entities",
-    tags=["entities"]
+    prefix="/entities"
 )
 
 app.include_router(

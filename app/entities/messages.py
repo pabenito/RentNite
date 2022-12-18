@@ -173,7 +173,7 @@ def post(message : MessagePost = Body(examples =
     new_message.date = datetime.now(timezone("Europe/Madrid"))
     new_message.message = message.message
 
-    inserted_message: InsertOneResult = messages.insert_one(jsonable_encoder(new_message.exclude_unset()))
+    inserted_message: InsertOneResult = messages.insert_one(new_message.exclude_unset())
     created_message: Message = Message.parse_obj(messages.find_one({"_id": ObjectId(inserted_message.inserted_id)}))
 
     return created_message.to_response()

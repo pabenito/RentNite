@@ -172,7 +172,7 @@ def post(booking_id: str):
             status_code=status.HTTP_404_NOT_FOUND, 
             detail=f"There is no user with that ID: {new_chat.guest_id}.")
 
-    inserted_chat: InsertOneResult = chats.insert_one(jsonable_encoder(new_chat.exclude_unset()))
+    inserted_chat: InsertOneResult = chats.insert_one(new_chat.exclude_unset())
     created_chat: Chat = Chat.parse_obj(chats.find_one({"_id": ObjectId(inserted_chat.inserted_id)}))
 
     return created_chat.to_response()

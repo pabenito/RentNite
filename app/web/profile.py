@@ -21,6 +21,8 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/", response_class=HTMLResponse)
 def perfil_usuario(request: Request):
     user = login.get_user()
+    print(request)
+    print(users_api.get_by_id(user))
     if user is None:
         return login.redirect()
 

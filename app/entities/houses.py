@@ -15,6 +15,7 @@ router = APIRouter()
 houses: Collection = db["houses"]
 bookings: Collection = db["bookings"]
 users: Collection = db["users"]
+ratings: Collection = db["ratings"]
 
 # API
 @router.get("/")
@@ -120,12 +121,15 @@ def update(id: str, house: HouseConstructor):
 @router.delete("/{id}")
 def delete(id: str):
     try:
-        house = houses.find_one_and_delete({"_id": ObjectId(id)})
+        house = houses.find_one({"_id": ObjectId(id)})
     except:
         house = None
 
     if house is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "House not found.")
+
+    houses.delete_one({"_id": ObjectId(id)})
+    ratings.delete_many({"rated_house_id": id})
 
     return house
 

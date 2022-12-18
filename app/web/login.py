@@ -102,17 +102,11 @@ async def generate_token(request: Request, form_data: OAuth2PasswordRequestForm 
     if not user:
         return login(request, "Usuario o contraseña no validos")
     singleton = Singleton()
-    s = singleton
     singleton.user = user
-    a = singleton.user
-    print(s)
-    print("")
-    print(a)
     return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)
 
 def get_user():
-    session = Singleton()
-    return session.user
+    return Singleton().__user__()
 
 def redirect():
     return RedirectResponse("/login", status_code = status.HTTP_303_SEE_OTHER)

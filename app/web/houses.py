@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory = "templates")
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request):
     user_id = login.get_user()
-
+    login.gestion_Cookies()
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": user_id})
 
 @router.get("/myHouses", response_class = HTMLResponse)

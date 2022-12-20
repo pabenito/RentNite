@@ -110,3 +110,10 @@ def get_user():
 
 def redirect():
     return RedirectResponse("/login", status_code = status.HTTP_303_SEE_OTHER)
+
+import requests
+
+def gestion_Cookies(request: Request):
+    response = requests.get("")
+    
+   

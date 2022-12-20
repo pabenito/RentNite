@@ -16,4 +16,4 @@ fastapi_sso
 authlib
 python-dotenv
 braintree
-requests-futures
+requests

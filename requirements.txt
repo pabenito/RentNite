@@ -4,7 +4,6 @@ fastapi
 uvicorn[standard]
 pymongo[srv]
 pytest
-requests
 email-validator
 jinja2
 pytz
@@ -17,3 +16,4 @@ fastapi_sso
 authlib
 python-dotenv
 braintree
+requests-futures

@@ -7,11 +7,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import sha256_crypt
 from ..entities.models import *
 from fastapi_sso.sso.google import GoogleSSO
-import requests
+from requests_futures.sessions import FuturesSession
 
 router = APIRouter()
 
-session = requests.session()
+session: FuturesSession = FuturesSession()
 
 base_url="http://127.0.0.1:8000"
 headers = {"accept": "application/json", "Content-Type": "application/json"}
@@ -41,8 +41,9 @@ def login_Google(email: str, username: str):
     if not user:
         user = users_api.createAUX(username, email)
     print(f"Hey, google callback. {base_url}/login/user user_id:{user['id']}")
-    requests.post(base_url + "/login/user", headers = headers, data=user["id"])
+    result = session.post(base_url + "/login/user", headers = headers, json={"user_id" : user["id"]}).result()
     print("End")
+    return result
 
 @router.get("/", response_class=HTMLResponse)
 def login(request: Request, login_error: str = "", registration_error: str = "", registration_success_message: str = ""):
@@ -66,26 +67,29 @@ def logout(request: Request):
     salida.user = None
     return RedirectResponse("/")
 
+def get_user():
+    user_id = session.get(base_url + "/login/user").result().json()
+    print(user_id)
+    return user_id
+
+# Cookies
 
 @router.post('/token')
 async def generate_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         return login(request, "Usuario o contraseña no validos")
-    requests.post(base_url + "/login/user", data={"user_id":user.id})
+    result = session.post(base_url + "/login/user", data={"user_id":user.id}).result()
     return RedirectResponse("/houses", status_code=status.HTTP_303_SEE_OTHER)
+    return result
 
 @router.post('/user')
-def generate_token(response: Response, user_id: str = Body()):
+async def post_user_id(response: Response, user_id: Union[str, None] = Body(default=None)):
     print(f"Hey, post {user_id}")
     response.set_cookie("user_id", user_id)
     return user_id
 
 @router.get('/user')
-def get_user_id(user_id: str = Cookie()):
-    return user_id
-
-def get_user():
-    user_id = requests.get(base_url + "/login/user").json().get("user_id")
-    print(user_id)
+def get_user_id(user_id: Union[str, None] = Cookie(default=None)):
+    print("get user cookie")
     return user_id

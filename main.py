@@ -22,14 +22,7 @@ app = FastAPI()
 """
 
 from fastapi import FastAPI, Request
-from fastapi_sso.sso.google import GoogleSSO
 
-
-google_sso = GoogleSSO(
-    environ["GOOGLE_CLIENT_ID"],
-    environ["GOOGLE_CLIENT_SECRET"],
-    environ["APP_URL"]
-)
 
 app.add_middleware(
     CORSMiddleware,

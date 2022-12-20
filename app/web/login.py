@@ -8,14 +8,22 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.hash import sha256_crypt
 from ..entities.models import *
 from fastapi_sso.sso.google import GoogleSSO
+from os import environ
+import requests
 
-base_url="http://127.0.0.1:8000"
+google_sso = GoogleSSO(
+    environ["GOOGLE_CLIENT_ID"],
+    environ["GOOGLE_CLIENT_SECRET"],
+    environ["APP_URL"]
+)
+
+base_url=environ["base_url"]
 
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
-user_id: Union[str, None] = "default"
+user_id: Union[str, None] = None
 
 # OAUTH2
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
@@ -60,6 +68,7 @@ async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     global user_id
     user_id = user_id_
     response.set_cookie("user_id", user_id_)
+    
     return response
 
 # Google
@@ -88,11 +97,11 @@ async def google_callback(request: Request):
 def logout():
     response = RedirectResponse(base_url)
     global user_id
-    user_id = "deleted"
+    user_id = None
     response.delete_cookie("user_id")
     return response
 
 # Cookies
 
-def get_user():
+def get_user(response: Response):
     return user_id

@@ -10,7 +10,7 @@ from passlib.hash import sha256_crypt
 from .. import cloudinary as cloud
 from datetime import datetime, date, time
 from pytz import timezone
-
+from typing import Union
 
 
 router = APIRouter()
@@ -19,24 +19,24 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-def perfil_usuario(request: Request):
-    user = login.get_user()
+def perfil_usuario(request: Request, user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "perfil": user})
 
 @router.get("/edit", response_class=HTMLResponse)
-def edit(request: Request, error: str = ""):
-    user = login.get_user()
+def edit(request: Request, error: str = "", user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "editable": True, "error": error})
 
 @router.get("/{id}", response_class=HTMLResponse)
-def perfil_usuario_distinto(request: Request, id: str):
-    user = login.get_user()
+def perfil_usuario_distinto(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
 
     if user is None:
         user_can_rate = True
@@ -48,8 +48,8 @@ def perfil_usuario_distinto(request: Request, id: str):
 
 
 @router.post("/{id}/addRate", response_class=HTMLResponse)
-def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()):
-    user = login.get_user()
+def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form(), user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -61,8 +61,8 @@ def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()
     return perfil_usuario_distinto(request, id)
 
 @router.get("/{id}/deleteRate/{rate_id}", response_class = HTMLResponse)
-def delete_rating(request: Request, id: str, rate_id: str):
-    user = login.get_user()
+def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -71,8 +71,8 @@ def delete_rating(request: Request, id: str, rate_id: str):
     return perfil_usuario_distinto(request, id)
 
 @router.post("/uploadPhoto", response_class=HTMLResponse)
-def upload_photo(request: Request, file: UploadFile = File(...)):
-    user = login.get_user()
+def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -93,8 +93,8 @@ def upload_photo(request: Request, file: UploadFile = File(...)):
     return perfil_usuario(request)
 
 @router.post("/save", response_class=HTMLResponse)
-def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form()):
-    user = login.get_user()
+def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -110,8 +110,8 @@ def save(request: Request,newpassword: str = Form(), password: str = Form(), use
         return edit(request, e.detail)
     
 @router.post("/saveGoogle", response_class=HTMLResponse)
-def save_Google(request: Request,username: str = Form()):
-    user = login.get_user()
+def save_Google(request: Request,username: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
+    user = user_id
     if user is None:
         return login.redirect()
     try:

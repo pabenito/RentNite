@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Request, Form, HTTPException
+from typing import Union
+from fastapi import APIRouter, Request, Form, HTTPException, Cookie
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from datetime import date
@@ -14,9 +15,9 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 @router.get("/booked", response_class=HTMLResponse)
-def my_bookings(request: Request):
+def my_bookings(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     # List of bookings that you have booked
-    user = login.get_user()
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -26,9 +27,9 @@ def my_bookings(request: Request):
         "user_id": user})
 
 @router.get("/myHouses", response_class=HTMLResponse)
-def houses_booked(request: Request):
+def houses_booked(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     # List of bookings with your houses
-    user = login.get_user()
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -38,9 +39,9 @@ def houses_booked(request: Request):
         "user_id": user})
 
 @router.get("/{id}", response_class=HTMLResponse)
-def booking_details(request: Request, id: str):
+def booking_details(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
     # Booking details given its id
-    user = login.get_user()
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -48,9 +49,9 @@ def booking_details(request: Request, id: str):
     return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user_id": user, "State": State})
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
-def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form(), nonce: str = Form()):
+def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form(), nonce: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     # Create a new booking given a house id
-    user = login.get_user()
+    user = user_id
     if user is None:
         return login.redirect()
 
@@ -67,9 +68,9 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
     return booking_details(request, inserted_booking["id"])
 
 @router.post("/{id}")
-def update_booking_state(request: Request, id: str, state: State = Form()):
+def update_booking_state(request: Request, id: str, state: State = Form(), user_id: Union[str, None] = Cookie(default=None)):
     # Update a booking from a form
-    user = login.get_user()
+    user = user_id
     if user is None:
         return login.redirect()
 

@@ -100,8 +100,3 @@ def logout():
     user_id = None
     response.delete_cookie("user_id")
     return response
-
-# Cookies
-
-def get_user(response: Response):
-    return user_id

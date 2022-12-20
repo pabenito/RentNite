@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import APIRouter, Request, Form, File, UploadFile
+from fastapi import APIRouter, Request, Form, File, UploadFile, Cookie
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
@@ -20,22 +20,18 @@ router = APIRouter()
 templates = Jinja2Templates(directory = "templates")
 
 @router.get("/", response_class = HTMLResponse)
-def read_item(request: Request):
-    user_id = login.get_user()
-
+def read_item(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": user_id})
 
 @router.get("/myHouses", response_class = HTMLResponse)
-def my_houses(request: Request):
-    user_id = login.get_user()
+def my_houses(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "user_id": user_id})
 
 @router.get("/create", response_class = HTMLResponse)
-def create_house(request: Request):
-    user_id = login.get_user()
+def create_house(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -44,8 +40,7 @@ def create_house(request: Request):
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
-                 price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File()):
-    user_id = login.get_user()
+                 price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -76,9 +71,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
     return my_houses(request)
 
 @router.get("/{id}", response_class = HTMLResponse)
-def house_details(request: Request, id: str, booking_error: str = ""):
-    user_id = login.get_user()
-
+def house_details(request: Request, id: str, booking_error: str = "", user_id: Union[str, None] = Cookie(default=None)):
     house: dict = houses_api.get_by_id(id)
 
     latitude = house["address"].get("latitude")
@@ -100,8 +93,7 @@ def house_details(request: Request, id: str, booking_error: str = ""):
                                 temperature = temperature)
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
-def edit_house(request: Request, id: str, error: str = ""):
-    user_id = login.get_user()
+def edit_house(request: Request, id: str, error: str = "", user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -110,8 +102,7 @@ def edit_house(request: Request, id: str, error: str = ""):
     return __load_house_details(request, house, user_id, editing = True, error = error)
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
-def delete_house(request: Request, id: str):
-    user_id = login.get_user()
+def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -124,8 +115,7 @@ def delete_house(request: Request, id: str):
     return my_houses(request)
 
 @router.post("/{id}/addComment", response_class = HTMLResponse)
-def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
-    user_id = login.get_user()
+def add_comment(request: Request, id: str, comment: str = Form(title="coment"), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -135,8 +125,7 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment")):
     return house_details(request, id)
 
 @router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
-def delete_comment(request: Request, id: str, comment_id: str):
-    user_id = login.get_user()
+def delete_comment(request: Request, id: str, comment_id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         login.redirect()
 
@@ -145,8 +134,7 @@ def delete_comment(request: Request, id: str, comment_id: str):
     return house_details(request, id)
     
 @router.post("/{id}/addRating", response_class=HTMLResponse)
-def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form()):
-    user_id = login.get_user()
+def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 
@@ -158,8 +146,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
     return house_details(request, id) 
 
 @router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
-def delete_rating(request: Request, id: str, rating_id: str):
-    user_id = login.get_user()
+def delete_rating(request: Request, id: str, rating_id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return login.redirect()
 

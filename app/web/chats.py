@@ -19,8 +19,10 @@ templates = Jinja2Templates(directory = "templates")
 @router.get("/")
 def html(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     chats: list = chats_api.get_by_user_id(user_id)
-    if chats == []:
+    if user_id is None:
         return RedirectResponse("/login")
+    if chats == []:
+        return templates.TemplateResponse("noChats.html", {"request": request})
     return templates.TemplateResponse("chats.html", {"request": request, "chats": chats, "user_id": user_id})
 
 @router.get("/{chat_id}")

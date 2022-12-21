@@ -23,8 +23,6 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="templates")
 
-user_id: Union[str, None] = None
-
 # OAUTH2
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
@@ -60,15 +58,12 @@ def create_user(request: Request, username: str = Form(), correo: str = Form(), 
     return login(request, registration_success_message="Usuario registrado con exito")
 
 @router.post('/token')
-async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user_id_ = await authenticate_user(form_data.username, form_data.password)
-    if not user:
+async def generate_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+    user_id = await authenticate_user(form_data.username, form_data.password)
+    if not user_id:
         return login(request, "Usuario o contraseña no validos")
-    response = RedirectResponse(base_url)
-    global user_id
-    user_id = user_id_
-    response.set_cookie("user_id", user_id_)
-    
+    response = RedirectResponse(base_url, status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie("user_id", user_id)
     return response
 
 # Google
@@ -88,15 +83,11 @@ async def google_callback(request: Request):
         user = users_api.createAUX(user_google.username, user_google.email)
 
     redirect: RedirectResponse = RedirectResponse(base_url)
-    global user_id
-    user_id = user["id"]
     redirect.set_cookie("user_id", user["id"])
     return redirect
 
 @router.get("/logout")
 def logout():
     response = RedirectResponse(base_url)
-    global user_id
-    user_id = None
     response.delete_cookie("user_id")
     return response

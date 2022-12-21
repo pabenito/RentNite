@@ -29,7 +29,7 @@ bookings = db["bookings"]
 def create(username: str, email: str, password: str):
     users_with_same_email = general_get(email = email)
 
-    if len(users_with_same_email) > 0:
+    if users_with_same_email is not None and len(users_with_same_email) > 0:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
 
     salida = sha256_crypt.hash(password)

@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="templates")
 def perfil_usuario(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "perfil": user})
 
@@ -30,7 +30,7 @@ def perfil_usuario(request: Request, user_id: Union[str, None] = Cookie(default=
 def edit(request: Request, error: str = "", user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("profile.html", {"request": request, "user": users_api.get_by_id(user), "rating": ratings_api.get(None, user, None, None, None, None, None), "user_id": user, "editable": True, "error": error})
 
@@ -51,7 +51,7 @@ def perfil_usuario_distinto(request: Request, id: str, user_id: Union[str, None]
 def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
@@ -64,7 +64,7 @@ def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()
 def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     ratings_api.delete(rate_id)
 
@@ -74,7 +74,7 @@ def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, N
 def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     user_class = users_api.get_by_id(user)
 
@@ -90,32 +90,32 @@ def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[
     #Upload photo to cloudinary
     cloud.upload_photo_user(user=user,file=file)
     
-    return perfil_usuario(request)
+    return perfil_usuario(request, user)
 
 @router.post("/save", response_class=HTMLResponse)
 def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
-
+        return RedirectResponse("/login")
+    
     user_object : models.User = users_api.get_by_id(user)
     try:
         if login.verify_password(user=user_object,password=password):
             users_api.update(id=user, username=username,
                         email=email, password=newpassword)
-            return perfil_usuario(request)
+            return perfil_usuario(request, user)
         else:
-            return edit(request,"Contraseña antigua mal introducida")
+            return edit(request,"Contraseña antigua mal introducida", user)
     except HTTPException as e:
-        return edit(request, e.detail)
+        return edit(request, e.detail, user)
     
 @router.post("/saveGoogle", response_class=HTMLResponse)
 def save_Google(request: Request,username: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
     try:
         users_api.update(id=user, username=username)
-        return perfil_usuario(request)
+        return perfil_usuario(request, user)
     except HTTPException as e:
-        return edit(request, e.detail)
+        return edit(request, e.detail, user)

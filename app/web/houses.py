@@ -1,6 +1,6 @@
 from typing import Union
 from fastapi import APIRouter, Request, Form, File, UploadFile, Cookie
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
 from . import login
@@ -26,14 +26,14 @@ def read_item(request: Request, user_id: Union[str, None] = Cookie(default=None)
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "user_id": user_id})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id}
     return __load_house_details(request, house, user_id, creating = True)
@@ -42,7 +42,7 @@ def create_house(request: Request, user_id: Union[str, None] = Cookie(default=No
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
                  price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     if id == "None":
         address = AddressPost(city = city, street = street, number = number)
@@ -95,7 +95,7 @@ def house_details(request: Request, id: str, booking_error: str = "", user_id: U
 @router.get("/{id}/edit", response_class = HTMLResponse)
 def edit_house(request: Request, id: str, error: str = "", user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     house: dict = houses_api.get_by_id(id)
 
@@ -104,7 +104,7 @@ def edit_house(request: Request, id: str, error: str = "", user_id: Union[str, N
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     house: dict = houses_api.delete(id)
 
@@ -117,7 +117,7 @@ def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(d
 @router.post("/{id}/addComment", response_class = HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment"), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
     messages_api.post(message)
@@ -127,7 +127,7 @@ def add_comment(request: Request, id: str, comment: str = Form(title="coment"), 
 @router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
 def delete_comment(request: Request, id: str, comment_id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        login.redirect()
+        RedirectResponse("/login")
 
     messages_api.delete(comment_id)
 
@@ -136,7 +136,7 @@ def delete_comment(request: Request, id: str, comment_id: str, user_id: Union[st
 @router.post("/{id}/addRating", response_class=HTMLResponse)
 def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : RatingPost = RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
@@ -148,7 +148,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
 @router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rating_id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     ratings_api.delete(rating_id)
 

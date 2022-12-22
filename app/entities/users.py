@@ -18,6 +18,9 @@ router = APIRouter()
 users = db["users"]
 houses = db["houses"]
 bookings = db["bookings"]
+chats = db["chats"]
+messages = db["messages"]
+ratings = db["ratings"]
 
 # API
 
@@ -29,7 +32,7 @@ bookings = db["bookings"]
 def create(username: str, email: str, password: str):
     users_with_same_email = general_get(email = email)
 
-    if users_with_same_email is not None and len(users_with_same_email) > 0:
+    if users_with_same_email is not None:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
 
     salida = sha256_crypt.hash(password)
@@ -56,10 +59,10 @@ def createAUX(username: str, email: str):
 @router.put("/{id}")
 def update(id: str, username: Union[str, None] = None, email: Union[str, None] = None,  password: Union[str, None] = None, photo: Union[str, None] = None):
     if email is not None:
+        user = get_by_id(id)
         users_with_same_email = general_get(email = email)
-        length = len(users_with_same_email)
 
-        if length > 1 or (length == 1 and users_with_same_email[0]["id"] != id):
+        if users_with_same_email is not None and user["email"] != email:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, "El email ya esta en uso")
 
     if password is not None:
@@ -83,7 +86,17 @@ def update(id: str, username: Union[str, None] = None, email: Union[str, None] =
     except:
         user = None
 
-    
+    if user is None:
+        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = "Usuario no encontrado")
+
+    # Actualiza el nombre de usuario en el resto de colecciones
+    if username is not None:
+        houses.update_many(filter = {"owner_id": id}, update = {"$set": {"owner_name": username}})
+        bookings.update_many(filter = {"guest_id": id}, update = {"$set": {"guest_name": username}})
+        chats.update_many(filter = {"owner_id": id}, update = {"$set": {"owner_username": username}})
+        chats.update_many(filter = {"guest_id": id}, update = {"$set": {"guest_username": username}})
+        messages.update_many(filter = {"sender_id": id}, update = {"$set": {"sender_username": username}})
+        ratings.update_many(filter = {"rated_user_id": id}, update = {"$set": {"rated_user_Name": username}})
 
 # Devuelve un usuario por su id
 

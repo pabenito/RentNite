@@ -1,6 +1,6 @@
 from typing import Union
 from fastapi import APIRouter, Request, Form, HTTPException, Cookie
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from datetime import date
 from ..entities import bookings as bookings_api
@@ -19,41 +19,41 @@ def my_bookings(request: Request, user_id: Union[str, None] = Cookie(default=Non
     # List of bookings that you have booked
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("bookings.html", {"request": request,
-        "bookings": bookings_api.search(guest_id=user),
+        "bookings": bookings_api.search(guest_id=str(user)),
         "title": "Mis reservas",
-        "user_id": user})
+        "user_id": str(user)})
 
 @router.get("/myHouses", response_class=HTMLResponse)
 def houses_booked(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     # List of bookings with your houses
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     return templates.TemplateResponse("bookings.html", {"request": request,
-        "bookings": bookings_api.get_by_house_owner_id(owner_id=user),
+        "bookings": bookings_api.get_by_house_owner_id(owner_id=str(user)),
         "title": "Reservas de mis casas",
-        "user_id": user})
+        "user_id": str(user)})
 
 @router.get("/{id}", response_class=HTMLResponse)
 def booking_details(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
     # Booking details given its id
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     booking = bookings_api.get_by_id(id)
-    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user_id": user, "State": State})
+    return templates.TemplateResponse("bookingDetails.html", {"request": request, "booking": booking, "house": houses_api.get_by_id(booking["house_id"]), "user_id": str(user), "State": State})
 
 @router.post("/{id}/requestBooking", response_class=HTMLResponse)
 def create_booking(request: Request, id: str, from_: date = Form(), to: date = Form(), guest_id: str = Form(), cost: str = Form(), nonce: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     # Create a new booking given a house id
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     cost_float = float(cost)
 
@@ -61,22 +61,22 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
         booking: BookingPost = BookingPost(house_id=id, from_=from_, to=to, guest_id=guest_id, cost=cost_float)
         inserted_booking = bookings_api.create(booking)
     except HTTPException as e:
-        return houses.house_details(request, id, booking_error=e.detail)
+        return houses.house_details(request, id, booking_error=e.detail, user_id = user_id)
 
     pay(cost, nonce)
 
-    return booking_details(request, inserted_booking["id"])
+    return booking_details(request, inserted_booking["id"], user_id)
 
 @router.post("/{id}")
 def update_booking_state(request: Request, id: str, state: State = Form(), user_id: Union[str, None] = Cookie(default=None)):
     # Update a booking from a form
     user = user_id
     if user is None:
-        return login.redirect()
+        return RedirectResponse("/login")
 
     booking_cons: BookingConstructor = BookingConstructor(state=state)
     bookings_api.update(id=id, booking=booking_cons)
-    return booking_details(request=request, id=id)
+    return booking_details(request=request, id=id, user_id=user_id)
 
 '''
 @router.get("/{id}/chat")

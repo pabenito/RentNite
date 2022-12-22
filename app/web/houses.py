@@ -21,22 +21,22 @@ templates = Jinja2Templates(directory = "templates")
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request, user_id: Union[str, None] = Cookie(default=None)):
-    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": user_id})
+    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": str(user_id)})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login")    
 
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = user_id), "user_id": user_id})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = str(user_id)), "user_id": str(user_id)})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return RedirectResponse("/login")
 
-    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": user_id}
-    return __load_house_details(request, house, user_id, creating = True)
+    house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": str(user_id)}
+    return __load_house_details(request, house, str(user_id), creating = True)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
@@ -46,7 +46,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
 
     if id == "None":
         address = AddressPost(city = city, street = street, number = number)
-        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = user_id)
+        house = HousePost(address = address, capacity = capacity, price = price, rooms = rooms, bathrooms = bathrooms, owner_id = str(user_id))
 
         if file.filename != "":
             house.image = cloud.upload_photo_house(file = file)
@@ -68,7 +68,7 @@ def update_house(request: Request, id: str = Form(), city: str = Form(), street:
 
         houses_api.update(id, house)
 
-    return my_houses(request)
+    return my_houses(request, user_id)
 
 @router.get("/{id}", response_class = HTMLResponse)
 def house_details(request: Request, id: str, booking_error: str = "", user_id: Union[str, None] = Cookie(default=None)):
@@ -89,7 +89,7 @@ def house_details(request: Request, id: str, booking_error: str = "", user_id: U
     today: date = date.today()
     tomorrow: date = today + timedelta(1)
 
-    return __load_house_details(request, house, user_id, error = booking_error, comments = comments, ratings = ratings, weather = weather, 
+    return __load_house_details(request, house, str(user_id), error = booking_error, comments = comments, ratings = ratings, weather = weather, 
                                 temperature = temperature)
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
@@ -99,7 +99,7 @@ def edit_house(request: Request, id: str, error: str = "", user_id: Union[str, N
 
     house: dict = houses_api.get_by_id(id)
 
-    return __load_house_details(request, house, user_id, editing = True, error = error)
+    return __load_house_details(request, house, str(user_id), editing = True, error = error)
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
@@ -112,14 +112,14 @@ def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(d
         photo_id = cloud.get_photo_id(url = house["image"])
         cloud.delete_photo(name = photo_id)
 
-    return my_houses(request)
+    return my_houses(request, user_id)
 
 @router.post("/{id}/addComment", response_class = HTMLResponse)
 def add_comment(request: Request, id: str, comment: str = Form(title="coment"), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return RedirectResponse("/login")
 
-    message: MessagePost = MessagePost(sender_id=user_id, message=comment, house_id=id)
+    message: MessagePost = MessagePost(sender_id=str(user_id), message=comment, house_id=id)
     messages_api.post(message)
 
     return house_details(request, id)
@@ -139,7 +139,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
         return RedirectResponse("/login")
 
     date = datetime.now(timezone("Europe/Madrid"))
-    rt : RatingPost = RatingPost(rater_id=user_id ,date=date,rated_user_id=None,
+    rt : RatingPost = RatingPost(rater_id=str(user_id) ,date=date,rated_user_id=None,
                                                rated_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 

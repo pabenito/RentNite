@@ -96,7 +96,7 @@ def update(id: str, username: Union[str, None] = None, email: Union[str, None] =
         chats.update_many(filter = {"owner_id": id}, update = {"$set": {"owner_username": username}})
         chats.update_many(filter = {"guest_id": id}, update = {"$set": {"guest_username": username}})
         messages.update_many(filter = {"sender_id": id}, update = {"$set": {"sender_username": username}})
-        ratings.update_many(filter = {"rated_user_id": id}, update = {"$set": {"rated_user_Name": username}})
+        ratings.update_many(filter = {"rater_id": id}, update = {"$set": {"rated_user_Name": username}})
 
 # Devuelve un usuario por su id
 

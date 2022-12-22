@@ -80,7 +80,7 @@ def update_booking_state(request: Request, id: str, state: State = Form(), user_
 
 
 @router.get("/{id}/chat")
-def goto_chat(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
+def goto_chat(id: str, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return RedirectResponse("/login")
 

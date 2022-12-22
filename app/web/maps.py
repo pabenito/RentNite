@@ -1,12 +1,7 @@
 from branca.element import Figure
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse
 from folium import Map, Marker, Popup, Icon
-from pydantic import BaseModel
-import requests
-
-from app.entities.models import House
-from app.entities import houses as houses_api
 
 
 router = APIRouter()

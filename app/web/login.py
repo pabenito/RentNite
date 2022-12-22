@@ -1,7 +1,5 @@
-from typing import Union
-from fastapi import APIRouter, Request, Cookie, Depends, Form, HTTPException, status, Response, Body
+from fastapi import APIRouter, Request, Depends, Form, HTTPException, status
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -9,7 +7,6 @@ from passlib.hash import sha256_crypt
 from ..entities.models import *
 from fastapi_sso.sso.google import GoogleSSO
 from os import environ
-import requests
 
 google_sso = GoogleSSO(
     environ["GOOGLE_CLIENT_ID"],

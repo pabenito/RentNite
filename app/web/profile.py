@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Request, Cookie, Form, File, UploadFile, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from ..entities import users as users_api
 from ..entities import ratings as ratings_api
 from app.entities import models
 from app.web import login
-from passlib.hash import sha256_crypt
 from .. import cloudinary as cloud
-from datetime import datetime, date, time
+from datetime import datetime
 from pytz import timezone
 from typing import Union
 

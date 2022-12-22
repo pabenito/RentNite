@@ -19,7 +19,7 @@ bookings: Collection = db["bookings"]
 
 # API
 @router.get("/", response_model=list[ChatResponse])
-async def get(
+def get(
     booking_id: Union[str, None] = Query(default=None, alias="booking-id"), 
     owner_id: Union[str, None] = Query(default=None, alias="owner-id"), 
     guest_id: Union[str, None] = Query(default=None, alias="guest-id"), 

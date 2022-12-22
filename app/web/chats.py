@@ -1,11 +1,8 @@
 from fastapi import APIRouter, Request, Form, status, Cookie
 from fastapi.templating import Jinja2Templates
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import RedirectResponse
 from typing import Union
-import requests
 
-from app.web import login as login_api
 from app.entities import chats as chats_api, messages as messages_api
 from app.entities.models import MessageConstructor
 

@@ -3,7 +3,6 @@ from fastapi import APIRouter, Request, Form, File, UploadFile, Cookie
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
-from . import login
 from ..entities import houses as houses_api
 from ..entities import bookings as bookings_api
 from ..entities import messages as messages_api
@@ -12,7 +11,6 @@ from datetime import date, datetime, timedelta
 from ..opendata import aemet as aemet_api
 from .. import cloudinary as cloud
 from ..payments import get_token
-from app.entities import models
 from pytz import timezone
 
 router = APIRouter()

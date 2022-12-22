@@ -1,11 +1,11 @@
 from typing import Union
-from fastapi import APIRouter, Request, Form, HTTPException, Cookie
+from fastapi import APIRouter, Request, Form, HTTPException, Cookie, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from datetime import date
 from ..entities import bookings as bookings_api
 from ..entities import houses as houses_api
-from ..web import login
+from ..entities import chats as chats_api
 from ..entities.models import *
 from ..payments import pay
 from . import houses
@@ -78,10 +78,11 @@ def update_booking_state(request: Request, id: str, state: State = Form(), user_
     bookings_api.update(id=id, booking=booking_cons)
     return booking_details(request=request, id=id, user_id=user_id)
 
-'''
+
 @router.get("/{id}/chat")
-def goto_chat(request: Request, id: str):
-    # TODO
-    # This will send you to the chat page of the booking
-    return None
-'''
+def goto_chat(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
+    if user_id is None:
+        return RedirectResponse("/login")
+
+    chat_id = chats_api.get(id, None, None, None, None, None, None)[0]["id"]
+    return RedirectResponse(f"/chats/{chat_id}", status_code = status.HTTP_303_SEE_OTHER)

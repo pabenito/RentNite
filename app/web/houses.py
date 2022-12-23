@@ -19,14 +19,14 @@ templates = Jinja2Templates(directory = "templates")
 
 @router.get("/", response_class = HTMLResponse)
 def read_item(request: Request, user_id: Union[str, None] = Cookie(default=None)):
-    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": str(user_id)})
+    return templates.TemplateResponse("offeredHouses.html", {"request": request, "houses": houses_api.get(), "user_id": user_id})
 
 @router.get("/myHouses", response_class = HTMLResponse)
 def my_houses(request: Request, user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
         return RedirectResponse("/login")    
 
-    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = str(user_id)), "user_id": str(user_id)})
+    return templates.TemplateResponse("myHouses.html", {"request": request, "houses": houses_api.get(owner_id = str(user_id)), "user_id": user_id})
 
 @router.get("/create", response_class = HTMLResponse)
 def create_house(request: Request, user_id: Union[str, None] = Cookie(default=None)):
@@ -34,7 +34,7 @@ def create_house(request: Request, user_id: Union[str, None] = Cookie(default=No
         return RedirectResponse("/login")
 
     house: dict = {"address": {"city": "", "street": "", "number": 1}, "capacity": 1, "price": 0.01, "rooms": 1, "bathrooms": 1, "owner_id": str(user_id)}
-    return __load_house_details(request, house, str(user_id), creating = True)
+    return __load_house_details(request, house, user_id, creating = True)
 
 @router.post("/save", response_class = HTMLResponse)
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
@@ -87,7 +87,7 @@ def house_details(request: Request, id: str, booking_error: str = "", user_id: U
     today: date = date.today()
     tomorrow: date = today + timedelta(1)
 
-    return __load_house_details(request, house, str(user_id), error = booking_error, comments = comments, ratings = ratings, weather = weather, 
+    return __load_house_details(request, house, user_id, error = booking_error, comments = comments, ratings = ratings, weather = weather, 
                                 temperature = temperature)
 
 @router.get("/{id}/edit", response_class = HTMLResponse)
@@ -97,7 +97,7 @@ def edit_house(request: Request, id: str, error: str = "", user_id: Union[str, N
 
     house: dict = houses_api.get_by_id(id)
 
-    return __load_house_details(request, house, str(user_id), editing = True, error = error)
+    return __load_house_details(request, house, user_id, editing = True, error = error)
 
 @router.get("/{id}/delete", response_class = HTMLResponse)
 def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(default=None)):
@@ -163,9 +163,9 @@ def __load_house_details(request: Request, house: dict, user_id: Union[str, None
     else:
         today = date.today()
         tomorrow = today + timedelta(1)
-        user_can_rate = __user_can_rate(user_id, house)
+        user_can_rate = __user_can_rate(str(user_id), house)
 
-    payment_token = get_token(user_id)
+    payment_token = get_token(str(user_id))
     
     return templates.TemplateResponse("houseDetails.html", {"request": request, "house": house, "user_id": user_id, "creating": creating, 
                                                             "editing": editing, "error": error, "comments": comments, "ratings": ratings, 

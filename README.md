@@ -19,4 +19,4 @@ An AirBnB like web.
 
 ![USE diagram](img/use.png)
 ![IFML diagram](img/ifml.png)
-![Deployment diagram](img/DeploymentDiagram.jpg)
+![Deployment diagram](img/DeploymentDiagram.png)

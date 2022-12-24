@@ -56,7 +56,7 @@ def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form()
                                                rated_user_Name=None,rated_house_id=None,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
-    return perfil_usuario_distinto(request, id)
+    return perfil_usuario_distinto(request, id, user_id)
 
 @router.get("/{id}/deleteRate/{rate_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, None] = Cookie(default=None)):
@@ -66,7 +66,7 @@ def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, N
 
     ratings_api.delete(rate_id)
 
-    return perfil_usuario_distinto(request, id)
+    return perfil_usuario_distinto(request, id, user_id)
 
 @router.post("/uploadPhoto", response_class=HTMLResponse)
 def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[str, None] = Cookie(default=None)):

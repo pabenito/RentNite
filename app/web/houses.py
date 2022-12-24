@@ -111,25 +111,6 @@ def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(d
         cloud.delete_photo(name = photo_id)
 
     return my_houses(request, user_id)
-
-@router.post("/{id}/addComment", response_class = HTMLResponse)
-def add_comment(request: Request, id: str, comment: str = Form(title="coment"), user_id: Union[str, None] = Cookie(default=None)):
-    if user_id is None:
-        return RedirectResponse("/login")
-
-    message: MessagePost = MessagePost(sender_id=str(user_id), message=comment, house_id=id)
-    messages_api.post(message)
-
-    return house_details(request, id)
-
-@router.get("/{id}/deleteComment/{comment_id}", response_class = HTMLResponse)
-def delete_comment(request: Request, id: str, comment_id: str, user_id: Union[str, None] = Cookie(default=None)):
-    if user_id is None:
-        RedirectResponse("/login")
-
-    messages_api.delete(comment_id)
-
-    return house_details(request, id)
     
 @router.post("/{id}/addRating", response_class=HTMLResponse)
 def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
@@ -141,7 +122,7 @@ def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str 
                                                rated_user_Name=None,rated_house_id=id,rate=estrellas,comment=comment)
     ratings_api.create(rt)
 
-    return house_details(request, id) 
+    return house_details(request, id, user_id = user_id) 
 
 @router.get("/{id}/deleteRating/{rating_id}", response_class = HTMLResponse)
 def delete_rating(request: Request, id: str, rating_id: str, user_id: Union[str, None] = Cookie(default=None)):
@@ -150,7 +131,7 @@ def delete_rating(request: Request, id: str, rating_id: str, user_id: Union[str,
 
     ratings_api.delete(rating_id)
 
-    return house_details(request, id)
+    return house_details(request, id, user_id = user_id)
 
 # Private methods
 

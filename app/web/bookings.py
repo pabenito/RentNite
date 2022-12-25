@@ -53,7 +53,7 @@ def create_booking(request: Request, id: str, from_: date = Form(), to: date = F
     # Create a new booking given a house id
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     cost_float = float(cost)
 
@@ -72,7 +72,7 @@ def update_booking_state(request: Request, id: str, state: State = Form(), user_
     # Update a booking from a form
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     booking_cons: BookingConstructor = BookingConstructor(state=state)
     bookings_api.update(id=id, booking=booking_cons)

@@ -49,7 +49,7 @@ def perfil_usuario_distinto(request: Request, id: str, user_id: Union[str, None]
 def add_Rate(request: Request, id: str, estrellas: int = Form(), comment =Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : models.RatingPost = models.RatingPost(rater_id=user ,date=date,rated_user_id=id,
@@ -72,7 +72,7 @@ def delete_rating(request: Request, id: str, rate_id: str, user_id: Union[str, N
 def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     user_class = users_api.get_by_id(user)
 
@@ -94,7 +94,7 @@ def upload_photo(request: Request, file: UploadFile = File(...), user_id: Union[
 def save(request: Request,newpassword: str = Form(), password: str = Form(), username: str = Form(), email: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
     
     user_object : models.User = users_api.get_by_id(user)
     try:
@@ -111,7 +111,7 @@ def save(request: Request,newpassword: str = Form(), password: str = Form(), use
 def save_Google(request: Request,username: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     user = user_id
     if user is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
     try:
         users_api.update(id=user, username=username)
         return perfil_usuario(request, user)

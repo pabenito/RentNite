@@ -18,6 +18,9 @@
     <script src="https://js.braintreegateway.com/web/dropin/1.33.7/js/dropin.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.88.4/js/client.min.js"></script>
     <script src="https://js.braintreegateway.com/web/3.88.4/js/paypal-checkout.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Detalles de la casa - RentNite</title>
     <style>
@@ -101,7 +104,7 @@
     </style>
 </head>
 
-<body onload="createDropin('{{user_id is not none}}', '{{payment_token}}')">
+<body onload="load('{{user_id is not none}}', '{{payment_token}}', '{{house.capacity}}')">
     <!--NavBar-->
     {% include "navbar.html" %}
 
@@ -298,16 +301,32 @@
                 <input type="hidden" name="guest_id" value="{{user_id}}"/>
                 <input type="hidden" id="cost" name="cost" value="{{house.price}}"/>
                 <input type="hidden" id="nonce" name="nonce" value="nonce"/>
+                <input type="date" id="from" name="from_" value="{{today_date}}" style="display: none;"/>
+                <input type="date" id="to" name="to" value="{{tomorrow_date}}" style="display: none;"/>
                 <table class="table table-info">
                     <tr>
-                        <td class="h5">Fecha de comienzo:</td>
-                        <td><input type="date" id="from" name="from_" value={{today_date}} class="form-control"
-                                required onchange="onDateChanged()"/></td>
+                        <td class="h5">Fechas:</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" name="date-range" class="form-control"/>
+                                <div class="input-group-text">
+                                    <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
-                        <td class="h5">Fecha de fin:</td>
-                        <td><input type="date" id="to" name="to" value={{tomorrow_date}} class="form-control" required
-                                onchange="onDateChanged()"/></td>
+                        <td class="h5">N.&deg; de personas:</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-4">
+                                    <input type="number" class="form-control" id="people" value="1" min="1" max="{{house.capacity}}" 
+                                           oninput="changeDate('{{house.capacity}}')"/>
+                                </div>
+                                <span class="col-1 mt-2 text-center">/</span>
+                                <span class="col-1 mt-2 text-center">{{house.capacity}}</span>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td class="h5">Precio:</td>
@@ -411,24 +430,35 @@
                 image.src = URL.createObjectURL(event.target.files[0]);
             }
 
-            function onDateChanged() {
-                const from = new Date(document.getElementById("from").value);
-                const to = new Date(document.getElementById("to").value);
+            function onDateChanged(from, to, people, capacity) {
                 const housePrice = document.getElementById("housePrice").innerText;
+                const fromPost = document.getElementById("from");
+                const toPost = document.getElementById("to");
+
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
 
                 var cost = document.getElementById("cost");
                 var costDisplay = document.getElementById("costDisplay");
-                var today = new Date().setHours(0, 0, 0, 0);
 
-                if (from >= today && from < to) {
-                    var newCost = (to - from) / 86400000 * housePrice;
-                    newCost = (Math.round(newCost * 100) / 100).toFixed(2);
+                people = parseInt(people) || -1;
+                capacity = parseInt(capacity) || -1;
+
+                if (from < today || from >= to) {
+                    costDisplay.style.color = "red";
+                    costDisplay.value = "Fechas incorrectas";
+                } else if (people < 1 || people > capacity) {
+                    costDisplay.style.color = "red";
+                    costDisplay.value = "N.º de personas incorrecto";
+                } else {
+                    var newCost = to.diff(from, 'days') * housePrice;
+                    newCost = (Math.round(newCost * 100) / 100 * people).toFixed(2);
                     cost.value = newCost;
                     costDisplay.style.color = "black";
                     costDisplay.value = newCost + " €";
-                } else {
-                    costDisplay.style.color = "red";
-                    costDisplay.value = "Fechas incorrectas";
+
+                    fromPost.value = from.format('YYYY-MM-DD');
+                    toPost.value = to.format('YYYY-MM-DD');
                 }
             }
 
@@ -459,6 +489,44 @@
                         }
                     );
                 }
+            }
+
+            function changeDate(capacity) {
+                const from = moment(document.getElementById("from").value);
+                const to = moment(document.getElementById("to").value);
+                const people = document.getElementById("people").value;
+                onDateChanged(from, to, people, capacity);
+            }
+
+            function loadDateRangePicker(capacity) {
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                var tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+
+                $('input[name="date-range"]').daterangepicker(
+                    {
+                        locale: {
+                            format: "DD/MM/YYYY"
+                        },
+                        startDate: today,
+                        endDate: tomorrow,
+                        autoApply: true
+                    }, 
+                    function(from, to, label) {
+                        const people = document.getElementById("people").value;
+                        from = moment(from.format('YYYY-MM-DD'));
+                        to = moment(to.format('YYYY-MM-DD'));
+                        onDateChanged(from, to, people, capacity);
+                    }
+                );
+            }
+
+            function load(userIsLoggedIn, paymentToken, capacity) {
+                createDropin(userIsLoggedIn, paymentToken);
+                loadDateRangePicker(capacity);
             }
         </script>
         {% endblock content %}

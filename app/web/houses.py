@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import APIRouter, Request, Form, File, UploadFile, Cookie
+from fastapi import APIRouter, Request, Form, File, UploadFile, Cookie, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from ..entities.models import *
@@ -40,7 +40,7 @@ def create_house(request: Request, user_id: Union[str, None] = Cookie(default=No
 def update_house(request: Request, id: str = Form(), city: str = Form(), street: str = Form(), number: int = Form(), capacity: int = Form(), 
                  price: float = Form(), rooms: int = Form(), bathrooms: int = Form(), file: UploadFile = File(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     if id == "None":
         address = AddressPost(city = city, street = street, number = number)
@@ -115,7 +115,7 @@ def delete_house(request: Request, id: str, user_id: Union[str, None] = Cookie(d
 @router.post("/{id}/addRating", response_class=HTMLResponse)
 def add_rating(request: Request, id: str, estrellas: int = Form(), comment: str = Form(), user_id: Union[str, None] = Cookie(default=None)):
     if user_id is None:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code = status.HTTP_302_FOUND)
 
     date = datetime.now(timezone("Europe/Madrid"))
     rt : RatingPost = RatingPost(rater_id=str(user_id) ,date=date,rated_user_id=None,

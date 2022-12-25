@@ -7,6 +7,7 @@ from pymongo.results import InsertOneResult
 from app.database import db
 from .models import *
 from ..opendata import osm
+from . import bookings as bookings_api
 
 # Create router
 router = APIRouter()
@@ -146,3 +147,15 @@ def get_guests_by_owner_name(owner_name: str):
     houses_ids = [{"house_id": str(house_id.get("_id"))} for house_id in houses_ids]
     
     return bookings.distinct("guest_name", {"$or": houses_ids})
+
+@router.get("/{id}/unavailableDates")
+def get_unavailable_dates(id: str):
+    dates = []
+
+    all_bookings = bookings_api.search(house_id = id)
+    for booking in all_bookings:
+        from_ = booking["from_"].strftime("%Y-%m-%d")
+        to = booking["to"].strftime("%Y-%m-%d")
+        dates.append({"from": from_, "to": to})
+
+    return dates

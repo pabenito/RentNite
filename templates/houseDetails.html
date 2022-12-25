@@ -511,9 +511,35 @@
                         locale: {
                             format: "DD/MM/YYYY"
                         },
-                        startDate: today,
-                        endDate: tomorrow,
-                        autoApply: true
+                        isInvalidDate: function(date) { 
+                            var today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            if (date < today) {
+                                return true;
+                            }
+
+                            var unavailableDates = JSON.parse('{{ unavailable_dates | tojson }}');
+
+                            var i = 0;
+                            var isValid = true;
+                            while (i < unavailableDates.length && isValid) {
+                                var from = new Date(unavailableDates[i]["from"]);
+                                from.setHours(0, 0, 0, 0);
+
+                                var to = new Date(unavailableDates[i]["to"]);
+                                to.setHours(0, 0, 0, 0);
+
+                                isValid = date < from || date > to;
+
+                                i++;
+                            }
+
+                            return !isValid;
+                         },
+                         startDate: today,
+                         endDate: tomorrow,
+                         autoApply: true
                     }, 
                     function(from, to, label) {
                         const people = document.getElementById("people").value;

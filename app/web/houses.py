@@ -141,10 +141,12 @@ def __load_house_details(request: Request, house: dict, user_id: Union[str, None
     if creating or editing:
         today = tomorrow = None
         user_can_rate = False
+        unavailable_dates = None
     else:
         today = date.today()
         tomorrow = today + timedelta(1)
         user_can_rate = __user_can_rate(str(user_id), house)
+        unavailable_dates = houses_api.get_unavailable_dates(house["id"])
 
     payment_token = get_token(str(user_id))
     
@@ -152,7 +154,7 @@ def __load_house_details(request: Request, house: dict, user_id: Union[str, None
                                                             "editing": editing, "error": error, "comments": comments, "ratings": ratings, 
                                                             "weather": weather, "temperature": temperature, "today_date": today,
                                                             "tomorrow_date": tomorrow, "user_can_rate": user_can_rate,
-                                                            "payment_token": payment_token})
+                                                            "payment_token": payment_token, "unavailable_dates": unavailable_dates})
 
 
 def __user_can_rate(user_id: Union[str, None], house: dict):

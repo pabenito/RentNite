@@ -112,13 +112,7 @@ def get_by_user_id(user_id: str):
     result : list = []
     for chat in chats_list:
         chat : Chat = chat 
-        if chat.guest_id == user_id:
-            result.append(chat)
-    chats_list = result
-
-    for chat in chats_list:
-        chat : Chat = chat 
-        if chat.owner_id == user_id:
+        if chat.guest_id == user_id or chat.owner_id == user_id:
             result.append(chat)
     chats_list = result
 

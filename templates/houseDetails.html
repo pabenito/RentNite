@@ -1,561 +1,356 @@
 <!DOCTYPE html>
 <html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+        <script src="https://js.braintreegateway.com/web/dropin/1.33.7/js/dropin.min.js"></script>
+        <script src="https://js.braintreegateway.com/web/3.88.4/js/client.min.js"></script>
+        <script src="https://js.braintreegateway.com/web/3.88.4/js/paypal-checkout.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="/static/css/houseDetails.css"/>
+        <title>Detalles de la casa - RentNite</title>
+    </head>
+    <body onload="load('{{user_id is not none}}', '{{payment_token}}', '{{house.capacity}}')">
+        <!--NavBar-->
+        {% include "navbar.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-    <script src="https://js.braintreegateway.com/web/dropin/1.33.7/js/dropin.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.88.4/js/client.min.js"></script>
-    <script src="https://js.braintreegateway.com/web/3.88.4/js/paypal-checkout.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Detalles de la casa - RentNite</title>
-    <style>
-        #form {
-            width: 250px;
-            margin: 0 auto;
-            height: 50px;
-        }
-
-        #form p {
-            text-align: center;
-        }
-
-        #form label {
-            font-size: 20px;
-        }
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        label {
-            color: grey;
-            font-weight: 100
-        }
-
-        #temperatura {
-            color: grey;
-            font-weight: 100
-        }
-
-        .clasificacion {
-            direction: rtl;
-            unicode-bidi: bidi-override;
-        }
-
-        label:hover,
-        label:hover~label {
-            color: orange;
-        }
-
-        input[type="radio"]:checked~label {
-            color: orange;
-        }
-
-        .upload {
-            position: relative;
-            margin: auto;
-        }
-
-        .upload img {
-            border: 6px solid #eaeaea;
-        }
-
-        .upload .round {
-            position: absolute;
-            bottom: 80%;
-            right: -25px;
-            background: #00B4FF;
-            width: 70px;
-            height: 70px;
-            line-height: 70px;
-            text-align: center;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .upload .round input[type="file"] {
-            position: absolute;
-            transform: scale(2);
-            opacity: 0;
-        }
-
-        input[type=file]::-webkit-file-upload-button {
-            cursor: pointer;
-        }
-
-        a {
-            text-decoration: none;
-        }
-    </style>
-</head>
-
-<body onload="load('{{user_id is not none}}', '{{payment_token}}', '{{house.capacity}}')">
-    <!--NavBar-->
-    {% include "navbar.html" %}
-
-    {% block content %}
-    <h1 class="text text-center my-4">Detalles de la casa</h1>
-    <div class="row">
-        <div class="col-md-4 mx-3">
-            {% if not creating and not editing and weather | count > 0 %}
-            <div class="card">
-                <div class="card-body">
-                    <div class="row text-center mb-2">
-                        {% for item in temperature.values() %}
-                        <div class="col">
-                            <span class="fw-bold">{{item["dia"]}}</span>
+        {% block content %}
+        <h1 class="text text-center my-4">Detalles de la casa</h1>
+        <div class="row">
+            <div class="col-md-4 mx-3">
+                {% if not creating and not editing and weather | count > 0 %}
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center mb-2">
+                            {% for item in temperature.values() %}
+                            <div class="col">
+                                <span class="fw-bold">{{item["dia"]}}</span>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="row">
-                        {% for item in weather.values() %}
-                        <div class="col">
-                            <p class="text text-center mt-2">
-                                {% if 35 > item["value"] %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png
-                                    style="height: 75%; width: 75%; object-fit: contain">
-                                {% elif item["value"] >= 35 and 80 > item["value"] %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png
-                                    style="height: 75%; width: 75%; object-fit: contain">
-                                {% else %}
-                                <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png
-                                    style="height: 75%; width: 75%; object-fit: contain">
-                                {% endif %}
-                            </p>
+                        <div class="row">
+                            {% for item in weather.values() %}
+                            <div class="col">
+                                <p class="text text-center mt-2">
+                                    {% if 35 > item["value"] %}
+                                    <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003484/gzma4savzkw9gbeopypv.png
+                                        style="height: 75%; width: 75%; object-fit: contain">
+                                    {% elif item["value"] >= 35 and 80 > item["value"] %}
+                                    <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003852/ahqndw2d4o0aoytxcypl.png
+                                        style="height: 75%; width: 75%; object-fit: contain">
+                                    {% else %}
+                                    <img src=https://res.cloudinary.com/dc4yqjivf/image/upload/v1670003518/dfe2k6afba1apmnb8gez.png
+                                        style="height: 75%; width: 75%; object-fit: contain">
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="row">
-                        {% for item in temperature.values() %}
-                        <div class="col">
-                            <p class="text text-center mt-2">
-                                <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br/>
-                                <label id="temperatura">{{item["minima"]}}&deg;</label>
-                            </p>
+                        <div class="row">
+                            {% for item in temperature.values() %}
+                            <div class="col">
+                                <p class="text text-center mt-2">
+                                    <label id="temperatura" class="fw-bold">{{item["maxima"]}}&deg; </label><br/>
+                                    <label id="temperatura">{{item["minima"]}}&deg;</label>
+                                </p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="row text-center mt-2">
-                        {% for item in weather.values() %}
-                        <div class="col">
-                            <span class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</span>
+                        <div class="row text-center mt-2">
+                            {% for item in weather.values() %}
+                            <div class="col">
+                                <span class="fw-bold" style="font-size: 15px">{{item["value"]}} &percnt;</span>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
-            </div>
-            {% endif %}
-        </div>
-        <div class="col-md-4">
-            {% if creating or editing %}
-            <form method="post" action="/houses/save" enctype="multipart/form-data">
-                <div class="upload my-5">
-                    <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada" id="image"
-                        style="height: 100%; width: 100%; object-fit: contain">
-                    <div class="round">
-                        <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif"
-                            onchange="onImageChanged(event)"/>
-                        <i class="fa fa-camera fa-lg" style="color: #000;"></i>
-                    </div>
-                </div>
-                <table class="table table-info">
-                    {% if creating %}
-                    <input type="hidden" name="id" value="None"/>
-                    {% else %}
-                    <input type="hidden" name="id" value="{{house.id}}"/>
-                    {% endif %}
-                    <tr>
-                        <td class="h5">Ciudad:</td>
-                        <td><input type="text" name="city" value="{{house.address.city}}" class="form-control"
-                                required/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Calle:</td>
-                        <td><input type="text" name="street" value="{{house.address.street}}" class="form-control"
-                                required/></td>
-                    </tr>
-                    <tr>
-                        <td class="h5">N&deg;:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="number" name="number" value="{{house.address.number}}"
-                                        class="form-control" min="1" max="99" required/>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Capacidad:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="number" name="capacity" value={{house.capacity}} class="form-control"
-                                        min="1" max="99" required/>
-                                </div>
-                                <div class="col-md-2 mt-1">personas</div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Coste por noche:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}}
-                                        class="form-control" min="0.01" required/>
-                                </div>
-                                <div class="col mt-2">&euro;</div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Habitaciones:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1"
-                                        max="99" required/>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Cuartos de ba&ntilde;o:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
-                                        min="1" max="99" required/>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <h5 class="text text-center text-danger">{{error}}</h5>
-                <div class="text-center my-4">
-                    <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
-                    {% if editing %}
-                    <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span
-                            class="h3">Eliminar</span></a>
-                    {% endif %}
-                </div>
-            </form>
-            {% else %}
-            <p class="text text-center">
-                <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada"
-                    style="height: 100%; width: 100%; object-fit: contain">
-            </p>
-            <table class="table table-info my-4">
-                <tr>
-                    <td class="h5">Direcci&oacute;n:</td>
-                    <td>Calle {{ house.address.street }} n&deg; {{house.address.number}}, {{house.address.city}}</td>
-                </tr>
-                <tr>
-                    <td class="h5">Capacidad:</td>
-                    <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
-                </tr>
-                <tr>
-                    <td class="h5">Coste por noche:</td>
-                    <td>{{ '%0.2f' % house.price }} &euro;</td>
-                </tr>
-                <tr>
-                    <td class="h5">Habitaciones:</td>
-                    <td>{{ house.rooms }}</td>
-                </tr>
-                <tr>
-                    <td class="h5">Cuartos de ba&ntilde;o:</td>
-                    <td>{{ house.bathrooms }}</td>
-                </tr>
-                <tr>
-                    <td class="h5">Propietario:</td>
-                    <td><a href="/profile/{{house.owner_id}}">{{ house.owner_name }}</a>
-                    </td>
-                </tr>
-            </table>
-            {% if weather | count > 0 %}
-            <iframe
-                src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}"
-                width="100%" height="300px"></iframe>
-            {% endif %}
-            {% if user_id != house.owner_id %}
-            <h2 class="text text-center my-4">Hacer una reserva</h2>
-            <form method="post" action="/bookings/{{house.id}}/requestBooking" id="paymentForm">
-                <label id="housePrice" style="display: none">{{house.price}}</label>
-                <input type="hidden" name="guest_id" value="{{user_id}}"/>
-                <input type="hidden" id="cost" name="cost" value="{{house.price}}"/>
-                <input type="hidden" id="nonce" name="nonce" value="nonce"/>
-                <input type="date" id="from" name="from_" value="{{today_date}}" style="display: none;"/>
-                <input type="date" id="to" name="to" value="{{tomorrow_date}}" style="display: none;"/>
-                <table class="table table-info">
-                    <tr>
-                        <td class="h5">Fechas:</td>
-                        <td>
-                            <div class="input-group">
-                                <input type="text" name="date-range" class="form-control"/>
-                                <div class="input-group-text">
-                                    <i class="fa fa-calendar-o" aria-hidden="true"></i>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">N.&deg; de personas:</td>
-                        <td>
-                            <div class="row">
-                                <div class="col-4">
-                                    <input type="number" class="form-control" id="people" value="1" min="1" max="{{house.capacity}}" 
-                                           oninput="changeDate('{{house.capacity}}')"/>
-                                </div>
-                                <span class="col-1 mt-2 text-center">/</span>
-                                <span class="col-1 mt-2 text-center">{{house.capacity}}</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="h5">Precio:</td>
-                        <td><input type="text" id="costDisplay" value="{{'%0.2f' % house.price}} &euro;"
-                                class="form-control" disabled/></td>
-                    </tr>
-                </table>
-                {% if user_id is not none %}
-                <div id="dropinContainer" class="text-center my-4"></div>
                 {% endif %}
-                <h5 class="text text-center text-danger">{{error}}</h5>
-                <div class="text-center my-4">
-                    <button class="btn btn-primary"><span class="h3">Reservar</span></button>
-                </div>
-            </form>
-            {% endif %}
-            {% endif %}
-        </div>
-        <div class="col-md-4"></div>
-    </div>
-    {% if not creating and not editing %}
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
-            {% if ratings | count > 0 %}
-            <h3 class="h3 my-4">Ratings</h3>
-            <table class="table-primary">
-                {% for rating in ratings %}
-                <tr>
-                    <table class="table">
-                        <tr class="table-primary">
-                            <th>
-                                <div class="row" style="height: 40px">
-                                    <div class="col mt-2">
-                                        <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name
-                                            }}</a>
-                                    </div>
-                                    <div class="col mx-5 mt-2">
-                                        {{rating.date.strftime('%d/%m/%Y')}}
-                                    </div>
-                                    <div class="col ms-5 mt-2">
-                                        {% for i in range(rating.rate) %}
-                                        ★
-                                        {% endfor %}
-                                    </div>
-                                    <div class="col me-3" style="text-align: right">
-                                        {% if rating.rater_id == user_id %}
-                                        <a class="btn btn-danger"
-                                            href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i
-                                                class="fa fa-trash-o"></i></a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </th>
+            </div>
+            <div class="col-md-4">
+                {% if creating or editing %}
+                <form method="post" action="/houses/save" enctype="multipart/form-data">
+                    <div class="upload my-5">
+                        <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada" id="image"
+                            style="height: 100%; width: 100%; object-fit: contain">
+                        <div class="round">
+                            <input type="file" name="file" accept="image/png, image/jpeg, image/jpg, image/gif"
+                                onchange="onImageChanged(event)"/>
+                            <i class="fa fa-camera fa-lg" style="color: #000;"></i>
+                        </div>
+                    </div>
+                    <table class="table table-info">
+                        {% if creating %}
+                        <input type="hidden" name="id" value="None"/>
+                        {% else %}
+                        <input type="hidden" name="id" value="{{house.id}}"/>
+                        {% endif %}
+                        <tr>
+                            <td class="h5">Ciudad:</td>
+                            <td><input type="text" name="city" value="{{house.address.city}}" class="form-control"
+                                    required/>
+                            </td>
                         </tr>
                         <tr>
+                            <td class="h5">Calle:</td>
+                            <td><input type="text" name="street" value="{{house.address.street}}" class="form-control"
+                                    required/></td>
+                        </tr>
+                        <tr>
+                            <td class="h5">N&deg;:</td>
                             <td>
-                                {{ rating.comment }}
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <input type="number" name="number" value="{{house.address.number}}"
+                                            class="form-control" min="1" max="99" required/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">Capacidad:</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <input type="number" name="capacity" value={{house.capacity}} class="form-control"
+                                            min="1" max="99" required/>
+                                    </div>
+                                    <div class="col-md-2 mt-1">personas</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">Coste por noche:</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <input type="number" name="price" step="0.01" value={{'%0.2f' % house.price}}
+                                            class="form-control" min="0.01" required/>
+                                    </div>
+                                    <div class="col mt-2">&euro;</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">Habitaciones:</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <input type="number" name="rooms" value={{house.rooms}} class="form-control" min="1"
+                                            max="99" required/>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">Cuartos de ba&ntilde;o:</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <input type="number" name="bathrooms" value={{house.bathrooms}} class="form-control"
+                                            min="1" max="99" required/>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </table>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
-            {% endif %}
-            {% if user_can_rate %}
-            <div class="text-center my-4">
-                <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
-                    <div class="d-flex flex-column align-items-center text-center">
-
-                        <p class="clasificacion">
-                            <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5" required>
-                            <label for="radio1">★</label>
-                            <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4" required>
-                            <label for="radio2">★</label>
-                            <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3" required>
-                            <label for="radio3">★</label>
-                            <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2" required>
-                            <label for="radio4">★</label>
-                            <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1" required>
-                            <label for="radio5">★</label>
-                        </p>
-                    </div>
-    
-                    <textarea name="comment" class="form-control" style="resize: none" rows="5" required></textarea>
+                    <h5 class="text text-center text-danger">{{error}}</h5>
                     <div class="text-center my-4">
-                        <button class="btn btn-primary"><span class="h3">Enviar</span></button>
+                        <button class="btn btn-primary mx-3"><span class="h3">Guardar</span></button>
+                        {% if editing %}
+                        <a class="btn btn-danger mx-3" href="/houses/{{house.id}}/delete"><span
+                                class="h3">Eliminar</span></a>
+                        {% endif %}
                     </div>
                 </form>
+                {% else %}
+                <p class="text text-center">
+                    <img src={{ house.image if house.get("image") is not none else "/static/img/DefaultHouseImage.png" }} alt="Casa ofertada"
+                        style="height: 100%; width: 100%; object-fit: contain">
+                </p>
+                <table class="table table-info my-4">
+                    <tr>
+                        <td class="h5">Direcci&oacute;n:</td>
+                        <td>Calle {{ house.address.street }} n&deg; {{house.address.number}}, {{house.address.city}}</td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Capacidad:</td>
+                        <td>{{ house.capacity }} {{ "persona" if house.capacity == 1 else "personas" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Coste por noche:</td>
+                        <td>{{ '%0.2f' % house.price }} &euro;</td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Habitaciones:</td>
+                        <td>{{ house.rooms }}</td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Cuartos de ba&ntilde;o:</td>
+                        <td>{{ house.bathrooms }}</td>
+                    </tr>
+                    <tr>
+                        <td class="h5">Propietario:</td>
+                        <td><a href="/profile/{{house.owner_id}}">{{ house.owner_name }}</a>
+                        </td>
+                    </tr>
+                </table>
+                {% if weather | count > 0 %}
+                <iframe
+                    src="/map/house?latitude={{house.address.latitude}}&longitude={{house.address.longitude}}&address={{house.address.street}}%20{{house.address.number}},%20{{house.address.city}}"
+                    width="100%" height="300px"></iframe>
+                {% endif %}
+                {% if user_id != house.owner_id %}
+                <h2 class="text text-center my-4">Hacer una reserva</h2>
+                <form method="post" action="/bookings/{{house.id}}/requestBooking" id="paymentForm">
+                    <label id="housePrice" style="display: none">{{house.price}}</label>
+                    <input type="hidden" name="guest_id" value="{{user_id}}"/>
+                    <input type="hidden" id="cost" name="cost" value="{{house.price}}"/>
+                    <input type="hidden" id="nonce" name="nonce" value="nonce"/>
+                    <input type="date" id="from" name="from_" value="{{today_date}}" style="display: none;"/>
+                    <input type="date" id="to" name="to" value="{{tomorrow_date}}" style="display: none;"/>
+                    <table class="table table-info">
+                        <tr>
+                            <td class="h5">Fechas:</td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" name="date-range" class="form-control"/>
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">N.&deg; de personas:</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <input type="number" class="form-control" id="people" value="1" min="1" max="{{house.capacity}}" 
+                                            oninput="changeDate('{{house.capacity}}')"/>
+                                    </div>
+                                    <span class="col-1 mt-2 text-center">/</span>
+                                    <span class="col-1 mt-2 text-center">{{house.capacity}}</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="h5">Precio:</td>
+                            <td><input type="text" id="costDisplay" value="{{'%0.2f' % house.price}} &euro;"
+                                    class="form-control" disabled/></td>
+                        </tr>
+                    </table>
+                    {% if user_id is not none %}
+                    <div id="dropinContainer" class="text-center my-4"></div>
+                    {% endif %}
+                    <h5 class="text text-center text-danger">{{error}}</h5>
+                    <div class="text-center my-4">
+                        <button class="btn btn-primary"><span class="h3">Reservar</span></button>
+                    </div>
+                </form>
+                {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+        {% if not creating and not editing %}
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                {% if ratings | count > 0 %}
+                <h3 class="h3 my-4">Ratings</h3>
+                <table class="table-primary">
+                    {% for rating in ratings %}
+                    <tr>
+                        <table class="table">
+                            <tr class="table-primary">
+                                <th>
+                                    <div class="row" style="height: 40px">
+                                        <div class="col mt-2">
+                                            <a class="ms-3" href="/profile/{{rating.rater_id}}">{{ rating.rated_user_Name
+                                                }}</a>
+                                        </div>
+                                        <div class="col mx-5 mt-2">
+                                            {{rating.date.strftime('%d/%m/%Y')}}
+                                        </div>
+                                        <div class="col ms-5 mt-2">
+                                            {% for i in range(rating.rate) %}
+                                            ★
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col me-3" style="text-align: right">
+                                            {% if rating.rater_id == user_id %}
+                                            <a class="btn btn-danger"
+                                                href="/houses/{{house.id}}/deleteRating/{{rating.id}}"><i
+                                                    class="fa fa-trash-o"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ rating.comment }}
+                                </td>
+                            </tr>
+                        </table>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                <p class="text text-center h4 mt-3 mb-5">No hay puntuaciones para esta casa</p>
+                {% endif %}
+                {% if user_can_rate %}
+                <div class="text-center my-4">
+                    <form method="post" action="/houses/{{house.id}}/addRating" title="puntuar">
+                        <div class="d-flex flex-column align-items-center text-center">
+
+                            <p class="clasificacion">
+                                <input id="radio1" type="radio" inputmode="numeric" name="estrellas" value="5" required>
+                                <label for="radio1">★</label>
+                                <input id="radio2" type="radio" inputmode="numeric" name="estrellas" value="4" required>
+                                <label for="radio2">★</label>
+                                <input id="radio3" type="radio" inputmode="numeric" name="estrellas" value="3" required>
+                                <label for="radio3">★</label>
+                                <input id="radio4" type="radio" inputmode="numeric" name="estrellas" value="2" required>
+                                <label for="radio4">★</label>
+                                <input id="radio5" type="radio" inputmode="numeric" name="estrellas" value="1" required>
+                                <label for="radio5">★</label>
+                            </p>
+                        </div>
+        
+                        <textarea name="comment" class="form-control" style="resize: none" rows="5" required></textarea>
+                        <div class="text-center my-4">
+                            <button class="btn btn-primary"><span class="h3">Enviar</span></button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="col-md-3"></div>
             </div>
             {% endif %}
-            <div class="col-md-3"></div>
-        </div>
-        {% endif %}
 
-        <script type="text/javascript">
-            function onImageChanged(event) {
-                var image = document.getElementById("image");
-                image.src = URL.createObjectURL(event.target.files[0]);
-            }
-
-            function onDateChanged(from, to, people, capacity) {
-                const housePrice = document.getElementById("housePrice").innerText;
-                const fromPost = document.getElementById("from");
-                const toPost = document.getElementById("to");
-
-                var today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                var cost = document.getElementById("cost");
-                var costDisplay = document.getElementById("costDisplay");
-
-                people = parseInt(people) || -1;
-                capacity = parseInt(capacity) || -1;
-
-                if (from < today || from >= to) {
-                    costDisplay.style.color = "red";
-                    costDisplay.value = "Fechas incorrectas";
-                } else if (people < 1 || people > capacity) {
-                    costDisplay.style.color = "red";
-                    costDisplay.value = "N.º de personas incorrecto";
-                } else {
-                    var newCost = to.diff(from, 'days') * housePrice;
-                    newCost = (Math.round(newCost * 100) / 100 * people).toFixed(2);
-                    cost.value = newCost;
-                    costDisplay.style.color = "black";
-                    costDisplay.value = newCost + " €";
-
-                    fromPost.value = from.format('YYYY-MM-DD');
-                    toPost.value = to.format('YYYY-MM-DD');
+            <script type="text/javascript" src="/static/js/houseDetails.js"></script>
+            <script type="text/javascript">
+                function load(userIsLoggedIn, paymentToken, capacity) {
+                    var unavailableDates = JSON.parse('{{ unavailable_dates | tojson }}');
+                    loadHouseDetails(userIsLoggedIn, paymentToken, capacity, unavailableDates);
                 }
-            }
-
-            function createDropin(userIsLoggedIn, paymentToken) {
-                if (userIsLoggedIn == "True") {
-                    const form = document.getElementById("paymentForm");
-                    const dropinContainer = document.getElementById("dropinContainer");
-                    const nonce = document.getElementById("nonce");
-
-                    braintree.dropin.create(
-                        {
-                            authorization: paymentToken,
-                            container: dropinContainer,
-                            paypal: {
-                                flow: "vault"
-                            },
-                            locale: "es_ES"
-                        },
-                        (error, dropinInstance) => {
-                            form.addEventListener("submit", event => {
-                                event.preventDefault();
-
-                                dropinInstance.requestPaymentMethod((error, payload) => {
-                                    nonce.value = payload.nonce;
-                                    form.submit();
-                                });
-                            });
-                        }
-                    );
-                }
-            }
-
-            function changeDate(capacity) {
-                const from = moment(document.getElementById("from").value);
-                const to = moment(document.getElementById("to").value);
-                const people = document.getElementById("people").value;
-                onDateChanged(from, to, people, capacity);
-            }
-
-            function loadDateRangePicker(capacity) {
-                var today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-                var tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0, 0, 0, 0);
-
-                $('input[name="date-range"]').daterangepicker(
-                    {
-                        locale: {
-                            format: "DD/MM/YYYY"
-                        },
-                        isInvalidDate: function(date) { 
-                            var today = new Date();
-                            today.setHours(0, 0, 0, 0);
-
-                            if (date < today) {
-                                return true;
-                            }
-
-                            var unavailableDates = JSON.parse('{{ unavailable_dates | tojson }}');
-
-                            var i = 0;
-                            var isValid = true;
-                            while (i < unavailableDates.length && isValid) {
-                                var from = new Date(unavailableDates[i]["from"]);
-                                from.setHours(0, 0, 0, 0);
-
-                                var to = new Date(unavailableDates[i]["to"]);
-                                to.setHours(0, 0, 0, 0);
-
-                                isValid = date < from || date > to;
-
-                                i++;
-                            }
-
-                            return !isValid;
-                         },
-                         startDate: today,
-                         endDate: tomorrow,
-                         autoApply: true
-                    }, 
-                    function(from, to, label) {
-                        const people = document.getElementById("people").value;
-                        from = moment(from.format('YYYY-MM-DD'));
-                        to = moment(to.format('YYYY-MM-DD'));
-                        onDateChanged(from, to, people, capacity);
-                    }
-                );
-            }
-
-            function load(userIsLoggedIn, paymentToken, capacity) {
-                createDropin(userIsLoggedIn, paymentToken);
-                loadDateRangePicker(capacity);
-            }
-        </script>
-        {% endblock content %}
-</body>
-
+            </script>
+            {% endblock content %}
+    </body>
 </html>

@@ -1,0 +1,74 @@
+#form {
+    width: 250px;
+    margin: 0 auto;
+    height: 50px;
+}
+
+#form p {
+    text-align: center;
+}
+
+#form label {
+    font-size: 20px;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+label {
+    color: grey;
+    font-weight: 100
+}
+
+.clasificacion {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+}
+
+label:hover,
+label:hover~label {
+    color: orange;
+}
+
+input[type="radio"]:checked~label {
+    color: orange;
+}
+
+.upload {
+    width: 100px;
+    position: relative;
+    margin: auto;
+}
+
+.upload img {
+    border-radius: 50%;
+    border: 6px solid #eaeaea;
+}
+
+.upload .round {
+    position: absolute;
+    bottom: 75%;
+    right: 0;
+    background: #00B4FF;
+    width: 32px;
+    height: 32px;
+    line-height: 33px;
+    text-align: center;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.upload .round input[type="file"] {
+    position: absolute;
+    transform: scale(2);
+    opacity: 0;
+}
+
+input[type=file]::-webkit-file-upload-button {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}

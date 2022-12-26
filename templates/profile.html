@@ -16,83 +16,8 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/profile.css"/>
     <title>Perfil - RentNite</title>
-    <style>
-        #form {
-            width: 250px;
-            margin: 0 auto;
-            height: 50px;
-        }
-
-        #form p {
-            text-align: center;
-        }
-
-        #form label {
-            font-size: 20px;
-        }
-
-        input[type="radio"] {
-            display: none;
-        }
-
-        label {
-            color: grey;
-            font-weight: 100
-        }
-
-        .clasificacion {
-            direction: rtl;
-            unicode-bidi: bidi-override;
-        }
-
-        label:hover,
-        label:hover~label {
-            color: orange;
-        }
-
-        input[type="radio"]:checked~label {
-            color: orange;
-        }
-
-        .upload {
-            width: 100px;
-            position: relative;
-            margin: auto;
-        }
-
-        .upload img {
-            border-radius: 50%;
-            border: 6px solid #eaeaea;
-        }
-
-        .upload .round {
-            position: absolute;
-            bottom: 75%;
-            right: 0;
-            background: #00B4FF;
-            width: 32px;
-            height: 32px;
-            line-height: 33px;
-            text-align: center;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-
-        .upload .round input[type="file"] {
-            position: absolute;
-            transform: scale(2);
-            opacity: 0;
-        }
-
-        input[type=file]::-webkit-file-upload-button {
-            cursor: pointer;
-        }
-
-        a {
-            text-decoration: none;
-        }
-    </style>
 </head>
 
 <body>
@@ -262,10 +187,6 @@
     </div>
 </body>
 
-<script>
-    document.getElementById("file").onchange = function () {
-        document.getElementById("fImagen").submit();
-    };
-</script>
+<script type="text/javascript" src="/static/js/profile.js"></script>
 
 </html>

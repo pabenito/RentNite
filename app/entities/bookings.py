@@ -75,7 +75,7 @@ def create(booking : BookingPost):
     to = datetime.combine(booking.to, time.min)
 
     for b in bookings_list:
-        if b["from_"] <= to <= b["to"] or b["from_"] <= from_ <= b["to"]:
+        if from_ <= b["to"] and to >= b["from_"]:
             raise HTTPException(400, "La fecha no puede solaparse con otra reserva.")
 
     new_booking["from_"] = from_

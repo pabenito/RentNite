@@ -24,7 +24,7 @@
         <link rel="stylesheet" href="/static/css/houseDetails.css"/>
         <title>Detalles de la casa - RentNite</title>
     </head>
-    <body onload="load('{{user_id is not none}}', '{{payment_token}}', '{{house.capacity}}')">
+    <body onload="load('{{user_id is not none}}', '{{payment_token}}')">
         <!--NavBar-->
         {% include "navbar.html" %}
 
@@ -236,19 +236,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="h5">N.&deg; de personas:</td>
-                            <td>
-                                <div class="row">
-                                    <div class="col-4">
-                                        <input type="number" class="form-control" id="people" value="1" min="1" max="{{house.capacity}}" 
-                                            oninput="changeDate('{{house.capacity}}')"/>
-                                    </div>
-                                    <span class="col-1 mt-2 text-center">/</span>
-                                    <span class="col-1 mt-2 text-center">{{house.capacity}}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
                             <td class="h5">Precio:</td>
                             <td><input type="text" id="costDisplay" value="{{'%0.2f' % house.price}} &euro;"
                                     class="form-control" disabled/></td>
@@ -346,9 +333,9 @@
 
             <script type="text/javascript" src="/static/js/houseDetails.js"></script>
             <script type="text/javascript">
-                function load(userIsLoggedIn, paymentToken, capacity) {
+                function load(userIsLoggedIn, paymentToken) {
                     var unavailableDates = JSON.parse('{{ unavailable_dates | tojson }}');
-                    loadHouseDetails(userIsLoggedIn, paymentToken, capacity, unavailableDates);
+                    loadHouseDetails(userIsLoggedIn, paymentToken, unavailableDates);
                 }
             </script>
             {% endblock content %}

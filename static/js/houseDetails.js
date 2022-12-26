@@ -3,38 +3,6 @@ function onImageChanged(event) {
     image.src = URL.createObjectURL(event.target.files[0]);
 }
 
-function onDateChanged(from, to, people, capacity) {
-    const housePrice = document.getElementById("housePrice").innerText;
-    const fromPost = document.getElementById("from");
-    const toPost = document.getElementById("to");
-
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    var cost = document.getElementById("cost");
-    var costDisplay = document.getElementById("costDisplay");
-
-    people = parseInt(people) || -1;
-    capacity = parseInt(capacity) || -1;
-
-    if (from < today || from >= to) {
-        costDisplay.style.color = "red";
-        costDisplay.value = "Fechas incorrectas";
-    } else if (people < 1 || people > capacity) {
-        costDisplay.style.color = "red";
-        costDisplay.value = "N.º de personas incorrecto";
-    } else {
-        var newCost = to.diff(from, 'days') * housePrice;
-        newCost = (Math.round(newCost * 100) / 100 * people).toFixed(2);
-        cost.value = newCost;
-        costDisplay.style.color = "black";
-        costDisplay.value = newCost + " €";
-
-        fromPost.value = from.format('YYYY-MM-DD');
-        toPost.value = to.format('YYYY-MM-DD');
-    }
-}
-
 function createDropin(userIsLoggedIn, paymentToken) {
     if (userIsLoggedIn == "True") {
         const form = document.getElementById("paymentForm");
@@ -64,14 +32,31 @@ function createDropin(userIsLoggedIn, paymentToken) {
     }
 }
 
-function changeDate(capacity) {
-    const from = moment(document.getElementById("from").value);
-    const to = moment(document.getElementById("to").value);
-    const people = document.getElementById("people").value;
-    onDateChanged(from, to, people, capacity);
+function onDateChanged(from, to) {
+    const housePrice = document.getElementById("housePrice").innerText;
+    const fromPost = document.getElementById("from");
+    const toPost = document.getElementById("to");
+    var cost = document.getElementById("cost");
+    var costDisplay = document.getElementById("costDisplay");
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (today <= from && from < to) {
+        var newCost = to.diff(from, 'days') * housePrice;
+        newCost = (Math.round(newCost * 100) / 100).toFixed(2);
+        cost.value = newCost;
+        costDisplay.style.color = "black";
+        costDisplay.value = newCost + " €";
+
+        fromPost.value = from.format('YYYY-MM-DD');
+        toPost.value = to.format('YYYY-MM-DD');
+    } else {
+        costDisplay.style.color = "red";
+        costDisplay.value = "Fechas incorrectas";
+    }
 }
 
-function loadDateRangePicker(capacity, unavailableDates) {
+function loadDateRangePicker(unavailableDates) {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -113,15 +98,14 @@ function loadDateRangePicker(capacity, unavailableDates) {
              autoApply: true
         }, 
         function(from, to, label) {
-            const people = document.getElementById("people").value;
             from = moment(from.format('YYYY-MM-DD'));
             to = moment(to.format('YYYY-MM-DD'));
-            onDateChanged(from, to, people, capacity);
+            onDateChanged(from, to);
         }
     );
 }
 
-function loadHouseDetails(userIsLoggedIn, paymentToken, capacity, unavailableDates) {
+function loadHouseDetails(userIsLoggedIn, paymentToken, unavailableDates) {
     createDropin(userIsLoggedIn, paymentToken);
-    loadDateRangePicker(capacity, unavailableDates);
+    loadDateRangePicker(unavailableDates);
 }

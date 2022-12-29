@@ -77,7 +77,8 @@ async def google_callback(request: Request):
 
     user: User = users_api.general_get(email=user_google.email)
     if not user:
-        user = users_api.createAUX(user_google.username, user_google.email)
+        username = f"{user_google.first_name} {user_google.last_name}"
+        user = users_api.createAUX(username, user_google.email)
 
     redirect: RedirectResponse = RedirectResponse(base_url)
     redirect.set_cookie("user_id", user["id"])

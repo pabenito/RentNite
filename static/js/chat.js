@@ -1,6 +1,10 @@
 var client_id = Date.now();
 var ip = document.getElementById("ip").value;
-var ws = new WebSocket(`ws://${ip}/chats/ws/${client_id}`);
+var ws = new WebSocket(`ws://${ip}/chats/ws/${client_id}`, {
+  protocolVersion: 8,
+  origin: `https:${ip}/chats/ws/${client_id}`,
+  rejectUnauthorized: false
+});
 
 ws.onmessage = function (event) {
     var messages = document.getElementById('messages')

@@ -1,2 +1,2 @@
 py -m pip install -r requirements.txt --upgrade
-uvicorn main:app --reload --env-file .env
+py -m uvicorn main:app --reload --env-file local.env

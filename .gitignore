@@ -3,7 +3,7 @@ __pycache__
 .pytest_cache
 .idea
 .deta
-.env
+**.env
 **/node_modules/*
 **/.firebase
 **/.firebaserc
